@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"require\\('http'\\)\")",
+      "Bash(node -e \"try{require\\('serve-static'\\);console.log\\('serve ok'\\)}catch\\(e\\){console.log\\('no serve'\\)}\")",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(pip install *)",
+      "Bash(graphify install *)",
+      "Bash(graphify claude *)",
+      "Bash(git -C \"/c/Users/Jonathan/OneDrive/Desktop/Jonathan-Navarro-Portfolio\" status \"Jonathan Portfolio/\")"
+    ]
+  }
+}

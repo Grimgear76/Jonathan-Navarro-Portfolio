@@ -1,0 +1,74 @@
+.contact {
+  padding: 7rem 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.contact-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.field label {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  transition: color 0.3s ease;
+}
+
+.field input,
+.field textarea {
+  background: #090909;
+  border: 1px solid #1a1a1a;
+  border-bottom: 1px solid #2a2a2a;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  padding: 0.75rem 1rem;
+  outline: none;
+  resize: vertical;
+  transition: border-color 0.2s ease;
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: var(--accent);
+}
+
+.field-error {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: #e05555;
+  letter-spacing: 0.06em;
+}
+
+.contact-success {
+  text-align: center;
+  padding: 5rem 0;
+}
+
+.success-text {
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  color: var(--accent);
+  transition: color 0.3s ease;
+}
+
+.success-sub {
+  color: var(--text-muted);
+  margin-top: 1rem;
+  font-size: 0.85rem;
+}

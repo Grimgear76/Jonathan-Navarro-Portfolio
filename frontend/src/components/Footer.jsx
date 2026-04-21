@@ -6,9 +6,9 @@ export default function Footer() {
       <div className="footer-links">
         <a href="https://github.com/Grimgear76" target="_blank" rel="noopener noreferrer">GITHUB</a>
         <span className="footer-sep">/</span>
-        <a href="https://linkedin.com/in/YOUR_LINKEDIN_SLUG" target="_blank" rel="noopener noreferrer">LINKEDIN</a>
+        <a href="https://linkedin.com/in/jonathan-navarro-44923b307" target="_blank" rel="noopener noreferrer">LINKEDIN</a>
         <span className="footer-sep">/</span>
-        <a href="mailto:YOUR_EMAIL@example.com">EMAIL</a>
+        <a href="mailto:jonathan63592@gmail.com">EMAIL</a>
       </div>
       <p className="footer-copy">© 2025 Jonathan Navarro</p>
     </footer>

@@ -19,6 +19,9 @@ client/build/
 .DS_Store
 Thumbs.db
 
+# Obsidian config (vault settings, plugins — keep local)
+Jonathan Portfolio/.obsidian/
+
 # Logs
 *.log
 npm-debug.log*

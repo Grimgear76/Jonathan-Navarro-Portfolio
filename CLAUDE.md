@@ -99,3 +99,25 @@ Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>
 ```
 
 Repository: https://github.com/Grimgear76/Jonathan-Navarro-Portfolio.git
+
+## Obsidian Conversation Log
+
+At the end of every session, append a summary of the conversation to:
+`Jonathan Portfolio/Claude Conversations.md`
+
+Format each session as:
+```
+## YYYY-MM-DD — <short topic title>
+<summary of what was discussed and done>
+```
+
+Never overwrite the file — always append.
+
+## graphify
+
+This project has a graphify knowledge graph at graphify-out/.
+
+Rules:
+- Before answering architecture or codebase questions, read graphify-out/GRAPH_REPORT.md for god nodes and community structure
+- If graphify-out/wiki/index.md exists, navigate it instead of reading raw files
+- After modifying code files in this session, run `graphify update .` to keep the graph current (AST-only, no API cost)

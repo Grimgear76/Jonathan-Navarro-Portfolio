@@ -1,18 +1,15 @@
-# Claude / Superpowers (never commit these)
-.claude/
-.superpowers/
-CLAUDE.md
-docs/superpowers/
-
 # Dependencies
 node_modules/
 client/node_modules/
 server/node_modules/
 
-# Environment variables
+# Environment variables (keep secrets local, don't push)
 .env
+.env.local
 client/.env
+client/.env.local
 server/.env
+server/.env.local
 
 # Build output
 client/dist/

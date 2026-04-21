@@ -1,0 +1,7 @@
+.ambient-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  transition: background 0.8s ease;
+}

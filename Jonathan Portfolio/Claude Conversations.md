@@ -93,3 +93,9 @@ Resumed after token limit. Implemented all remaining UI components directly (no 
 - Fill in real LinkedIn URL and email in Footer.jsx
 - Backend (Express + MongoDB) for contact form submissions
 - Deployment (Vercel frontend + Railway/Render backend)
+
+## 2026-04-21 — README + Session Close
+
+Created `README.md` at repo root with: project overview, feature list, full tech stack table, directory structure, local setup instructions (`npm install` + `npm run dev`), test run instructions, color system reference tables, and roadmap. Committed and pushed to main (`747674a`).
+
+**Next session:** Deployment — Vercel for frontend, Railway/Render for backend API.

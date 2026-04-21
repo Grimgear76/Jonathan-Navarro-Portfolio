@@ -37,3 +37,59 @@ Full brainstorming + planning session for the React frontend. No code written ye
 - `docs/superpowers/plans/2026-04-21-portfolio-frontend.md` — 21-task TDD implementation plan
 
 **Next session:** Execute the plan (Task 1: scaffold Vite + React). User preferred inline or subagent execution — decision left open.
+
+## 2026-04-21 — Portfolio Frontend Build (Tasks 1–11)
+
+Executed the 21-task frontend plan using the subagent-driven-development skill. Session ended early due to hitting the API rate limit mid-batch.
+
+**Completed and committed (Tasks 1–11):**
+- Task 1: Vite + React scaffold with Vitest, ESLint, react-router-dom
+- Task 2: Resume PDF copied to `frontend/public/`
+- Task 3: `globals.css` with CSS custom properties and shared `.card-tag` / `.section-label` classes
+- Task 4: `projects.js` with all 6 projects, accent colors, and detail copy
+- Task 5: `ColorContext` (useReducer) with 5 passing unit tests
+- Task 6: `useScrollZone` hook with `interpolateColor`/`getZoneIndex` — 10 passing tests (used `Math.floor` not `Math.round` to match test expectations)
+- Task 7: `useColorUnlock` hook
+- Task 8: `ScrollZoneWatcher` renderless component
+- Task 9: `AmbientOverlay` with per-project radial gradients
+- Task 10: `Toast` (4s, fires on full unlock)
+- Task 11: `Navbar` with EXPLORED X% progress bar
+
+**Not yet done (Tasks 12–21):**
+- Hero, About, Skills, Contact, Footer (UI sections)
+- ProjectCard, Projects, ProjectDetail (project system)
+- App.jsx wiring + final verification
+
+**Skills.css is uncommitted** — was created by an agent before hitting the limit; Skills.jsx was not created.
+
+**Next session:** Resume from Task 12 (Hero) and implement all remaining components.
+
+## 2026-04-21 — Portfolio Frontend Build Complete (Tasks 12–21)
+
+Resumed after token limit. Implemented all remaining UI components directly (no subagents) and verified the full app in the browser preview.
+
+**Completed:**
+- Task 12: `Hero` — full-viewport section with blinking cursor, VIEW PROJECTS + DOWNLOAD RESUME CTAs
+- Task 13: `About` — bio + terminal `whoami` card with blinking cursor
+- Task 14: `Skills` — IntersectionObserver-animated skill bars, 4 categories
+- Task 15: `ProjectCard` — click-to-unlock with per-project accent color, glow, tag highlights
+- Task 16: `Projects` — 2-column grid of 6 ProjectCards
+- Task 17: `Contact` — validated form with 6 passing unit tests, success state
+- Task 18: `Footer` — GITHUB / LINKEDIN / EMAIL links (LinkedIn + email are placeholders)
+- Task 19: `ProjectDetail` — problem/built/outcome page via `/projects/:id` route
+- Task 20: `App.jsx` — full wiring: ColorProvider, BrowserRouter, all routes, all components
+- Task 21: Final verification — 21/21 tests pass, dev server confirmed in browser preview
+
+**Verified in browser:**
+- Hero renders with amber accent, blinking cursor
+- Scrolling transitions accent from amber → teal → violet correctly
+- Clicking a project card lights it up, EXPLORED % increments to 17%
+- Contact form and Footer render at bottom with violet accent
+- All 21 unit tests passing (5 colorReducer, 10 useScrollZone, 6 Contact.validate)
+
+**Commit:** `c1858ce` — feat: complete portfolio frontend — all sections, color system, routing
+
+**Remaining before ship:**
+- Fill in real LinkedIn URL and email in Footer.jsx
+- Backend (Express + MongoDB) for contact form submissions
+- Deployment (Vercel frontend + Railway/Render backend)

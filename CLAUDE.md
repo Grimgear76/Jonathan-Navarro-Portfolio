@@ -121,3 +121,16 @@ Rules:
 - Before answering architecture or codebase questions, read graphify-out/GRAPH_REPORT.md for god nodes and community structure
 - If graphify-out/wiki/index.md exists, navigate it instead of reading raw files
 - After modifying code files in this session, run `graphify update .` to keep the graph current (AST-only, no API cost)
+
+
+
+## Context & Decision Log (Obsidian)
+
+Before deep work, read these to understand non-obvious context:
+- `.obsidian/Design Decisions.md` — why certain architectural choices were made
+- `.obsidian/Known Constraints.md` — hard blockers and system limitations
+- `.obsidian/Code Patterns.md` — recurring conventions and where they live
+- `.obsidian/Project Gotchas.md` — bugs, gotchas, and lessons learned
+- `.obsidian/Architecture Notes.md` — high-level system design and data flow
+
+These reduce token usage by avoiding re-discovery of context across sessions.

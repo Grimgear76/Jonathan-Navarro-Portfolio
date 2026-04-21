@@ -1,13 +1,20 @@
 {
   "permissions": {
     "allow": [
-      "Bash(node -e \"require\\('http'\\)\")",
-      "Bash(node -e \"try{require\\('serve-static'\\);console.log\\('serve ok'\\)}catch\\(e\\){console.log\\('no serve'\\)}\")",
-      "mcp__Claude_Preview__preview_start",
+      "Bash(grep -E \"\\\\.md$|\\\\.pdf$\")",
       "Bash(pip install *)",
       "Bash(graphify install *)",
       "Bash(graphify claude *)",
-      "Bash(git -C \"/c/Users/Jonathan/OneDrive/Desktop/Jonathan-Navarro-Portfolio\" status \"Jonathan Portfolio/\")"
+      "Bash(graphify --version)",
+      "Bash(npm create *)",
+      "Bash(npm install *)",
+      "Bash(timeout 10 npm run dev -- --port 5173)",
+      "Bash(npm run *)",
+      "Bash(awk '{print $2}')",
+      "Bash(xargs kill *)",
+      "Bash(npx vitest *)",
+      "Bash(git -C \"C:\\\\Users\\\\Jonathan Navarro\\\\Desktop\\\\Jonathan N Portfolio\" log --oneline -15)",
+      "mcp__Claude_Preview__preview_start"
     ]
   }
 }

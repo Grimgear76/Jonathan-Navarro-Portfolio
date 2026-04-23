@@ -10,6 +10,14 @@
 .hero-content {
   text-align: center;
   padding: 2rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Entrance stagger ── */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 .hero-eyebrow {
@@ -19,6 +27,8 @@
   color: var(--accent);
   margin-bottom: 1rem;
   transition: color 0.3s ease;
+  opacity: 0;
+  animation: fadeSlideUp 0.6s ease 0.1s forwards;
 }
 
 .hero-name {
@@ -28,17 +38,8 @@
   line-height: 1.05;
   color: #e0e0e0;
   margin-bottom: 1.5rem;
-}
-
-.cursor {
-  color: var(--accent);
-  animation: blink 1s step-end infinite;
-  transition: color 0.3s ease;
-}
-
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+  opacity: 0;
+  animation: fadeSlideUp 0.7s ease 0.3s forwards;
 }
 
 .hero-title {
@@ -47,6 +48,8 @@
   color: var(--text-muted);
   letter-spacing: 0.2em;
   margin-bottom: 2.5rem;
+  opacity: 0;
+  animation: fadeSlideUp 0.6s ease 0.55s forwards;
 }
 
 .hero-ctas {
@@ -54,8 +57,81 @@
   gap: 1rem;
   justify-content: center;
   flex-wrap: wrap;
+  opacity: 0;
+  animation: fadeSlideUp 0.6s ease 0.75s forwards;
 }
 
+/* ── Glitch ── */
+.glitch {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch::before,
+.glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  color: #e0e0e0;
+}
+
+.glitch::before {
+  color: var(--accent);
+  animation: glitch-top 9s ease-in-out infinite;
+}
+
+.glitch::after {
+  color: #3dd6c8;
+  animation: glitch-bot 9s ease-in-out infinite 0.45s;
+}
+
+@keyframes glitch-top {
+  0%, 87%, 100% { opacity: 0; transform: none; clip-path: none; }
+  88% {
+    opacity: 0.88;
+    clip-path: polygon(0 8%, 100% 8%, 100% 36%, 0 36%);
+    transform: translate(-3px, -2px);
+  }
+  90% {
+    opacity: 0.88;
+    clip-path: polygon(0 56%, 100% 56%, 100% 72%, 0 72%);
+    transform: translate(3px, 1px);
+  }
+  91% { opacity: 0; }
+}
+
+@keyframes glitch-bot {
+  0%, 88%, 100% { opacity: 0; transform: none; clip-path: none; }
+  89% {
+    opacity: 0.7;
+    clip-path: polygon(0 60%, 100% 60%, 100% 82%, 0 82%);
+    transform: translate(4px, 2px);
+  }
+  91% {
+    opacity: 0.7;
+    clip-path: polygon(0 26%, 100% 26%, 100% 44%, 0 44%);
+    transform: translate(-3px, -1px);
+  }
+  92% { opacity: 0; }
+}
+
+/* ── Cursor blink ── */
+.cursor {
+  color: var(--accent);
+  animation: blink 1s step-end infinite;
+  transition: color 0.3s ease;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ── CTA Buttons ── */
 .btn-primary {
   font-family: var(--font-mono);
   font-size: 0.75rem;
@@ -65,11 +141,31 @@
   color: #111;
   border: none;
   cursor: pointer;
-  transition: opacity 0.2s ease, background-color 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  transition: opacity 0.2s ease, background-color 0.3s ease, transform 0.15s ease;
+}
+
+.btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -120%;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.24), transparent);
+  animation: btn-shine 4.5s ease-in-out 1.8s infinite;
+  pointer-events: none;
+}
+
+@keyframes btn-shine {
+  0%, 50%  { left: -120%; }
+  72%      { left: 160%;  }
+  100%     { left: 160%;  }
 }
 
 .btn-primary:hover {
-  opacity: 0.85;
+  opacity: 0.88;
+  transform: translateY(-2px);
 }
 
 .btn-secondary {
@@ -82,10 +178,58 @@
   border: 1px solid var(--accent);
   text-decoration: none;
   display: inline-block;
-  transition: background 0.2s ease, color 0.2s ease, border-color 0.3s ease;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.3s ease, transform 0.15s ease;
 }
 
 .btn-secondary:hover {
   background: var(--accent);
   color: #111;
+  transform: translateY(-2px);
+}
+
+/* ── Scroll hint ── */
+.hero-scroll-hint {
+  position: absolute;
+  bottom: 2.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  animation: fadeSlideUp 0.6s ease 1.3s forwards;
+  z-index: 1;
+  padding: 0;
+}
+
+.scroll-label {
+  font-family: var(--font-mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.38em;
+  color: var(--accent);
+  opacity: 0.4;
+  transition: color 0.3s ease, opacity 0.2s ease;
+}
+
+.hero-scroll-hint:hover .scroll-label { opacity: 0.85; }
+
+.scroll-line {
+  width: 1px;
+  height: 38px;
+  background: linear-gradient(to bottom, var(--accent) 0%, transparent 100%);
+  animation: scroll-drop 2.2s ease-in-out infinite;
+  transform-origin: top;
+  transition: background 0.3s ease;
+}
+
+@keyframes scroll-drop {
+  0%   { transform: scaleY(0); transform-origin: top;    opacity: 0; }
+  30%  { transform: scaleY(1); transform-origin: top;    opacity: 1; }
+  31%  { transform: scaleY(1); transform-origin: bottom; opacity: 1; }
+  80%  { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
+  100% { transform: scaleY(0); transform-origin: top;    opacity: 0; }
 }

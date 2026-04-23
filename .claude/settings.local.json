@@ -14,7 +14,12 @@
       "Bash(xargs kill *)",
       "Bash(npx vitest *)",
       "Bash(git -C \"C:\\\\Users\\\\Jonathan Navarro\\\\Desktop\\\\Jonathan N Portfolio\" log --oneline -15)",
-      "mcp__Claude_Preview__preview_start"
+      "mcp__Claude_Preview__preview_start",
+      "Bash(npx skills *)",
+      "Bash(wait)",
+      "Skill(stitch-design)",
+      "Skill(stitch-design:*)",
+      "PowerShell(if \\(-not $?\\) { \"File is empty or new\" })"
     ]
   }
 }

@@ -31,7 +31,7 @@ h1, h2, h3, label, .mono {
 
 .section-label {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 1rem;
   letter-spacing: 0.2em;
   color: var(--accent);
   margin-bottom: 2.5rem;
@@ -45,10 +45,10 @@ a {
 
 .card-tag {
   font-family: var(--font-mono);
-  font-size: 0.62rem;
-  padding: 0.2rem 0.5rem;
-  border: 1px solid #1e1e1e;
-  color: #333;
+  font-size: 0.7rem;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid #2e2e2e;
+  color: #555;
   letter-spacing: 0.05em;
   transition: border-color 0.4s ease, color 0.4s ease;
 }

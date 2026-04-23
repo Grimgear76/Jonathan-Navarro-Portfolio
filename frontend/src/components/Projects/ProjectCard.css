@@ -1,71 +1,164 @@
 .project-card {
-  border: 1px solid #1a1a1a;
-  padding: 1.5rem;
+  border: 1px solid #252525;
+  padding: 2rem;
   cursor: pointer;
-  background: #090909;
-  transition: border-color 0.4s ease, box-shadow 0.4s ease, transform 0.2s ease;
+  background: #0d0d0d;
+  transition: border-color 0.4s ease, box-shadow 0.5s ease, transform 0.22s ease;
   position: relative;
   z-index: 1;
+  overflow: hidden;
 }
 
+/* ── Corner brackets (top-left + bottom-right) ── */
+.project-card::before,
+.project-card::after {
+  content: '';
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  opacity: 0;
+  transition: opacity 0.3s ease, border-color 0.4s ease, width 0.3s ease, height 0.3s ease;
+  pointer-events: none;
+}
+
+.project-card::before {
+  top: 7px; left: 7px;
+  border-top:  1px solid #666;
+  border-left: 1px solid #666;
+}
+
+.project-card::after {
+  bottom: 7px; right: 7px;
+  border-bottom: 1px solid #666;
+  border-right:  1px solid #666;
+}
+
+/* ── Hover ── */
 .project-card:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
+  border-color: #383838;
+  box-shadow: 0 10px 36px rgba(0,0,0,0.5);
 }
 
+.project-card:hover::before,
+.project-card:hover::after {
+  opacity: 1;
+}
+
+/* ── Unlocked ── */
 .project-card.unlocked {
-  background: #0c0c0c;
+  background: #0e0e0e;
+  box-shadow:
+    0 0 28px color-mix(in srgb, var(--project-accent) 16%, transparent),
+    inset 0 0 50px color-mix(in srgb, var(--project-accent) 4%, transparent);
 }
 
+.project-card.unlocked:hover {
+  transform: translateY(-5px);
+  box-shadow:
+    0 10px 42px color-mix(in srgb, var(--project-accent) 26%, transparent),
+    inset 0 0 50px color-mix(in srgb, var(--project-accent) 6%, transparent);
+}
+
+.project-card.unlocked::before {
+  opacity: 1;
+  border-color: var(--project-accent);
+  width: 16px; height: 16px;
+}
+
+.project-card.unlocked::after {
+  opacity: 1;
+  border-color: var(--project-accent);
+  width: 16px; height: 16px;
+}
+
+/* ── Unlock ripple burst ── */
+.card-ripple {
+  position: absolute;
+  inset: -1px;
+  border: 2px solid var(--project-accent, #e8a838);
+  pointer-events: none;
+  animation: card-ripple 0.65s cubic-bezier(0.2, 0.8, 0.4, 1) forwards;
+  z-index: 10;
+}
+
+@keyframes card-ripple {
+  from { opacity: 1; transform: scale(1); }
+  to   { opacity: 0; transform: scale(1.07); }
+}
+
+/* ── Locked: title breathe hint ── */
+.project-card:not(.unlocked) .card-title {
+  animation: title-breathe 3.8s ease-in-out infinite;
+}
+
+@keyframes title-breathe {
+  0%, 100% { color: #707070; }
+  50%       { color: #a8a8a8; }
+}
+
+/* ── Header ── */
 .card-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .card-title {
   font-family: var(--font-mono);
-  font-size: 0.9rem;
-  color: #3a3a3a;
-  transition: color 0.4s ease;
+  font-size: 1.3rem;
+  color: #999;
+  transition: color 0.45s ease;
   flex: 1;
   margin-right: 0.5rem;
+  line-height: 1.3;
+}
+
+/* Stop breathe once unlocked */
+.project-card.unlocked .card-title {
+  animation: none;
 }
 
 .card-arrow {
   background: none;
   border: none;
-  color: #2a2a2a;
-  font-size: 1rem;
+  color: #555;
+  font-size: 1.2rem;
   cursor: pointer;
   padding: 0;
   line-height: 1;
-  transition: color 0.4s ease;
+  transition: color 0.4s ease, transform 0.2s ease;
   flex-shrink: 0;
 }
 
 .card-arrow:hover {
-  opacity: 0.7;
+  color: #aaa;
+  transform: translateX(4px);
 }
 
 .project-card.unlocked .card-arrow {
   color: var(--project-accent);
 }
 
+.project-card.unlocked .card-arrow:hover {
+  transform: translateX(5px);
+}
+
 .card-description {
-  font-size: 0.8rem;
-  color: #2e2e2e;
-  line-height: 1.6;
-  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: #606060;
+  line-height: 1.7;
+  margin-bottom: 1.25rem;
   transition: color 0.4s ease;
 }
 
 .project-card.unlocked .card-description {
-  color: #777;
+  color: #888;
 }
 
 .card-tags {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.5rem;
 }

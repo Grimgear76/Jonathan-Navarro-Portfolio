@@ -17,7 +17,7 @@ export default function ProjectCard({ project }) {
   }
 
   const unlockedStyles = isUnlocked
-    ? { '--project-accent': project.accentColor, borderColor: project.accentColor, boxShadow: `0 0 24px ${project.accentColor}22` }
+    ? { '--project-accent': project.accentColor, borderColor: project.accentColor }
     : {}
 
   return (
@@ -29,8 +29,13 @@ export default function ProjectCard({ project }) {
       tabIndex={0}
       onKeyDown={e => e.key === 'Enter' && handleCardClick()}
     >
+      {isUnlocked && <div className="card-ripple" />}
+
       <div className="card-header">
-        <h3 className="card-title" style={isUnlocked ? { color: project.accentColor } : {}}>
+        <h3
+          className="card-title"
+          style={isUnlocked ? { color: project.accentColor } : {}}
+        >
           {project.title}
         </h3>
         <button
@@ -41,13 +46,18 @@ export default function ProjectCard({ project }) {
           →
         </button>
       </div>
+
       <p className="card-description">{project.description}</p>
+
       <div className="card-tags">
         {project.technologies.map(tech => (
           <span
             key={tech}
             className="card-tag"
-            style={isUnlocked ? { borderColor: `${project.accentColor}55`, color: project.accentColor } : {}}
+            style={isUnlocked
+              ? { borderColor: `${project.accentColor}55`, color: project.accentColor }
+              : {}
+            }
           >
             {tech}
           </span>

@@ -99,3 +99,73 @@ Resumed after token limit. Implemented all remaining UI components directly (no 
 Created `README.md` at repo root with: project overview, feature list, full tech stack table, directory structure, local setup instructions (`npm install` + `npm run dev`), test run instructions, color system reference tables, and roadmap. Committed and pushed to main (`747674a`).
 
 **Next session:** Deployment — Vercel for frontend, Railway/Render for backend API.
+
+## 2026-04-22 — UI Polish & Interactive Skills Revamp
+
+Major visual improvements session across the entire portfolio.
+
+**Skills installed:** `motion` (npm), plus five Stitch skills globally (`stitch-design`, `stitch-loop`, `design-md`, `enhance-prompt`, `react:components`).
+
+**Project cards (visibility):** Title bumped to 1.1rem, color lifted from near-invisible `#3a3a3a` to `#999`. Description from `#2e2e2e` to `#666`. Tags border and color made visible. Card border and padding increased.
+
+**Project detail pages — overhaul:** Hero banner with accent color gradient and glow. Large accent-colored title with text shadow. Award badge auto-shows for hackathon winners. Left-border accent stripe on each section. DEMO & GALLERY placeholder with 4 dashed 16:9 slots ready for future media.
+
+**Per-project color theming:** Each project detail page gets its own tinted dark background at 22% mix (amber-black, teal-black, violet-black, etc.) plus a 12% corner radial glow. All elements use the project's accent color.
+
+**ThemeEvolution experiment (scrapped):** Explored dark-to-retro-grey background shift as projects unlock. Rejected in favor of per-project page theming.
+
+**Skills section — complete interactive revamp:** Replaced static skill bars with 4 animated domain cards in a 2×2 grid:
+- **Machine Learning:** Canvas neural network, clicks 0–5 increase speed + expand colors amber → rainbow. Badge shows IDLE through CONVERGED.
+- **Local AI / LLMs:** Model showcase cycling through LLaMA 3, Mistral, Phi-3, Gemma 2, DeepSeek-R1, Qwen 2.5 with icon, params, context, and tags. Fade-in on cycle.
+- **Web Development:** Growing architecture diagram — each click fades in next node (USER → REACT → EXPRESS → MONGO → JWT → SOCKET), each with its own color. Animated packets travel between nodes.
+- **Game Development:** Pixel knight vs goblin. Clicks cycle ⚔ SWORD (glowing blade arc with swing trail), 🔥 FIREBALL (orange projectile with particles), ⚡ ARCANE (purple lightning bolt). HP bars, damage flash, phase state machine.
+
+**Section sizing:** All section paddings `7rem` → `5rem`. Section labels `0.75rem` → `1rem`. About bio `0.95rem` → `1.1rem`. Project card title `1.1rem` → `1.3rem`, description `0.9rem` → `1rem`. Contact and skills text scaled up throughout.
+
+**Next session:** Add real demo videos/screenshots to project detail pages; deploy to Vercel.
+
+## 2026-04-23 — Visual Polish, Animations & Global Particle System
+
+Major UI enhancement session. All changes are draft (not committed).
+
+**Project detail page color variation:**
+- Added `--hero-bg` CSS variable (richer dark tint at 30% mix vs body at 18%) so the hero banner and body have distinct background tones within the same hue family
+- Added a second ambient radial glow at bottom-left (`::after` on `.project-detail`) to complement the existing top-right glow — creates depth without leaving the accent color
+- Section left-bar changed from solid to `linear-gradient(to bottom, accent, transparent)` for a more refined look
+
+**Web Development skills card — blur fix:**
+- Canvas buffer was 380px wide but CSS stretched it to full card width, causing blurriness
+- Fixed by reading actual rendered size via `getBoundingClientRect()` + `devicePixelRatio` scaling at mount
+- `getNodePos()` updated to use proportional coordinates (`W * 0.07`, `W * 0.30`, etc.) so nodes lay out correctly at any canvas width
+- Result: crisp text and node boxes at all screen sizes
+
+**Hero section revamp:**
+- Added particle field canvas (55 nodes with connecting lines, floating slowly)
+- Glitch text animation on "Jonathan Navarro" — fires every ~9s, two-layer offset with accent + teal ghost clips
+- Staggered entrance animations: eyebrow → name → subtitle → buttons fade/slide up sequentially
+- Animated SCROLL indicator at bottom: label + animated line that grows then retracts
+- Button improvements: `translateY(-2px)` lift on hover, shimmer sweep animation on primary CTA
+
+**Project cards:**
+- Corner bracket accents (`::before` top-left, `::after` bottom-right) appear on hover, light up in project accent when unlocked
+- Unlock ripple: expanding border overlay fades out on first unlock
+- Locked card title breathes between `#707070` and `#a8a8a8` hinting interactivity
+- Arrow `→` slides right 4–5px on hover
+- Stronger inner + outer glow box-shadow on unlocked state
+
+**Skills cards:**
+- IntersectionObserver added to Skills section — fires once when section enters viewport
+- All 4 domain cards stagger in sequentially (55ms apart) with fade + slide-up
+- Hover now adds accent-colored box-shadow glow per domain card
+
+**Global particle background (biggest change):**
+- Extracted particle system to new `ParticleBackground.jsx` component rendered at App root
+- Canvas is `position: fixed` — particles are visible on every section as you scroll, not just hero
+- Mouse repulsion: particles within 115px radius are pushed away with smooth damping
+- Particles wrap around viewport edges instead of bouncing (seamless across full page height)
+- Color lerp system: each particle has a stable `slot` index, target color = `palette[slot % palette.length]`
+  - 0 unlocked → all particles track `--accent` (amber → teal → violet with scroll zones)
+  - 1 unlock → all particles slowly lerp to that project's color (~3s transition)
+  - 2–5 unlocks → particles split across unlocked colors, interleaved by slot
+  - All 6 unlocked → full rainbow: amber · teal · blue · violet · pink · orange distributed across 70 nodes
+- DPR-aware canvas sizing for crisp rendering on retina displays

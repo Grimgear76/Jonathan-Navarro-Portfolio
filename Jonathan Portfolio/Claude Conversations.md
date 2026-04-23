@@ -258,3 +258,36 @@ Full brainstorming + planning session to revamp the Game Development skill card 
 - Canvas: 380×150px, unchanged
 
 **Next session:** Execute implementation plan (TBD). Will write `writing-plans` skill output next session before touching code.
+
+## 2026-04-23 — JRPG Battle Screen Implementation
+
+Design spec approved previous session. This session: write implementation plan, then execute all 3 tasks end-to-end.
+
+**Implementation plan created:**
+- `docs/superpowers/plans/2026-04-23-jrpg-battle-screen.md` — comprehensive 3-task plan with actual code for each step (no placeholders)
+  - Task 1: Remove dead code (ATTACK_LABELS, PHASE_DUR, makeLightning) + static canvas scaffold
+  - Task 2: Full animation loop with all 4 commands, floats, screen shake, sprite flash, win/reset
+  - Task 3: Update DOMAINS[3].hint to `[ CLICK TO COMMAND ]`
+
+**Executed plan (inline with 2-checkpoint structure):**
+- Combined Tasks 1 + 2 into single `PixelBattleCanvas` replacement (both were the full implementation)
+- Task 3: Updated hint string
+- Checkpoint 1: Verified in preview — HMR hot-update successful, no console errors, snapshot confirms UI rendering correct, click register works
+- Checkpoint 2: Committed with `fe3c0a1`
+
+**Implementation details:**
+- State machine: `idle | player | enemy | result | reset`
+- All 4 commands fully interactive: ATTACK (sword swing + counter), MAGIC (lightning + counter), ITEM (potion heal, no counter), RUN (failed escape)
+- Floating numbers: 40-frame drift + fade, red damage/green heal
+- Screen shake: 3px random offset on hits
+- Sprite flashes: goblin orange/purple, knight blue, crit pulse red
+- Idle state: sprite bob ±1px, cursor blink every 30 frames
+- Win/reset: VICTORY/DEFEATED overlay 90 frames → auto-reset HP to 100
+
+**Committed:** `fe3c0a1` — feat(skills): JRPG turn-based battle screen
+
+**Verified in browser:**
+- HMR updates cleanly
+- No console errors
+- Game card renders with new hint visible
+- Ready to test full mechanics in next interaction

@@ -235,3 +235,26 @@ Focused quality-of-life improvements session with text contrast fixes and partic
 - **Persistent glow** — once clicked, `.domain-card--on` class locks the border to accent color + holds a `0 0 28px` glow permanently (replaces idle pulse)
 
 **Next steps:** Deploy to Vercel + Railway, add real demo media to project pages.
+
+## 2026-04-23 — Game Dev Skill Card Revamp: JRPG Battle Screen (Design Phase)
+
+Full brainstorming + planning session to revamp the Game Development skill card from a passive pixel battle to an interactive JRPG-style turn-based battle showcase.
+
+**Design approved:**
+- Canvas layout: top 65% = battle scene (knight vs goblin, HP bars), bottom 35% = JRPG command box with 4 commands (`ATTACK / MAGIC / ITEM / RUN`)
+- Each click cycles through commands and executes: sword swing with damage, arcane magic flash, potion heal, or failed escape
+- Enemy counter-attacks after each player action (reduced HP, screen shake, damage float)
+- Floating damage numbers (red/-25, green/+20), screen shake on hit, sprite color flash
+- Win/reset loop: when either HP hits 0, a victory/defeat message flashes, HP resets after 1.5s, cursor returns to ATTACK
+- Showcase-style (no stakes, loops infinitely, just looks cool when clicked)
+
+**Artifacts produced:**
+- `docs/superpowers/specs/2026-04-23-game-skill-card-revamp-design.md` — approved design spec with full state machine, command table, visual effects breakdown, and file changes
+
+**Reuse from existing code:**
+- Keep all pixel art sprites (KP, KNIGHT_IDLE/ATK, GP, GOBLIN_IDLE/HIT)
+- Keep `drawSprite()` helper
+- Replace `PHASE_DUR`, `ATTACK_LABELS`, and projectile system with new state machine
+- Canvas: 380×150px, unchanged
+
+**Next session:** Execute implementation plan (TBD). Will write `writing-plans` skill output next session before touching code.

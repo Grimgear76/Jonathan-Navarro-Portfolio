@@ -291,3 +291,58 @@ Design spec approved previous session. This session: write implementation plan, 
 - No console errors
 - Game card renders with new hint visible
 - Ready to test full mechanics in next interaction
+
+## 2026-04-23 — Game Card Interactive Redesign: Hover Menus & Full Readability Pass
+
+Complete interactive redesign of the game development skill card + comprehensive readability improvements across all skill cards.
+
+**Game card UX redesign (major):**
+- Replaced auto-timer submenu system with persistent two-row hover interface
+  - **Row 1 (main commands):** hover any of ATTACK/MAGIC/ITEM/RUN → highlights + shows full text (9–10px bold)
+  - **Row 2 (sub-options):** appears only when a main command (not RUN) is hovered → reveals 3 variants (SWORD/AXE/BOW, FIREBALL/ARCANE/ICE, SM.POT/POTION/FOOD)
+  - **Click interaction:** click any sub-option button → executes immediately, no timer wait
+  - **Free replanning:** after each round completes, player can freely choose any new action (no forced command sequence)
+- Canvas mouse events: `mousemove` + `mouseleave` for hover detection (with DPR-aware coordinate mapping), `click` for action execute
+- State refactor: replaced `commandIdx`/`subIdx` auto-increment with `selectedMain`/`selectedSub` + explicit `hoverMain`/`hoverSub` (visual-only, no game effect)
+
+**Knight sprite complete redesign:**
+- **Aesthetic change:** closed full-face helmet (like a knight) instead of open-faced
+- **Armor details:** gold crest on helm top, glowing blue eye slit (color `#7ab8ff`), polished silver pauldrons + gorget + breastplate + tassets + greaves + sabatons
+- **Materials:** steel (#8a9baa), polished silver (#c5d5de), dark visor (#1a2838), gold trim (#e8a838), shadow steel (#4a6070)
+- **Attack frame:** right arm gauntlet glows blue, sword-ready lean
+- **Result:** knight looks like an armored warrior, not a peasant with a helmet
+
+**Skill card sizing (all 4 cards):**
+- Container max-width: 960px → 1140px (+10% wider, more breathing room)
+- Grid gap: 1.5rem → 2rem
+- All canvas heights: 150px → 190px
+- Domain card info padding: 1.25rem/1.5rem → 1.5rem/1.75rem
+- Domain label: 0.92rem → 1rem, letter-spacing 0.18em → 0.2em
+- Domain description: 0.95rem → 1rem, color #aaa → #bbb
+- Tech chips: 0.63rem → 0.72rem, padding 0.2/0.55rem → 0.25/0.65rem, opacity 0.75 → 0.8
+- Click hint: 0.58rem → 0.65rem
+- LLM showcase height: 150px → 190px, gap 1rem → 1.25rem, padding 0 1.25rem → 0 1.5rem
+- LLM icon: 56px → 66px, font-size 2.2rem → 2.6rem
+- LLM model name: 1rem → 1.1rem, meta 0.62rem → 0.72rem
+- LLM tags: 0.58rem → 0.67rem, counter 0.58rem → 0.67rem
+
+**In-game text brightness (canvas):**
+- Command box background: #0d0d15 → #0c0e18 (very slightly lighter for better contrast)
+- Command box stroke: C (100%) → C+'cc' (80%, softer but still visible)
+- Unselected main commands: C+'55' (33% opacity) → C+'aa' (67% opacity) — 2× brighter
+- Unselected sub-options: C+'66' (40%) → C+'cc' (80%) — doubled opacity
+- Initial hint text: C+'33' (20%) → C+'99' (60%)
+- RUN escape hint: C+'66' (40%) → C+'cc' (80%)
+- Divider line: C+'25' (15%) → C+'55' (33%)
+- Active action label (during combat): C+'aa' (67%) → C (100% full brightness)
+- Enemy counter text: #ff6666cc (198 red, muted) → #ff7777 (solid bright red)
+- Ground line: C+'40' (25%) → C+'80' (50%)
+- HP bar background: #111 (near-black) → #1e2030 (dark blue, visible), height 5px → 6px
+- HP bar label: 6px → 8px bold
+- Floating damage text: 8px → 10px bold
+- All text now has significantly better contrast against dark backgrounds
+
+**Next steps:** Deploy to Vercel + Railway. Consider adding real demo videos to project detail pages.
+
+**Committed:** `d8b0bce` — feat(skills): game dev card interactive hover menus + full readability overhaul
+

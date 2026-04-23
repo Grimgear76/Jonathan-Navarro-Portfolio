@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { projects } from '../data/projects'
 import './ProjectDetail.css'
@@ -37,6 +38,8 @@ export default function ProjectDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const project = projects.find(p => p.id === id)
+
+  useEffect(() => { window.scrollTo(0, 0) }, [])
 
   if (!project) {
     return (

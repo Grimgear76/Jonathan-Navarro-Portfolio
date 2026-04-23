@@ -1,9 +1,8 @@
 .project-detail {
   min-height: 100vh;
-  background-color: var(--page-bg, #0f0f0f);
+  background-color: transparent;
   position: relative;
   z-index: 1;
-  transition: background-color 0.3s ease;
 }
 
 /* ── Radial glow — top-right ── */
@@ -39,7 +38,7 @@
   position: relative;
   padding: 8rem 2rem 4rem;
   z-index: 1;
-  background: var(--hero-bg, #111);
+  background: transparent;
 }
 
 .detail-hero::after {
@@ -160,7 +159,7 @@
 }
 
 .detail-section p {
-  color: #999;
+  color: #c0c0c0;
   line-height: 1.9;
   font-size: 1.05rem;
 }
@@ -193,7 +192,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  color: #333;
+  color: #666;
   font-family: var(--font-mono);
   font-size: 0.65rem;
   letter-spacing: 0.1em;

@@ -169,3 +169,69 @@ Major UI enhancement session. All changes are draft (not committed).
   - 2–5 unlocks → particles split across unlocked colors, interleaved by slot
   - All 6 unlocked → full rainbow: amber · teal · blue · violet · pink · orange distributed across 70 nodes
 - DPR-aware canvas sizing for crisp rendering on retina displays
+
+## 2026-04-23 — Particle Visibility Boost & Bug Fixes
+
+**Particle background — made more noticeable:**
+- Node count: 70 → 110
+- Connection distance: 130 → 160 (more edges drawn between nodes)
+- Dot radius: 0.4–1.5px → 1.2–3.4px (significantly larger nodes)
+- Dot opacity: 0.45 → 0.85
+- Line alpha multiplier: 0.13 → 0.38 (nearly 3× brighter connections)
+- Line width: 0.6 → 1.0px
+- Mouse repulsion radius: 115 → 130
+
+**Project detail page — background transparency fix:**
+- Removed opaque `background-color` from `.project-detail` (was hiding the canvas)
+- Removed solid background from `.detail-hero` — body background + canvas now show through on all project pages
+
+**Bug fix — scroll to top on project detail navigation:**
+- Added `useEffect(() => window.scrollTo(0, 0), [])` to `ProjectDetail.jsx` — page now loads at top instead of bottom
+
+**Bug fix — arrow click not unlocking project color:**
+- `handleExpand` in `ProjectCard.jsx` called `e.stopPropagation()` which blocked the card's `handleCardClick` (the unlock trigger)
+- Fixed by calling `unlockProject(project.id)` directly inside `handleExpand` before navigating
+
+## 2026-04-23 — Readability & Interactive Polish (Final)
+
+Focused quality-of-life improvements session with text contrast fixes and particle/skills interaction invitations.
+
+**Text contrast overhaul:**
+- Global `--text-muted` bumped `#888888` → `#aaaaaa` (affects hero subtitle, about bio, terminal output, etc.)
+- `.card-tag` color `#555` → `#999` (project card tech tags now visible)
+- `.domain-desc` (skills cards) `#666` → `#aaa` (stronger contrast on skill descriptions)
+- `.detail-section p` (project detail body) `#999` → `#c0c0c0` (nearly white on black)
+- `.detail-media-slot` label `#333` → `#666` (was near-invisible)
+- `.card-description` (locked) `#606060` → `#999`, (unlocked) `#888` → `#bbb`
+- `.card-arrow` icon `#555` → `#888`
+- `.title-breathe` animation range expanded `#707070–#a8a8a8` → `#999–#c8c8c8` (locked card titles more readable)
+
+**Particle background — autonomous motion:**
+- Added `DRIFT_FORCE 0.007` — particles wander via time-based sine waves (`phaseSpeed` + `phase` per particle) even without mouse input
+- Each particle drifts at unique rhythm (0.18–0.40 rad/s) creating organic, non-repetitive motion
+- Site now feels "alive" when idle
+
+**Slowed particle animation:**
+- Initial velocity `±0.28` → `±0.18` (gentler baseline drift)
+- `MAX_SPEED` `1.5` → `1.0` (lower speed cap)
+- Damping `0.97` → `0.975` (particles slow down slightly faster after mouse repulsion)
+
+**Stars at full unlock:**
+- When all 6 projects unlocked: tiny stars spawn gradually (~one every 12 frames, up to 65 total)
+- Stars: 0.5–1.2px radius (much smaller than 1.2–3.4px nodes), fade in over ~15s
+- Opacity caps at `0.75` (subtle, non-intrusive)
+- Use same color palette as nodes, same wander system (but weaker drift force `0.003`)
+- No connection lines — pure ambient sparkle
+- Drawn last (on top but small enough not to shadow main network)
+
+**Skills cards — invitations to interact:**
+- Each domain card now has a domain-specific hint text below skill chips:
+  - ML: `[ CLICK TO TRAIN ]`
+  - LLMs: `[ CLICK TO CYCLE MODEL ]`
+  - Web: `[ CLICK TO EXPAND STACK ]`
+  - Game: `[ CLICK TO CHANGE ATTACK ]`
+- **Idle pulse** — unclicked cards breathe with a gentle `2.4s` glow animation (border + box-shadow in card's accent color), telegraphing interactivity
+- Hint text fades in at `0.5` opacity, brightens to `0.9` on hover, smoothly collapses after first click
+- **Persistent glow** — once clicked, `.domain-card--on` class locks the border to accent color + holds a `0 0 28px` glow permanently (replaces idle pulse)
+
+**Next steps:** Deploy to Vercel + Railway, add real demo media to project pages.

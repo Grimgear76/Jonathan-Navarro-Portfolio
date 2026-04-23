@@ -13,6 +13,7 @@ export default function ProjectCard({ project }) {
 
   function handleExpand(e) {
     e.stopPropagation()
+    unlockProject(project.id)
     navigate(`/projects/${project.id}`)
   }
 

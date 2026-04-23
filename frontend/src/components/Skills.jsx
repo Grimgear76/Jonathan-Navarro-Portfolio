@@ -748,19 +748,20 @@ function PixelBattleCanvas({ clicks }) {
 // DOMAIN CARD + MAIN
 // ─────────────────────────────────────────────────────────────
 const DOMAINS = [
-  { id: 'ml',   accent: ACCENT.ml,   label: 'Machine Learning',  desc: 'RL agents, custom Gymnasium environments, PPO training loops.',         skills: ['Python', 'Stable-Baselines3', 'Gymnasium', 'PPO / RL'], Anim: NeuralNetCanvas },
-  { id: 'llm',  accent: ACCENT.llm,  label: 'Local AI / LLMs',   desc: 'On-device inference, prompt engineering, Gemini API integration.',      skills: ['Ollama', 'Gemini API', 'Node.js', 'Prompt Eng.'],       Anim: LLMModelShowcase },
-  { id: 'web',  accent: ACCENT.web,  label: 'Web Development',    desc: 'Full-stack MERN apps, REST APIs, real-time Socket.io features.',        skills: ['React', 'Node.js / Express', 'MongoDB', 'Vite'],        Anim: WebFlowCanvas },
-  { id: 'game', accent: ACCENT.game, label: 'Game Development',   desc: 'Unity systems, C# scripting, enemy AI state machines, combat feel.',   skills: ['Unity', 'C#', 'Figma', 'Game Design'],                  Anim: PixelBattleCanvas },
+  { id: 'ml',   accent: ACCENT.ml,   label: 'Machine Learning',  desc: 'RL agents, custom Gymnasium environments, PPO training loops.',         skills: ['Python', 'Stable-Baselines3', 'Gymnasium', 'PPO / RL'], Anim: NeuralNetCanvas,    hint: '[ CLICK TO TRAIN ]' },
+  { id: 'llm',  accent: ACCENT.llm,  label: 'Local AI / LLMs',   desc: 'On-device inference, prompt engineering, Gemini API integration.',      skills: ['Ollama', 'Gemini API', 'Node.js', 'Prompt Eng.'],       Anim: LLMModelShowcase,   hint: '[ CLICK TO CYCLE MODEL ]' },
+  { id: 'web',  accent: ACCENT.web,  label: 'Web Development',    desc: 'Full-stack MERN apps, REST APIs, real-time Socket.io features.',        skills: ['React', 'Node.js / Express', 'MongoDB', 'Vite'],        Anim: WebFlowCanvas,      hint: '[ CLICK TO EXPAND STACK ]' },
+  { id: 'game', accent: ACCENT.game, label: 'Game Development',   desc: 'Unity systems, C# scripting, enemy AI state machines, combat feel.',   skills: ['Unity', 'C#', 'Figma', 'Game Design'],                  Anim: PixelBattleCanvas,  hint: '[ CLICK TO CHANGE ATTACK ]' },
 ]
 
 function DomainCard({ domain }) {
   const [clicks, setClicks] = useState(0)
   const { Anim } = domain
+  const idle = clicks === 0
 
   return (
     <div
-      className="domain-card"
+      className={`domain-card${idle ? ' domain-card--idle' : ' domain-card--on'}`}
       style={{ '--da': domain.accent }}
       onClick={() => setClicks(c => c + 1)}
       role="button"
@@ -778,6 +779,9 @@ function DomainCard({ domain }) {
             <span key={s} className="domain-chip">{s}</span>
           ))}
         </div>
+        <span className={`domain-click-hint${idle ? '' : ' domain-click-hint--hidden'}`}>
+          {domain.hint}
+        </span>
       </div>
     </div>
   )

@@ -2,7 +2,7 @@
   --bg: #111111;
   --accent: #e8a838;
   --text: #e0e0e0;
-  --text-muted: #888888;
+  --text-muted: #aaaaaa;
   --font-mono: 'Courier New', Courier, monospace;
 }
 
@@ -48,7 +48,7 @@ a {
   font-size: 0.7rem;
   padding: 0.25rem 0.6rem;
   border: 1px solid #2e2e2e;
-  color: #555;
+  color: #999;
   letter-spacing: 0.05em;
   transition: border-color 0.4s ease, color 0.4s ease;
 }

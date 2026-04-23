@@ -102,10 +102,12 @@ export default function ParticleBackground() {
         .getPropertyValue('--accent').trim() || '#e8a838'
       const unlocked = paletteRef.current
       const palette  = unlocked.length > 0 ? unlocked : [baseHex]
-      const allUnlocked = unlockedCountRef.current >= projects.length
+      const progress = unlockedCountRef.current / projects.length
+      const starFraction = progress < 0.25 ? 0 : (progress - 0.25) / 0.75
+      const currentMaxStars = Math.floor(starFraction * MAX_STARS)
 
-      // ── Spawn stars gradually at full unlock ─────────────
-      if (allUnlocked && stars.length < MAX_STARS && frameCount % STAR_INTERVAL === 0) {
+      // ── Spawn stars gradually from 25% unlock onward ─────
+      if (currentMaxStars > 0 && stars.length < currentMaxStars && frameCount % STAR_INTERVAL === 0) {
         spawnStar(palette)
       }
 

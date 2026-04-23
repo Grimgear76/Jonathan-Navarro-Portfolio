@@ -5,7 +5,7 @@
 }
 
 .skills-container {
-  max-width: 960px;
+  max-width: 1140px;
   margin: 0 auto;
 }
 
@@ -13,7 +13,7 @@
 .domains-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
+  gap: 2rem;
 }
 
 /* ── Card ── */
@@ -64,7 +64,7 @@
 .domain-canvas {
   display: block;
   width: 100%;
-  height: 150px;
+  height: 190px;
 }
 
 .pixel-canvas {
@@ -74,39 +74,39 @@
 
 /* ── Info ── */
 .domain-info {
-  padding: 1.25rem 1.5rem 1rem;
+  padding: 1.5rem 1.75rem 1.25rem;
 }
 
 .domain-label {
   font-family: var(--font-mono);
-  font-size: 0.92rem;
-  letter-spacing: 0.18em;
+  font-size: 1rem;
+  letter-spacing: 0.2em;
   color: var(--da);
   text-transform: uppercase;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.7rem;
 }
 
 .domain-desc {
-  font-size: 0.95rem;
-  color: #aaa;
-  line-height: 1.7;
-  margin-bottom: 1rem;
+  font-size: 1rem;
+  color: #bbb;
+  line-height: 1.75;
+  margin-bottom: 1.1rem;
 }
 
 .domain-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.4rem;
+  gap: 0.5rem;
 }
 
 .domain-chip {
   font-family: var(--font-mono);
-  font-size: 0.63rem;
-  padding: 0.2rem 0.55rem;
-  border: 1px solid color-mix(in srgb, var(--da) 35%, transparent);
+  font-size: 0.72rem;
+  padding: 0.25rem 0.65rem;
+  border: 1px solid color-mix(in srgb, var(--da) 40%, transparent);
   color: var(--da);
-  letter-spacing: 0.05em;
-  opacity: 0.75;
+  letter-spacing: 0.06em;
+  opacity: 0.8;
   transition: opacity 0.2s;
 }
 
@@ -119,7 +119,7 @@
 .domain-click-hint {
   display: block;
   font-family: var(--font-mono);
-  font-size: 0.58rem;
+  font-size: 0.65rem;
   letter-spacing: 0.12em;
   color: var(--da);
   opacity: 0.5;
@@ -165,11 +165,11 @@
 /* ── LLM Model Showcase ── */
 .llm-showcase {
   width: 100%;
-  height: 150px;
+  height: 190px;
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0 1.25rem;
+  gap: 1.25rem;
+  padding: 0 1.5rem;
   background: #050505;
   animation: llm-fade 0.25s ease;
 }
@@ -180,9 +180,9 @@
 }
 
 .llm-icon {
-  font-size: 2.2rem;
-  width: 56px;
-  height: 56px;
+  font-size: 2.6rem;
+  width: 66px;
+  height: 66px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -198,17 +198,17 @@
 
 .llm-model-name {
   font-family: var(--font-mono);
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 700;
   letter-spacing: 0.05em;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.3rem;
 }
 
 .llm-model-meta {
   font-family: var(--font-mono);
-  font-size: 0.62rem;
+  font-size: 0.72rem;
   letter-spacing: 0.05em;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.55rem;
 }
 
 .llm-tags {
@@ -220,15 +220,15 @@
 
 .llm-tag {
   font-family: var(--font-mono);
-  font-size: 0.58rem;
-  padding: 0.15rem 0.4rem;
+  font-size: 0.67rem;
+  padding: 0.18rem 0.48rem;
   border: 1px solid;
   letter-spacing: 0.04em;
 }
 
 .llm-counter {
   font-family: var(--font-mono);
-  font-size: 0.58rem;
+  font-size: 0.67rem;
   letter-spacing: 0.08em;
 }
 
@@ -249,7 +249,7 @@
 /* ── LLM Terminal (kept for fallback) ── */
 .llm-terminal {
   width: 100%;
-  height: 150px;
+  height: 190px;
   padding: 10px 14px;
   font-family: 'Courier New', monospace;
   font-size: 0.65rem;

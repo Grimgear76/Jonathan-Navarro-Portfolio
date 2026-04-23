@@ -454,9 +454,6 @@ function drawSprite(ctx, sprite, palette, ox, oy, flipX) {
   })
 }
 
-const ATTACK_LABELS = ['⚔ SWORD', '🔥 FIREBALL', '⚡ ARCANE']
-const PHASE_DUR = [55, 22, 22, 22, 22]
-
 function PixelBattleCanvas({ clicks }) {
   const canvasRef = useRef(null)
   const clicksRef = useRef(clicks)
@@ -469,262 +466,342 @@ function PixelBattleCanvas({ clicks }) {
     const W = canvas.width, H = canvas.height
     const C = ACCENT.game
 
-    const GROUND = H - 18
+    const GROUND = 97
+    const CMD_Y  = 102
     const KX = 20
     const GX = W - GOBLIN_IDLE[0].length * PS - 20
     const KH = KNIGHT_IDLE.length * PS
     const GH = GOBLIN_IDLE.length * PS
+    const COMMANDS = ['ATTACK', 'MAGIC', 'ITEM', 'RUN']
 
-    let phase = 0, tick = 0
-    let kHp = 100, gHp = 100
-    let kFlash = 0, gFlash = 0
-    let projectile = null  // { x, y, tx, ty, t, type }
-    let particles  = []
-    let lightningPoints = null
-    let lightningTimer = 0
-    let animId
-
-    function hpBar(label, hp, x, y, col) {
-      ctx.fillStyle = '#111'
-      ctx.fillRect(x, y, 56, 5)
-      ctx.fillStyle = col
-      ctx.fillRect(x, y, Math.round(56 * hp / 100), 5)
-      ctx.fillStyle = col
-      ctx.font = '6px "Courier New"'
-      ctx.textAlign = 'left'
-      ctx.fillText(label, x, y - 2)
+    const s = {
+      phase: 'idle',
+      commandIdx: 0,
+      kHp: 100,
+      gHp: 100,
+      floats: [],
+      shakeFrames: 0,
+      gFlash: { color: '', life: 0 },
+      kFlash: 0,
+      blinkFrame: 0,
+      blinkVisible: true,
+      prevClicks: clicks,
+      tick: 0,
+      firstClick: false,
+      lightningPts: null,
+      lightningLife: 0,
+      runOffset: 0,
     }
 
-    function makeLightning(x1, y1, x2, y2, segs = 6) {
+    const PLAYER_DUR  = [45, 35, 40, 40]
+    const HAS_COUNTER = [true, true, false, false]
+    const ENEMY_DUR   = 30
+
+    function addFloat(x, y, text, color) {
+      s.floats.push({ x, y, text, color, life: 1.0 })
+    }
+
+    function buildLightning(x1, y1, x2, y2) {
       const pts = [{ x: x1, y: y1 }]
-      for (let i = 1; i < segs; i++) {
-        const t = i / segs
+      for (let i = 1; i < 7; i++) {
+        const t = i / 7
         pts.push({
-          x: x1 + (x2 - x1) * t + (Math.random() - 0.5) * 30,
-          y: y1 + (y2 - y1) * t + (Math.random() - 0.5) * 20,
+          x: x1 + (x2 - x1) * t + (Math.random() - 0.5) * 28,
+          y: y1 + (y2 - y1) * t + (Math.random() - 0.5) * 18,
         })
       }
       pts.push({ x: x2, y: y2 })
       return pts
     }
 
-    function frame() {
-      const attackMode = clicksRef.current % 3
-      ctx.clearRect(0, 0, W, H)
+    function drawHpBar(label, hp, x, y, col) {
+      const crit = hp < 25
+      ctx.fillStyle = '#111'
+      ctx.fillRect(x, y, 56, 5)
+      ctx.fillStyle = crit ? '#ff4444' : col
+      ctx.fillRect(x, y, Math.round(56 * hp / 100), 5)
+      if (crit && s.blinkFrame % 20 < 10) {
+        ctx.fillStyle = 'rgba(255,60,60,0.3)'
+        ctx.fillRect(x, y, Math.round(56 * hp / 100), 5)
+      }
+      ctx.fillStyle = crit ? '#ff4444' : col
+      ctx.font = '6px "Courier New"'
+      ctx.textAlign = 'left'
+      ctx.fillText(label, x, y - 2)
+    }
 
-      // scanlines
-      for (let sy = 0; sy < H; sy += 4) {
+    function drawCommandBox(runMsg) {
+      ctx.fillStyle = '#0d0d15'
+      ctx.fillRect(0, CMD_Y, W, H - CMD_Y)
+      ctx.strokeStyle = C
+      ctx.lineWidth = 1
+      ctx.strokeRect(1, CMD_Y, W - 2, H - CMD_Y - 1)
+      const cy = CMD_Y + (H - CMD_Y) / 2 + 4
+      if (runMsg) {
+        ctx.fillStyle = C + 'cc'
+        ctx.font = 'bold 7px "Courier New"'
+        ctx.textAlign = 'center'
+        ctx.fillText('…but failed!', W / 2, cy)
+        return
+      }
+      const slotW = W / COMMANDS.length
+      COMMANDS.forEach((cmd, i) => {
+        const cx = slotW * i + slotW / 2
+        if (i === s.commandIdx) {
+          const showCursor = s.phase === 'idle' ? s.blinkVisible : true
+          ctx.fillStyle = C
+          ctx.font = 'bold 7px "Courier New"'
+          ctx.textAlign = 'center'
+          ctx.fillText((showCursor ? '▶ ' : '  ') + cmd, cx, cy)
+        } else {
+          ctx.fillStyle = C + '44'
+          ctx.font = '7px "Courier New"'
+          ctx.textAlign = 'center'
+          ctx.fillText(cmd, cx, cy)
+        }
+      })
+    }
+
+    let animId
+
+    function frame() {
+      // ── Click detection ──
+      if (clicksRef.current !== s.prevClicks) {
+        s.prevClicks = clicksRef.current
+        if (s.phase === 'idle') {
+          s.phase = 'player'
+          s.tick = 0
+          s.firstClick = true
+          s.runOffset = 0
+          s.lightningPts = null
+          s.lightningLife = 0
+          s.blinkVisible = true
+        }
+      }
+
+      // ── Screen shake transform ──
+      ctx.save()
+      if (s.shakeFrames > 0) {
+        ctx.translate((Math.random() - 0.5) * 3, (Math.random() - 0.5) * 3)
+        s.shakeFrames--
+      }
+
+      ctx.clearRect(-5, -5, W + 10, H + 10)
+
+      // scanlines (battle area only)
+      for (let sy = 0; sy < GROUND; sy += 4) {
         ctx.fillStyle = 'rgba(0,0,0,0.07)'
         ctx.fillRect(0, sy, W, 1)
       }
 
-      // ground
-      ctx.strokeStyle = C + '28'
+      // ground line
+      ctx.strokeStyle = C + '40'
       ctx.lineWidth = 1
       ctx.beginPath()
       ctx.moveTo(10, GROUND)
       ctx.lineTo(W - 10, GROUND)
       ctx.stroke()
 
-      // sprites
-      const kSprite = (phase === 1 || phase === 4) ? KNIGHT_ATK : KNIGHT_IDLE
-      const gSprite = (phase === 2) ? GOBLIN_HIT : GOBLIN_IDLE
-      drawSprite(ctx, kSprite, KP, KX, GROUND - KH, false)
-      drawSprite(ctx, gSprite, GP, GX, GROUND - GH, true)
+      // ── Idle bob + cursor blink ──
+      s.blinkFrame++
+      const bobY = s.phase === 'idle'
+        ? Math.round(Math.sin(s.blinkFrame / 60 * Math.PI * 2))
+        : 0
+      if (s.phase === 'idle' && s.blinkFrame % 30 === 0) {
+        s.blinkVisible = !s.blinkVisible
+      }
 
-      // ── Sword swing animation (mode 0 only) ──
-      if (attackMode === 0) {
-        // Hand position (right side of knight sprite, at arm height)
+      // ── Sprite selection ──
+      const useKAtk = s.phase === 'player' && s.commandIdx === 0
+        && s.tick > 5 && s.tick < 35
+      const kSprite = useKAtk ? KNIGHT_ATK : KNIGHT_IDLE
+      const gSprite = s.gFlash.life > 0.5 ? GOBLIN_HIT : GOBLIN_IDLE
+
+      // ── Sprite positional offsets ──
+      let kOffsetX = 0, gOffsetX = 0
+      if (s.phase === 'player' && s.commandIdx === 3) {
+        kOffsetX = Math.min(s.tick * 2, 40)
+      }
+      if (s.phase === 'enemy' && (s.commandIdx === 0 || s.commandIdx === 1)) {
+        gOffsetX = s.tick < 15 ? -s.tick * 1.2 : -(30 - s.tick) * 1.2
+      }
+
+      // ── Draw sprites ──
+      drawSprite(ctx, kSprite, KP, KX + kOffsetX, GROUND - KH + bobY, false)
+      drawSprite(ctx, gSprite, GP, GX + gOffsetX, GROUND - GH + bobY, true)
+
+      // ── ATTACK: sword swing ──
+      if (s.phase === 'player' && s.commandIdx === 0) {
         const handX = KX + KNIGHT_IDLE[0].length * PS + 2
         const handY = GROUND - KH * 0.58
-
-        // Sword angle: idle = -100deg, attack sweeps to +15deg
         const idleAngle = -Math.PI * 0.56
         const swingAngle = Math.PI * 0.08
-
-        let swordAngle = idleAngle
-        if (phase === 1) {
-          // sweep from idle to swing over the phase duration
-          const sweepT = Math.min(tick / (PHASE_DUR[1] * 0.9), 1)
-          swordAngle = idleAngle + (swingAngle - idleAngle) * sweepT
-        } else if (phase === 4) {
-          swordAngle = idleAngle + 0.3
-        }
-
+        const swordAngle = idleAngle + (swingAngle - idleAngle) * Math.min(s.tick / 35, 1)
         const swordLen = 32
         const ex = handX + Math.cos(swordAngle) * swordLen
         const ey = handY + Math.sin(swordAngle) * swordLen
-
-        // Glow
         ctx.save()
-        ctx.strokeStyle = '#aaccff'
-        ctx.lineWidth = 7
-        ctx.globalAlpha = 0.3
         ctx.lineCap = 'round'
-        ctx.beginPath()
-        ctx.moveTo(handX, handY)
-        ctx.lineTo(ex, ey)
-        ctx.stroke()
-
-        // Blade
-        ctx.globalAlpha = 1
-        ctx.strokeStyle = '#e8f4ff'
-        ctx.lineWidth = 2.5
-        ctx.beginPath()
-        ctx.moveTo(handX, handY)
-        ctx.lineTo(ex, ey)
-        ctx.stroke()
-
-        // Tip diamond
-        ctx.fillStyle = '#ffffff'
-        ctx.beginPath()
-        ctx.arc(ex, ey, 2, 0, Math.PI * 2)
-        ctx.fill()
+        ctx.strokeStyle = '#aaccff'; ctx.lineWidth = 7; ctx.globalAlpha = 0.3
+        ctx.beginPath(); ctx.moveTo(handX, handY); ctx.lineTo(ex, ey); ctx.stroke()
+        ctx.strokeStyle = '#e8f4ff'; ctx.lineWidth = 2.5; ctx.globalAlpha = 1
+        ctx.beginPath(); ctx.moveTo(handX, handY); ctx.lineTo(ex, ey); ctx.stroke()
+        ctx.fillStyle = '#fff'
+        ctx.beginPath(); ctx.arc(ex, ey, 2, 0, Math.PI * 2); ctx.fill()
         ctx.restore()
-
-        // During swing, draw a motion arc trail
-        if (phase === 1 && tick > 4) {
-          ctx.save()
-          ctx.globalAlpha = 0.2
-          ctx.strokeStyle = '#ddeeff'
-          ctx.lineWidth = 1
-          const trailStart = idleAngle
-          const trailEnd = swordAngle
-          ctx.beginPath()
-          for (let a = trailStart; a <= trailEnd; a += 0.05) {
-            const tx = handX + Math.cos(a) * swordLen
-            const ty = handY + Math.sin(a) * swordLen
-            if (a === trailStart) ctx.moveTo(tx, ty)
-            else ctx.lineTo(tx, ty)
-          }
-          ctx.stroke()
-          ctx.restore()
+        if (s.tick === 25) {
+          const dmg = 18
+          s.gHp = Math.max(0, s.gHp - dmg)
+          addFloat(GX + 10, GROUND - GH - 10, `SLASH! -${dmg}`, '#ff6666')
+          s.gFlash = { color: 'rgba(255,120,40,', life: 1.4 }
+          s.shakeFrames = 8
         }
       }
 
-      // ── Fireball projectile ──
-      if (attackMode === 1 && projectile) {
-        projectile.t += 0.045
-        const px = projectile.x + (projectile.tx - projectile.x) * projectile.t
-        const py = projectile.y + (projectile.ty - projectile.y) * projectile.t + Math.sin(projectile.t * Math.PI) * -10
-        // flame trail particles
-        if (Math.random() < 0.5) {
-          particles.push({ x: px, y: py, vx: (Math.random() - 0.5) * 2, vy: -Math.random() * 2, life: 1 })
+      // ── MAGIC: lightning bolt + purple screen flash ──
+      if (s.phase === 'player' && s.commandIdx === 1) {
+        if (s.tick === 5) {
+          const x1 = KX + KNIGHT_IDLE[0].length * PS
+          const y1 = GROUND - KH * 0.5
+          s.lightningPts = buildLightning(x1, y1, GX, GROUND - GH * 0.5)
+          s.lightningLife = 18
+          const dmg = 32
+          s.gHp = Math.max(0, s.gHp - dmg)
+          addFloat(GX + 10, GROUND - GH - 10, `ARCANE! -${dmg}`, '#c8b0ff')
+          s.gFlash = { color: 'rgba(157,127,255,', life: 1.8 }
+          s.shakeFrames = 8
         }
-        // fireball glow
-        const fg = ctx.createRadialGradient(px, py, 0, px, py, 14)
-        fg.addColorStop(0, '#fff')
-        fg.addColorStop(0.3, '#fb923c')
-        fg.addColorStop(1, '#fb923c00')
-        ctx.fillStyle = fg
-        ctx.beginPath()
-        ctx.arc(px, py, 14, 0, Math.PI * 2)
-        ctx.fill()
-        if (projectile.t >= 1) { projectile = null; gFlash = 1.4 }
+        if (s.tick < 15) {
+          ctx.fillStyle = `rgba(100,60,180,${Math.max(0, 0.25 - s.tick * 0.018)})`
+          ctx.fillRect(0, 0, W, GROUND)
+        }
       }
 
-      // particles
-      particles = particles.filter(p => {
-        p.life -= 0.07
-        if (p.life <= 0) return false
-        p.x += p.vx; p.y += p.vy
-        ctx.fillStyle = `rgba(251,146,60,${p.life})`
-        ctx.fillRect(p.x - 1, p.y - 1, 2, 2)
+      // draw lightning (persists a few frames)
+      if (s.lightningPts && s.lightningLife > 0) {
+        ctx.save()
+        ctx.lineWidth = 2
+        s.lightningPts.forEach((pt, i) => {
+          if (i === s.lightningPts.length - 1) return
+          const next = s.lightningPts[i + 1]
+          ctx.strokeStyle = i % 2 === 0 ? '#c8b0ff' : '#ffffff'
+          ctx.shadowColor = '#9d7fff'; ctx.shadowBlur = 10
+          ctx.beginPath(); ctx.moveTo(pt.x, pt.y); ctx.lineTo(next.x, next.y); ctx.stroke()
+        })
+        ctx.restore()
+        s.lightningLife--
+      }
+
+      // ── ITEM: potion glow + heal ──
+      if (s.phase === 'player' && s.commandIdx === 2) {
+        const potX = KX + KNIGHT_IDLE[0].length * PS - 5
+        const potY = GROUND - KH * 0.6
+        const alpha = Math.sin(s.tick / 40 * Math.PI) * 0.7
+        const pg = ctx.createRadialGradient(potX, potY, 0, potX, potY, 12)
+        pg.addColorStop(0, `rgba(104,211,145,${alpha})`)
+        pg.addColorStop(1, 'rgba(104,211,145,0)')
+        ctx.fillStyle = pg
+        ctx.beginPath(); ctx.arc(potX, potY, 12, 0, Math.PI * 2); ctx.fill()
+        if (s.tick === 15) {
+          const heal = 25
+          s.kHp = Math.min(100, s.kHp + heal)
+          addFloat(KX + 5, GROUND - KH - 10, `POTION! +${heal} HP`, '#68d391')
+        }
+      }
+
+      // ── Sprite flashes ──
+      if (s.gFlash.life > 0) {
+        ctx.fillStyle = s.gFlash.color + Math.min(s.gFlash.life, 1) * 0.45 + ')'
+        ctx.fillRect(GX - 2, GROUND - GH - 2, GOBLIN_IDLE[0].length * PS + 4, GH + 4)
+        s.gFlash.life -= 0.09
+      }
+      if (s.kFlash > 0) {
+        ctx.fillStyle = `rgba(100,160,255,${Math.min(s.kFlash, 1) * 0.4})`
+        ctx.fillRect(KX - 2, GROUND - KH - 2, KNIGHT_IDLE[0].length * PS + 4, KH + 4)
+        s.kFlash -= 0.09
+      }
+
+      // ── Enemy counter damage ──
+      if (s.phase === 'enemy' && s.tick === 10) {
+        const dmg = s.commandIdx === 1 ? 10 : 8
+        s.kHp = Math.max(0, s.kHp - dmg)
+        addFloat(KX, GROUND - KH - 10, `COUNTER! -${dmg}`, '#ff6666')
+        s.kFlash = 1.4
+        s.shakeFrames = 8
+      }
+
+      // ── HP bars ──
+      drawHpBar('JN',  s.kHp, KX,      GROUND - KH - 16, '#58a6ff')
+      drawHpBar('GOB', s.gHp, GX - 10, GROUND - GH - 16, '#5aae2a')
+
+      // ── RESULT overlay ──
+      if (s.phase === 'result') {
+        const msg = s.gHp <= 0 ? 'VICTORY!' : 'DEFEATED!'
+        const col = s.gHp <= 0 ? '#9d7fff' : '#ff4444'
+        ctx.save()
+        ctx.fillStyle = 'rgba(0,0,0,0.55)'
+        ctx.fillRect(0, 0, W, GROUND)
+        ctx.fillStyle = col
+        ctx.font = 'bold 18px "Courier New"'
+        ctx.textAlign = 'center'
+        ctx.fillText(msg, W / 2, GROUND / 2 + 6)
+        ctx.restore()
+      }
+
+      // ── Floating numbers ──
+      s.floats = s.floats.filter(f => {
+        f.life -= 1 / 40
+        f.y -= 0.5
+        if (f.life <= 0) return false
+        ctx.globalAlpha = f.life
+        ctx.fillStyle = f.color
+        ctx.font = 'bold 8px "Courier New"'
+        ctx.textAlign = 'left'
+        ctx.fillText(f.text, f.x, f.y)
+        ctx.globalAlpha = 1
         return true
       })
 
-      // ── Arcane lightning ──
-      if (attackMode === 2 && lightningPoints) {
-        lightningTimer--
-        ctx.save()
-        ctx.lineWidth = 2
-        for (let i = 0; i < lightningPoints.length - 1; i++) {
-          const a = lightningPoints[i], b = lightningPoints[i + 1]
-          ctx.strokeStyle = i % 2 === 0 ? '#c8b0ff' : '#ffffff'
-          ctx.shadowColor = '#9d7fff'
-          ctx.shadowBlur = 10
-          ctx.beginPath()
-          ctx.moveTo(a.x, a.y)
-          ctx.lineTo(b.x, b.y)
-          ctx.stroke()
-        }
-        ctx.restore()
-        if (lightningTimer <= 0) { lightningPoints = null }
+      // ── Command box ──
+      const showRunMsg = s.phase === 'player' && s.commandIdx === 3 && s.tick > 10
+      drawCommandBox(showRunMsg)
+
+      // ── Pre-first-click hint ──
+      if (!s.firstClick) {
+        ctx.fillStyle = C + '55'
+        ctx.font = '6px "Courier New"'
+        ctx.textAlign = 'center'
+        ctx.fillText('[ CLICK TO COMMAND ]', W / 2, H - 2)
       }
 
-      // sword slash FX
-      if (attackMode === 0 && phase === 1 && tick > PHASE_DUR[1] * 0.5) {
-        const sx = GX - 12, sy = GROUND - GH * 0.55
-        ctx.strokeStyle = 'rgba(255,255,200,0.9)'
-        ctx.lineWidth = 2
-        ctx.beginPath()
-        ctx.moveTo(sx - 8, sy - 8); ctx.lineTo(sx + 8, sy + 8)
-        ctx.moveTo(sx + 8, sy - 8); ctx.lineTo(sx - 8, sy + 8)
-        ctx.stroke()
-      }
+      ctx.restore() // end shake translate
 
-      // flashes
-      if (gFlash > 0) {
-        const col = attackMode === 1 ? 'rgba(255,100,40,' : attackMode === 2 ? 'rgba(157,127,255,' : 'rgba(255,80,40,'
-        ctx.fillStyle = col + Math.min(gFlash, 1) * 0.45 + ')'
-        ctx.fillRect(GX - 2, GROUND - GH - 2, GOBLIN_IDLE[0].length * PS + 4, GH + 4)
-        gFlash -= 0.09
-      }
-      if (kFlash > 0) {
-        ctx.fillStyle = `rgba(100,160,255,${Math.min(kFlash, 1) * 0.4})`
-        ctx.fillRect(KX - 2, GROUND - KH - 2, KNIGHT_IDLE[0].length * PS + 4, KH + 4)
-        kFlash -= 0.09
-      }
+      // ── State machine transitions ──
+      if (s.phase !== 'idle') {
+        s.tick++
 
-      // HP bars
-      hpBar('JN',  kHp, KX,      GROUND - KH - 16, '#58a6ff')
-      hpBar('GOB', gHp, GX - 10, GROUND - GH - 16, '#5aae2a')
-
-      // attack label
-      ctx.fillStyle = C + 'aa'
-      ctx.font = 'bold 7px "Courier New"'
-      ctx.textAlign = 'center'
-      ctx.fillText(ATTACK_LABELS[attackMode], W / 2, H - 5)
-
-      // phase machine
-      tick++
-      const dur = PHASE_DUR[phase]
-      if (tick >= dur) {
-        tick = 0
-        // launch projectiles / FX on attack phase
-        if (phase === 1) {
-          if (attackMode === 1) {
-            // launch fireball
-            projectile = {
-              x: KX + KNIGHT_IDLE[0].length * PS + 5,
-              y: GROUND - KH * 0.55,
-              tx: GX - 10,
-              ty: GROUND - GH * 0.55,
-              t: 0,
-            }
-          } else if (attackMode === 2) {
-            // lightning bolt
-            const x1 = KX + KNIGHT_IDLE[0].length * PS
-            const y1 = GROUND - KH * 0.5
-            const x2 = GX
-            const y2 = GROUND - GH * 0.5
-            lightningPoints = makeLightning(x1, y1, x2, y2)
-            lightningTimer = 14
-            gFlash = 1.4
+        if (s.phase === 'player' && s.tick >= PLAYER_DUR[s.commandIdx]) {
+          if (HAS_COUNTER[s.commandIdx]) {
+            s.phase = 'enemy'; s.tick = 0
           } else {
-            // sword — damage on phase 2
+            if (s.gHp <= 0 || s.kHp <= 0) { s.phase = 'result'; s.tick = 0 }
+            else { s.commandIdx = (s.commandIdx + 1) % 4; s.phase = 'idle'; s.tick = 0 }
           }
         }
-        if (phase === 2 && attackMode === 0) {
-          gHp = Math.max(18, gHp - (10 + Math.floor(Math.random() * 8)))
-          gFlash = 1.4
+
+        if (s.phase === 'enemy' && s.tick >= ENEMY_DUR) {
+          if (s.gHp <= 0 || s.kHp <= 0) { s.phase = 'result'; s.tick = 0 }
+          else { s.commandIdx = (s.commandIdx + 1) % 4; s.phase = 'idle'; s.tick = 0 }
         }
-        if (phase === 3) {
-          kHp = Math.max(18, kHp - (6 + Math.floor(Math.random() * 5)))
-          kFlash = 1.4
+
+        if (s.phase === 'result' && s.tick >= 90) { s.phase = 'reset'; s.tick = 0 }
+
+        if (s.phase === 'reset') {
+          s.kHp = 100; s.gHp = 100; s.commandIdx = 0
+          s.floats = []; s.gFlash = { color: '', life: 0 }; s.kFlash = 0
+          s.shakeFrames = 0; s.lightningPts = null; s.lightningLife = 0
+          s.phase = 'idle'; s.tick = 0
         }
-        if (kHp <= 18 && gHp <= 18) { kHp = 100; gHp = 100 }
-        phase = (phase + 1) % PHASE_DUR.length
       }
 
       animId = requestAnimationFrame(frame)
@@ -751,7 +828,7 @@ const DOMAINS = [
   { id: 'ml',   accent: ACCENT.ml,   label: 'Machine Learning',  desc: 'RL agents, custom Gymnasium environments, PPO training loops.',         skills: ['Python', 'Stable-Baselines3', 'Gymnasium', 'PPO / RL'], Anim: NeuralNetCanvas,    hint: '[ CLICK TO TRAIN ]' },
   { id: 'llm',  accent: ACCENT.llm,  label: 'Local AI / LLMs',   desc: 'On-device inference, prompt engineering, Gemini API integration.',      skills: ['Ollama', 'Gemini API', 'Node.js', 'Prompt Eng.'],       Anim: LLMModelShowcase,   hint: '[ CLICK TO CYCLE MODEL ]' },
   { id: 'web',  accent: ACCENT.web,  label: 'Web Development',    desc: 'Full-stack MERN apps, REST APIs, real-time Socket.io features.',        skills: ['React', 'Node.js / Express', 'MongoDB', 'Vite'],        Anim: WebFlowCanvas,      hint: '[ CLICK TO EXPAND STACK ]' },
-  { id: 'game', accent: ACCENT.game, label: 'Game Development',   desc: 'Unity systems, C# scripting, enemy AI state machines, combat feel.',   skills: ['Unity', 'C#', 'Figma', 'Game Design'],                  Anim: PixelBattleCanvas,  hint: '[ CLICK TO CHANGE ATTACK ]' },
+  { id: 'game', accent: ACCENT.game, label: 'Game Development',   desc: 'Unity systems, C# scripting, enemy AI state machines, combat feel.',   skills: ['Unity', 'C#', 'Figma', 'Game Design'],                  Anim: PixelBattleCanvas,  hint: '[ CLICK TO COMMAND ]' },
 ]
 
 function DomainCard({ domain }) {

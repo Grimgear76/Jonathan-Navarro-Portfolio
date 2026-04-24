@@ -746,18 +746,69 @@ function PixelBattleCanvas() {
         }
 
         if (s.selectedSub === 1) {
-          const angle = -Math.PI * 0.85 + (Math.PI * 1.05) * Math.min(s.tick / 45, 1)
-          const ex = handX + Math.cos(angle) * 30
-          const ey = handY + Math.sin(angle) * 30
+          // Axe swings from raised (overhead) down through the goblin
+          const swing = Math.min(s.tick / 45, 1)
+          const axeAngle = -Math.PI * 0.9 + Math.PI * 1.1 * swing
+          const pivotX = handX
+          const pivotY = handY
+          const shaftLen = 28
+
           ctx.save()
+          ctx.translate(pivotX, pivotY)
+          ctx.rotate(axeAngle)
+
+          // handle
+          ctx.strokeStyle = '#8B5E3C'
+          ctx.lineWidth = 3
           ctx.lineCap = 'round'
-          ctx.strokeStyle = '#cc8844'; ctx.lineWidth = 9; ctx.globalAlpha = 0.25
-          ctx.beginPath(); ctx.moveTo(handX, handY); ctx.lineTo(ex, ey); ctx.stroke()
-          ctx.strokeStyle = '#ffcc66'; ctx.lineWidth = 3.5; ctx.globalAlpha = 1
-          ctx.beginPath(); ctx.moveTo(handX, handY); ctx.lineTo(ex, ey); ctx.stroke()
-          ctx.fillStyle = '#ffcc66'
-          ctx.beginPath(); ctx.arc(ex, ey, 3, 0, Math.PI * 2); ctx.fill()
+          ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, shaftLen); ctx.stroke()
+
+          // blade — crescent shape at tip of shaft
+          const bx = 0, by = shaftLen
+          // blade body (wide flat shape)
+          ctx.fillStyle = '#d4d4d4'
+          ctx.beginPath()
+          ctx.moveTo(bx,      by - 3)   // base top-right
+          ctx.lineTo(bx + 12, by - 10)  // top-right point
+          ctx.lineTo(bx + 14, by + 2)   // bottom-right bulge
+          ctx.lineTo(bx + 8,  by + 7)   // bottom-right curve
+          ctx.lineTo(bx,      by + 4)   // base bottom
+          ctx.closePath()
+          ctx.fill()
+          // blade edge highlight
+          ctx.strokeStyle = '#ffffff'
+          ctx.lineWidth = 1
+          ctx.beginPath()
+          ctx.moveTo(bx + 12, by - 10)
+          ctx.lineTo(bx + 14, by + 2)
+          ctx.lineTo(bx + 8,  by + 7)
+          ctx.stroke()
+          // blade shadow/dark side
+          ctx.fillStyle = '#888'
+          ctx.beginPath()
+          ctx.moveTo(bx,      by - 3)
+          ctx.lineTo(bx - 6,  by - 8)
+          ctx.lineTo(bx - 5,  by + 5)
+          ctx.lineTo(bx,      by + 4)
+          ctx.closePath()
+          ctx.fill()
+          // butt cap
+          ctx.fillStyle = '#6b4226'
+          ctx.beginPath(); ctx.arc(0, 0, 3, 0, Math.PI * 2); ctx.fill()
+
+          // motion blur trail at fast swing speeds
+          if (swing > 0.1 && swing < 0.85) {
+            ctx.globalAlpha = 0.18
+            ctx.strokeStyle = '#ffcc66'
+            ctx.lineWidth = 10
+            ctx.beginPath()
+            ctx.moveTo(0, shaftLen * 0.5)
+            ctx.lineTo(0, shaftLen + 8)
+            ctx.stroke()
+          }
+
           ctx.restore()
+
           if (s.tick === 35) {
             const dmg = SUB_DMG[0][1]
             s.gHp = Math.max(0, s.gHp - dmg)
@@ -838,24 +889,113 @@ function PixelBattleCanvas() {
         }
 
         if (s.selectedSub === 2) {
-          if (s.tick === 5) {
-            s.lightningPts = buildLightning(x1, y1, GX, GROUND - GH * 0.5)
-            s.lightningLife = 14
-            s.lightningColor = '#88d4ff'
+          const SHARD_DUR = 22
+          const FREEZE_DUR = 28
+          // Phase 1: ice shard travels to goblin
+          if (s.tick <= SHARD_DUR) {
+            const p = s.tick / SHARD_DUR
+            const sx = x1 + (GX + 4 - x1) * p
+            const sy = y1 + ((GROUND - GH * 0.5) - y1) * p
+            const angle = Math.atan2((GROUND - GH * 0.5) - y1, GX + 4 - x1)
+            ctx.save()
+            ctx.translate(sx, sy)
+            ctx.rotate(angle)
+            // shard body
+            ctx.beginPath()
+            ctx.moveTo(10, 0)
+            ctx.lineTo(2, -4)
+            ctx.lineTo(-6, 0)
+            ctx.lineTo(2, 4)
+            ctx.closePath()
+            ctx.fillStyle = '#c8eeff'
+            ctx.fill()
+            // bright tip
+            ctx.beginPath()
+            ctx.moveTo(10, 0)
+            ctx.lineTo(4, -2)
+            ctx.lineTo(4, 2)
+            ctx.closePath()
+            ctx.fillStyle = '#ffffff'
+            ctx.fill()
+            // icy trail
+            for (let i = 1; i <= 4; i++) {
+              const tp = Math.max(0, p - i * 0.06)
+              const tx = x1 + (GX + 4 - x1) * tp - sx
+              const ty = y1 + ((GROUND - GH * 0.5) - y1) * tp - sy
+              ctx.globalAlpha = (1 - i * 0.22) * 0.5
+              ctx.fillStyle = '#88d4ff'
+              ctx.beginPath()
+              ctx.arc(tx, ty, 3 - i * 0.5, 0, Math.PI * 2)
+              ctx.fill()
+            }
+            ctx.restore()
+          }
+          // Phase 2: hit + freeze
+          if (s.tick === SHARD_DUR + 1) {
             const dmg = SUB_DMG[1][2]
             s.gHp = Math.max(0, s.gHp - dmg)
-            addFloat(GX + 10, GROUND - GH - 10, `BLIZZARD! -${dmg}`, '#88d4ff')
-            s.gFlash = { color: 'rgba(100,200,255,', life: 1.5 }
-            s.shakeFrames = 6
+            addFloat(GX + 10, GROUND - GH - 10, `FREEZE! -${dmg}`, '#88d4ff')
+            s.gFlash = { color: 'rgba(180,230,255,', life: 1.2 }
+            s.shakeFrames = 5
+            s.freezeLife = FREEZE_DUR
           }
-          if (s.tick < 12) {
-            ctx.fillStyle = `rgba(60,140,255,${Math.max(0, 0.18 - s.tick * 0.015)})`
-            ctx.fillRect(0, 0, W, GROUND)
+          if (s.tick > SHARD_DUR && s.tick <= SHARD_DUR + FREEZE_DUR) {
+            const fp = 1 - (s.tick - SHARD_DUR) / FREEZE_DUR
+            const gCX = GX + (GOBLIN_IDLE[0].length * PS) / 2
+            const gCY = GROUND - GH * 0.55
+            // ice block overlay
+            ctx.save()
+            ctx.globalAlpha = fp * 0.78
+            ctx.fillStyle = '#a8e6ff'
+            ctx.strokeStyle = '#e0f8ff'
+            ctx.lineWidth = 1.5
+            // main crystal shape
+            const hw = (GOBLIN_IDLE[0].length * PS) / 2 + 4
+            const hh = GH * 0.6
+            ctx.beginPath()
+            ctx.moveTo(gCX,           gCY - hh)
+            ctx.lineTo(gCX + hw * 0.5, gCY - hh * 0.55)
+            ctx.lineTo(gCX + hw,       gCY)
+            ctx.lineTo(gCX + hw * 0.6, gCY + hh * 0.65)
+            ctx.lineTo(gCX,            gCY + hh)
+            ctx.lineTo(gCX - hw * 0.6, gCY + hh * 0.65)
+            ctx.lineTo(gCX - hw,       gCY)
+            ctx.lineTo(gCX - hw * 0.5, gCY - hh * 0.55)
+            ctx.closePath()
+            ctx.fill()
+            ctx.stroke()
+            // inner highlight facet
+            ctx.globalAlpha = fp * 0.35
+            ctx.fillStyle = '#ffffff'
+            ctx.beginPath()
+            ctx.moveTo(gCX - hw * 0.25, gCY - hh * 0.9)
+            ctx.lineTo(gCX + hw * 0.15, gCY - hh * 0.5)
+            ctx.lineTo(gCX - hw * 0.1,  gCY - hh * 0.1)
+            ctx.lineTo(gCX - hw * 0.45, gCY - hh * 0.5)
+            ctx.closePath()
+            ctx.fill()
+            // sparkle crystals
+            ctx.globalAlpha = fp * 0.9
+            const sparks = [
+              [gCX - hw - 4, gCY - hh * 0.3],
+              [gCX + hw + 4, gCY - hh * 0.2],
+              [gCX,           gCY - hh - 6],
+              [gCX + hw * 0.7, gCY + hh * 0.8],
+            ]
+            sparks.forEach(([sx2, sy2]) => {
+              ctx.strokeStyle = '#d0f0ff'
+              ctx.lineWidth = 1
+              ctx.beginPath(); ctx.moveTo(sx2 - 4, sy2); ctx.lineTo(sx2 + 4, sy2); ctx.stroke()
+              ctx.beginPath(); ctx.moveTo(sx2, sy2 - 4); ctx.lineTo(sx2, sy2 + 4); ctx.stroke()
+              ctx.beginPath(); ctx.moveTo(sx2 - 3, sy2 - 3); ctx.lineTo(sx2 + 3, sy2 + 3); ctx.stroke()
+              ctx.beginPath(); ctx.moveTo(sx2 + 3, sy2 - 3); ctx.lineTo(sx2 - 3, sy2 + 3); ctx.stroke()
+            })
+            ctx.restore()
           }
         }
       }
 
-      // ── Lightning (arcane + ice shared) ──
+      // ── Lightning (arcane only) ──
       if (s.lightningPts && s.lightningLife > 0) {
         ctx.save()
         ctx.lineWidth = 2

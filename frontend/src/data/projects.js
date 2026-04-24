@@ -17,6 +17,15 @@ export const projects = [
     description: 'AI-powered tutoring platform using local LLM inference — 2nd Place AI/ML Hackathon.',
     technologies: ['Flutter', 'Node.js', 'Ollama', 'SQLite'],
     accentColor: '#3dd6c8',
+    github: 'https://github.com/Grimgear76/RGV_Tutor',
+    demo: 'https://youtu.be/N7ju-QHTInc?si=ObeCHINYP1qyJAr9',
+    images: [
+      '/screenshots/rgv-tutor/SignIn.png',
+      '/screenshots/rgv-tutor/Library.png',
+      '/screenshots/rgv-tutor/Planner.png',
+      '/screenshots/rgv-tutor/Ollama.png',
+      '/screenshots/rgv-tutor/subject-select.png',
+    ],
     detail: {
       problem: 'Students in the Rio Grande Valley lack affordable, personalized tutoring resources. Cloud AI costs make real-time tutoring apps expensive to run.',
       built: 'Flutter mobile app backed by a Node.js server running Ollama for fully local LLM inference. SQLite persists session history for continuity across conversations.',

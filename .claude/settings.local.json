@@ -22,7 +22,8 @@
       "PowerShell(if \\(-not $?\\) { \"File is empty or new\" })",
       "Bash(git add *)",
       "Bash(git commit -m ' *)",
-      "Bash(git commit *)"
+      "Bash(git commit *)",
+      "Bash(grep -E \"\\(vite|package\\\\.json\\)$\")"
     ]
   }
 }

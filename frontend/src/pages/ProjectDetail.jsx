@@ -22,6 +22,11 @@ function dimAccent(hex, opacity) {
   return `${hex}${Math.round(opacity * 255).toString(16).padStart(2, '0')}`
 }
 
+function getYouTubeId(url) {
+  const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([^?&]+)/)
+  return m?.[1]
+}
+
 function MediaSlot({ label }) {
   return (
     <div className="detail-media-slot">
@@ -76,6 +81,20 @@ export default function ProjectDetail() {
             ))}
           </div>
           {award && <div className="detail-award">⬡ {award}</div>}
+          {(project.github || project.demo) && (
+            <div className="detail-links">
+              {project.github && (
+                <a href={project.github} target="_blank" rel="noopener noreferrer" className="detail-link">
+                  ↗ GITHUB
+                </a>
+              )}
+              {project.demo && (
+                <a href={project.demo} target="_blank" rel="noopener noreferrer" className="detail-link">
+                  ↗ DEMO
+                </a>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
@@ -96,12 +115,36 @@ export default function ProjectDetail() {
 
         <div className="detail-media">
           <h2>DEMO &amp; GALLERY</h2>
-          <div className="detail-media-grid">
-            <MediaSlot label="DEMO VIDEO" />
-            <MediaSlot label="SCREENSHOT 01" />
-            <MediaSlot label="SCREENSHOT 02" />
-            <MediaSlot label="SCREENSHOT 03" />
-          </div>
+          {project.demo ? (
+            <div className="detail-video-container">
+              <iframe
+                src={`https://www.youtube.com/embed/${getYouTubeId(project.demo)}`}
+                title={`${project.title} demo`}
+                frameBorder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+          ) : (
+            <div className="detail-media-grid" style={{ marginBottom: '1rem' }}>
+              <MediaSlot label="DEMO VIDEO" />
+            </div>
+          )}
+          {project.images?.length > 0 ? (
+            <div className="detail-screenshots">
+              {project.images.map((src, i) => (
+                <div key={i} className="detail-screenshot">
+                  <img src={src} alt={`${project.title} screenshot ${i + 1}`} loading="lazy" />
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="detail-media-grid">
+              <MediaSlot label="SCREENSHOT 01" />
+              <MediaSlot label="SCREENSHOT 02" />
+              <MediaSlot label="SCREENSHOT 03" />
+            </div>
+          )}
         </div>
       </div>
     </div>

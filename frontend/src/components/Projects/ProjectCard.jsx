@@ -26,6 +26,7 @@ export default function ProjectCard({ project }) {
       className={`project-card${isUnlocked ? ' unlocked' : ''}`}
       style={unlockedStyles}
       onClick={handleCardClick}
+      onDoubleClick={handleExpand}
       role="button"
       tabIndex={0}
       onKeyDown={e => e.key === 'Enter' && handleCardClick()}

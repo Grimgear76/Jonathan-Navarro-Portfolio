@@ -16,7 +16,7 @@
 
 .footer-links a {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
+  font-size: 0.78rem;
   letter-spacing: 0.14em;
   color: var(--accent);
   text-decoration: none;
@@ -28,14 +28,14 @@
 }
 
 .footer-sep {
-  color: #2a2a2a;
+  color: #444;
   font-family: var(--font-mono);
   font-size: 0.68rem;
 }
 
 .footer-copy {
   font-family: var(--font-mono);
-  font-size: 0.6rem;
-  color: #2a2a2a;
+  font-size: 0.72rem;
+  color: #555;
   letter-spacing: 0.1em;
 }

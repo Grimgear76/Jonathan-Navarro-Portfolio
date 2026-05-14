@@ -28,7 +28,10 @@ function NeuralNetCanvas({ clicks }) {
   useEffect(() => {
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
-    const W = canvas.width, H = canvas.height
+    const dpr = window.devicePixelRatio || 1
+    const W = canvas.clientWidth || 380, H = 260
+    canvas.width = W * dpr; canvas.height = H * dpr
+    ctx.scale(dpr, dpr)
 
     const LAYERS = [3, 5, 4, 3]
     const xs = LAYERS.map((_, i) => W * 0.1 + (W * 0.8 / (LAYERS.length - 1)) * i)
@@ -148,7 +151,7 @@ function NeuralNetCanvas({ clicks }) {
 
   return (
     <div style={{ position: 'relative' }}>
-      <canvas ref={canvasRef} className="domain-canvas" width={380} height={190} />
+      <canvas ref={canvasRef} className="domain-canvas" width={380} height={260} />
       <span className="ml-level-badge" style={{ color: ML_PALETTES[level][0] }}>
         LVL {level} — {labels[level]}
       </span>
@@ -157,222 +160,1111 @@ function NeuralNetCanvas({ clicks }) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// LLM — LOCAL MODEL SHOWCASE  (clicks → cycle models)
+// DATA & APIs — LIVE MULTI-SOURCE DASHBOARD (clicks → cycle lens)
 // ─────────────────────────────────────────────────────────────
-const MODELS = [
-  { name: 'LLaMA 3',     creator: 'Meta',        params: '8B · 70B',  ctx: '128K', icon: '🦙', tags: ['reasoning', 'multilingual', 'chat'] },
-  { name: 'Mistral 7B',  creator: 'Mistral AI',  params: '7B',        ctx: '32K',  icon: '💨', tags: ['efficient', 'code', 'instruct'] },
-  { name: 'Phi-3',       creator: 'Microsoft',   params: '3.8B',      ctx: '128K', icon: 'φ',  tags: ['compact', 'capable', 'STEM'] },
-  { name: 'Gemma 2',     creator: 'Google',      params: '9B · 27B',  ctx: '8K',   icon: '♊', tags: ['open', 'safe', 'instruction'] },
-  { name: 'DeepSeek-R1', creator: 'DeepSeek',    params: '7B+',       ctx: '64K',  icon: '🔍', tags: ['reasoning', 'math', 'CoT'] },
-  { name: 'Qwen 2.5',    creator: 'Alibaba',     params: '7B · 72B',  ctx: '128K', icon: '乾', tags: ['multilingual', 'code', 'tools'] },
-]
 
-function LLMModelShowcase({ clicks }) {
-  const idx = clicks % MODELS.length
-  const m   = MODELS[idx]
-  const C   = ACCENT.llm
+const DATA_LENSES  = ['weather', 'stocks', 'cards', 'pokemon']
+const DATA_META    = {
+  weather: { title:'WEATHER',  source:'Open-Meteo'      },
+  stocks:  { title:'MARKETS',  source:'S&P 500 TOP'     },
+  cards:   { title:'HI-LO',    source:'deckofcardsapi'  },
+  pokemon: { title:'POKÉMON',  source:'PokéAPI'         },
+}
+const WX_LABEL = {
+  0:'CLEAR SKY', 1:'MAINLY CLEAR', 2:'PARTLY CLOUDY', 3:'OVERCAST',
+  45:'FOG', 48:'FOG', 51:'DRIZZLE', 53:'DRIZZLE', 55:'DRIZZLE',
+  61:'RAIN', 63:'RAIN', 65:'HEAVY RAIN', 71:'SNOW', 73:'SNOW', 75:'HEAVY SNOW',
+  80:'SHOWERS', 81:'SHOWERS', 82:'HEAVY SHOWERS', 95:'THUNDERSTORM',
+}
+const STAT_COLS = { HP:'#ff6060', ATK:'#f08030', DEF:'#f8d030', 'SP.A':'#6890f0', 'SP.D':'#78c850', SPD:'#f85888' }
+const SNAME_MAP = { hp:'HP', attack:'ATK', defense:'DEF', 'special-attack':'SP.A', 'special-defense':'SP.D', speed:'SPD' }
+const TYPE_COLORS = {
+  normal:'#a8a878', fire:'#f08030', water:'#6890f0', electric:'#f8d030',
+  grass:'#78c850', ice:'#98d8d8', fighting:'#c03028', poison:'#a040a0',
+  ground:'#e0c068', flying:'#a890f0', psychic:'#f85888', bug:'#a8b820',
+  rock:'#b8a038', ghost:'#705898', dragon:'#7038f8', dark:'#705848',
+  steel:'#b8b8d0', fairy:'#ee99ac',
+}
+const STOCKS_BASE  = [
+  { sym:'NVDA', price:875,  cap:6 }, { sym:'AAPL', price:226, cap:5 },
+  { sym:'MSFT', price:415,  cap:5 }, { sym:'GOOGL',price:175, cap:4 },
+  { sym:'AMZN', price:187,  cap:4 }, { sym:'META', price:545, cap:3 },
+  { sym:'TSLA', price:175,  cap:2 }, { sym:'NFLX', price:680, cap:2 },
+]
+const CARD_VAL = { ACE:1, '2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9, '10':10, JACK:11, QUEEN:12, KING:13 }
+const SUIT_SYM = { HEARTS:'♥', DIAMONDS:'♦', CLUBS:'♣', SPADES:'♠' }
+const BJ_VAL   = { JACK:10, QUEEN:10, KING:10, ACE:11 }
+
+const handValue = (cards) => {
+  let v = 0, aces = 0
+  for (const c of cards) {
+    if (!c) continue
+    const n = BJ_VAL[c.value] ?? (parseInt(c.value) || 0)
+    if (c.value === 'ACE') aces++
+    v += n
+  }
+  while (v > 21 && aces > 0) { v -= 10; aces-- }
+  return v
+}
+
+function DataAPIShowcase({ clicks }) {
+  const canvasRef = useRef(null)
+  const lensIdx   = clicks % DATA_LENSES.length
+  const lens      = DATA_LENSES[lensIdx]
+  const C         = ACCENT.llm
+
+  const [pokSearch, setPokSearch]   = useState('')
+  const [showSearch, setShowSearch] = useState(false)
+  const [cardStatus, setCardStatus] = useState('init')
+  const [gameMode,   setGameMode]   = useState('hilo')
+  const [bjStatus,   setBjStatus]   = useState('idle')
+
+  const wxRef        = useRef({ temp:null, feelsLike:null, code:0, wind:0, humidity:null, city:'', updatedAt:null, status:'pending' })
+  const stocksRef    = useRef(STOCKS_BASE.map(s => ({ ...s, open:s.price, change:0, history:Array(30).fill(s.price) })))
+  const pokemonRef   = useRef({ name:'', num:'', stats:[], sprite: null, moves: [] })
+  const spriteImgRef = useRef({ url: null, img: null, loaded: false })
+  const cardGameRef  = useRef({ deckId:null, current:null, previous:null, score:0, streak:0, status:'init', remaining:52 })
+  const lastResultRef = useRef({ type:null, at:0 })
+  const bjRef        = useRef({ deckId:null, dealerCards:[], playerCards:[], dealerHidden:true, phase:'idle', result:null, wins:0, losses:0, pushes:0, remaining:312 })
+  const initDeckRef  = useRef(null)
+  const gameModeRef  = useRef('hilo')
+  const lensRef      = useRef(lens)
+  const tickRef      = useRef(0)
+  const geoFetchRef  = useRef(null)
+  const fetchPokRef  = useRef(null)
+
+  useEffect(() => { lensRef.current = lens }, [lens])
+  useEffect(() => { gameModeRef.current = gameMode }, [gameMode])
+
+  // ── Pokémon helpers ──
+  const fetchPokemon = (query) => {
+    pokemonRef.current = { name:'', num:'', stats:[], sprite: null, moves: [] }
+    fetch(`https://pokeapi.co/api/v2/pokemon/${String(query).toLowerCase().trim()}`)
+      .then(r => { if (!r.ok) throw new Error(); return r.json() })
+      .then(d => {
+        const getLvl = m => {
+          const lvls = m.version_group_details
+            .filter(v => v.move_learn_method.name === 'level-up')
+            .map(v => v.level_learned_at)
+          return lvls.length ? Math.max(...lvls) : 0
+        }
+        const lvlUpRaw = d.moves
+          .filter(m => m.version_group_details.some(v => v.move_learn_method.name === 'level-up'))
+          .sort((a, b) => getLvl(b) - getLvl(a))
+          .slice(0, 4)
+        const moveApiNames = (lvlUpRaw.length ? lvlUpRaw : d.moves.slice(0, 4))
+          .map(m => m.move.name)
+        // Set base data immediately (type defaults to 'normal' until fetched)
+        pokemonRef.current = {
+          name:   d.name,
+          num:    '#' + String(d.id).padStart(3, '0'),
+          stats:  d.stats.map(s => ({ name: SNAME_MAP[s.stat.name] ?? s.stat.name.slice(0,4).toUpperCase(), val: s.base_stat })),
+          sprite: d.sprites?.front_default ?? null,
+          moves:  moveApiNames.map(n => ({ name: n.replace(/-/g, ' ').toUpperCase(), type: 'normal' })),
+        }
+        // Fetch each move's type in parallel
+        Promise.all(
+          moveApiNames.map(n =>
+            fetch(`https://pokeapi.co/api/v2/move/${n}`)
+              .then(r => r.json())
+              .then(md => ({ name: n.replace(/-/g, ' ').toUpperCase(), type: md.type?.name ?? 'normal' }))
+              .catch(() => ({ name: n.replace(/-/g, ' ').toUpperCase(), type: 'normal' }))
+          )
+        ).then(movesWithTypes => {
+          pokemonRef.current = { ...pokemonRef.current, moves: movesWithTypes }
+        })
+      })
+      .catch(() => { pokemonRef.current = { name:'not found', num:'---', stats:[], moves: [] } })
+  }
+  fetchPokRef.current = fetchPokemon
+
+  const refreshPokemon = (e) => {
+    e?.stopPropagation()
+    fetchPokemon(Math.floor(Math.random() * 898) + 1)
+  }
+
+  const handleSearch = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!pokSearch.trim()) return
+    fetchPokemon(pokSearch.trim())
+    setShowSearch(false)
+    setPokSearch('')
+  }
+
+  // ── Deck of Cards Hi-Lo game ──
+  const initDeck = () => {
+    cardGameRef.current = { deckId:null, current:null, previous:null, score:0, streak:0, status:'pending', remaining:52 }
+    lastResultRef.current = { type:null, at:0 }
+    setCardStatus('pending')
+    fetch('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=1')
+      .then(r => r.json())
+      .then(d => {
+        cardGameRef.current.deckId = d.deck_id
+        return fetch(`https://deckofcardsapi.com/api/deck/${d.deck_id}/draw/?count=1`)
+      })
+      .then(r => r.json())
+      .then(d => {
+        cardGameRef.current.current = d.cards[0]
+        cardGameRef.current.remaining = d.remaining
+        cardGameRef.current.status = 'ready'
+        setCardStatus('ready')
+      })
+      .catch(() => { cardGameRef.current.status = 'error'; setCardStatus('error') })
+  }
+  initDeckRef.current = initDeck
+
+  const guessCard = (e, guess) => {
+    e.stopPropagation()
+    const cg = cardGameRef.current
+    if (cg.status !== 'ready' || !cg.deckId) return
+    cg.status = 'drawing'
+    setCardStatus('drawing')
+    fetch(`https://deckofcardsapi.com/api/deck/${cg.deckId}/draw/?count=1`)
+      .then(r => r.json())
+      .then(d => {
+        const newCard = d.cards[0]
+        const prevVal = CARD_VAL[cg.current.value] ?? 0
+        const newVal  = CARD_VAL[newCard.value]  ?? 0
+        const tied    = newVal === prevVal
+        const correct = !tied && ((guess === 'higher' && newVal > prevVal) || (guess === 'lower' && newVal < prevVal))
+        cg.previous  = cg.current
+        cg.current   = newCard
+        cg.remaining = d.remaining
+        lastResultRef.current = { type: tied ? 'tie' : correct ? 'correct' : 'wrong', at: Date.now() }
+        if (correct) { cg.score++; cg.streak++ }
+        else if (!tied) { cg.streak = 0 }
+        cg.status = d.remaining === 0 ? 'gameover' : 'ready'
+        setCardStatus(cg.status)
+      })
+      .catch(() => { cg.status = 'error'; setCardStatus('error') })
+  }
+
+  // ── Blackjack ──
+  const bjDeal = (keepDeck) => {
+    const bj = bjRef.current
+    const prevWins = bj.wins, prevLosses = bj.losses, prevPushes = bj.pushes
+    bjRef.current = { ...bjRef.current, dealerCards:[], playerCards:[], dealerHidden:true, phase:'dealing', result:null, wins:prevWins, losses:prevLosses, pushes:prevPushes }
+    setBjStatus('dealing')
+    const doFetch = (deckId) =>
+      fetch(`https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=4`)
+        .then(r => r.json())
+        .then(d => {
+          const [c0, c1, c2, c3] = d.cards
+          const bj2 = bjRef.current
+          bj2.deckId = deckId
+          bj2.playerCards = [c0, c2]
+          bj2.dealerCards = [c1, c3]
+          bj2.dealerHidden = true
+          bj2.remaining = d.remaining
+          const pVal = handValue(bj2.playerCards)
+          if (pVal === 21) {
+            bj2.dealerHidden = false
+            if (handValue(bj2.dealerCards) === 21) { bj2.result = 'push'; bj2.pushes++ }
+            else { bj2.result = 'blackjack'; bj2.wins++ }
+            bj2.phase = 'result'
+          } else {
+            bj2.phase = 'player'
+          }
+          setBjStatus(bj2.phase)
+        })
+    if (keepDeck && bj.deckId) {
+      const needShuffle = bj.remaining < 20
+      const ready = needShuffle
+        ? fetch(`https://deckofcardsapi.com/api/deck/${bj.deckId}/shuffle/`).then(() => doFetch(bj.deckId))
+        : doFetch(bj.deckId)
+      ready.catch(() => { bjRef.current.phase = 'error'; setBjStatus('error') })
+    } else {
+      fetch('https://deckofcardsapi.com/api/deck/new/shuffle/?deck_count=6')
+        .then(r => r.json())
+        .then(d => doFetch(d.deck_id))
+        .catch(() => { bjRef.current.phase = 'error'; setBjStatus('error') })
+    }
+  }
+
+  const bjDoStand = () => {
+    const bj = bjRef.current
+    bj.dealerHidden = false
+    const dealerPlay = () => {
+      if (handValue(bj.dealerCards) >= 17) {
+        const pVal = handValue(bj.playerCards)
+        const dVal = handValue(bj.dealerCards)
+        if (dVal > 21 || pVal > dVal) { bj.result = 'win'; bj.wins++ }
+        else if (pVal < dVal) { bj.result = 'loss'; bj.losses++ }
+        else { bj.result = 'push'; bj.pushes++ }
+        bj.phase = 'result'
+        setBjStatus('result')
+        return
+      }
+      fetch(`https://deckofcardsapi.com/api/deck/${bj.deckId}/draw/?count=1`)
+        .then(r => r.json())
+        .then(d => { bj.dealerCards.push(d.cards[0]); bj.remaining = d.remaining; dealerPlay() })
+        .catch(() => { bj.phase = 'error'; setBjStatus('error') })
+    }
+    dealerPlay()
+  }
+
+  const bjHit = (e) => {
+    e.stopPropagation()
+    const bj = bjRef.current
+    if (bj.phase !== 'player' || !bj.deckId) return
+    bj.phase = 'dealing'
+    setBjStatus('dealing')
+    fetch(`https://deckofcardsapi.com/api/deck/${bj.deckId}/draw/?count=1`)
+      .then(r => r.json())
+      .then(d => {
+        bj.playerCards.push(d.cards[0])
+        bj.remaining = d.remaining
+        const val = handValue(bj.playerCards)
+        if (val > 21) { bj.dealerHidden = false; bj.result = 'bust'; bj.losses++; bj.phase = 'result'; setBjStatus('result') }
+        else if (val === 21) { bj.phase = 'dealer'; setBjStatus('dealer'); bjDoStand() }
+        else { bj.phase = 'player'; setBjStatus('player') }
+      })
+      .catch(() => { bj.phase = 'error'; setBjStatus('error') })
+  }
+
+  const bjStand = (e) => {
+    e.stopPropagation()
+    const bj = bjRef.current
+    if (bj.phase !== 'player') return
+    bj.phase = 'dealer'
+    setBjStatus('dealer')
+    bjDoStand()
+  }
+
+  // ── Weather ──
+  const doGeoFetch = () => {
+    wxRef.current = { ...wxRef.current, status: 'pending' }
+    const doFetch = (lat, lon, city) =>
+      fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m&temperature_unit=fahrenheit&wind_speed_unit=mph`)
+        .then(r => r.json())
+        .then(d => {
+          const cur = d.current
+          wxRef.current = {
+            temp:      Math.round(cur.temperature_2m),
+            feelsLike: Math.round(cur.apparent_temperature),
+            code:      cur.weather_code ?? 0,
+            wind:      Math.round(cur.wind_speed_10m),
+            humidity:  Math.round(cur.relative_humidity_2m ?? 0),
+            city, updatedAt: new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }),
+            status: 'ok',
+          }
+        })
+        .catch(() => { wxRef.current.status = 'error' })
+
+    if (!navigator.geolocation) { doFetch(26.2034, -98.2300, 'McALLEN, TX'); return }
+    navigator.geolocation.getCurrentPosition(
+      pos => {
+        const { latitude: lat, longitude: lon } = pos.coords
+        fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
+          .then(r => r.json())
+          .then(g => {
+            const city = (g.address?.city || g.address?.town || g.address?.village || g.address?.county || 'YOUR LOCATION').toUpperCase()
+            doFetch(lat, lon, city)
+          })
+          .catch(() => doFetch(lat, lon, 'YOUR LOCATION'))
+      },
+      () => { wxRef.current.status = 'denied'; doFetch(26.2034, -98.2300, 'McALLEN, TX') },
+      { timeout: 8000 }
+    )
+  }
+  geoFetchRef.current = doGeoFetch
+  useEffect(() => { doGeoFetch() }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Stocks: simulated random walk every 1.5 s ──
+  useEffect(() => {
+    const id = setInterval(() => {
+      stocksRef.current = stocksRef.current.map(s => {
+        const delta   = s.price * (Math.random() - 0.497) * 0.004
+        const price   = Math.max(1, s.price + delta)
+        const change  = ((price - s.open) / s.open) * 100
+        const history = [...s.history.slice(-29), price]
+        return { ...s, price, change, history }
+      })
+    }, 1500)
+    return () => clearInterval(id)
+  }, [])
+
+  // ── Deck of Cards: init on mount ──
+  useEffect(() => { initDeck() }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── Pokémon: random on mount ──
+  useEffect(() => {
+    fetchPokemon(Math.floor(Math.random() * 898) + 1)
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // ── rAF loop ──
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    const dpr = window.devicePixelRatio || 1
+    const W = canvas.clientWidth || 380, H = 260
+    canvas.width = W * dpr; canvas.height = H * dpr
+    ctx.scale(dpr, dpr)
+    let animId
+
+    const onCanvasClick = e => {
+      if (lensRef.current === 'weather' && wxRef.current.status === 'denied') {
+        e.stopPropagation(); geoFetchRef.current?.()
+      } else if (lensRef.current === 'cards' && cardGameRef.current.status === 'gameover') {
+        e.stopPropagation(); initDeckRef.current?.()
+      }
+    }
+    canvas.addEventListener('click', onCanvasClick)
+
+    const hdr = (title, source) => {
+      const pulse = 3 + Math.sin(tickRef.current * 0.06) * 1.2
+      ctx.font = 'bold 10px "Courier New"'; ctx.fillStyle = C; ctx.textAlign = 'left'
+      ctx.fillText(title, 10, 16)
+      const tw = ctx.measureText(title).width
+      ctx.font = '8px "Courier New"'; ctx.fillStyle = C + '77'
+      ctx.fillText('· ' + source, 10 + tw + 6, 16)
+      ctx.fillStyle = '#4ade80'
+      ctx.beginPath(); ctx.arc(W - 14, 11, pulse, 0, Math.PI * 2); ctx.fill()
+      ctx.fillStyle = '#4ade8033'
+      ctx.beginPath(); ctx.arc(W - 14, 11, pulse + 5, 0, Math.PI * 2); ctx.fill()
+      ctx.strokeStyle = C + '33'; ctx.lineWidth = 0.5
+      ctx.beginPath(); ctx.moveTo(8, 22); ctx.lineTo(W - 8, 22); ctx.stroke()
+    }
+
+    const frame = () => {
+      tickRef.current++
+      const t = tickRef.current
+      ctx.clearRect(0, 0, W, H)
+      const cur = lensRef.current
+
+      // ── WEATHER ──
+      if (cur === 'weather') {
+        hdr('WEATHER', 'Open-Meteo')
+        const wx = wxRef.current
+        if (wx.status === 'pending') {
+          const dots = '.'.repeat(Math.floor(t / 18) % 4)
+          ctx.fillStyle = C + '88'; ctx.font = '10px "Courier New"'; ctx.textAlign = 'center'
+          ctx.fillText('LOCATING' + dots, W / 2, 110)
+          ctx.fillStyle = C + '44'; ctx.font = '8px "Courier New"'
+          ctx.fillText('allow location for live weather', W / 2, 132)
+        } else {
+          // ── Animated weather icon (left column) ──
+          const icx = 74, icy = 108
+          const code = wx.code ?? 0
+          if (code === 0) {
+            // Clear: rotating sun
+            const numR = 8, rLen = 11, sunR = 21
+            ctx.strokeStyle = '#f8d030'; ctx.lineWidth = 2.5; ctx.lineCap = 'round'
+            for (let r = 0; r < numR; r++) {
+              const ang = (r / numR) * Math.PI * 2 + t * 0.018
+              ctx.beginPath()
+              ctx.moveTo(icx + Math.cos(ang) * (sunR + 5), icy + Math.sin(ang) * (sunR + 5))
+              ctx.lineTo(icx + Math.cos(ang) * (sunR + 5 + rLen), icy + Math.sin(ang) * (sunR + 5 + rLen))
+              ctx.stroke()
+            }
+            const sg = ctx.createRadialGradient(icx, icy, 0, icx, icy, sunR + 18)
+            sg.addColorStop(0, '#f8d030aa'); sg.addColorStop(1, '#f8d03000')
+            ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(icx, icy, sunR + 18, 0, Math.PI * 2); ctx.fill()
+            ctx.fillStyle = '#f8d030'; ctx.beginPath(); ctx.arc(icx, icy, sunR, 0, Math.PI * 2); ctx.fill()
+          } else if (code >= 1 && code <= 3) {
+            // Partly cloudy
+            const sh = Math.sin(t * 0.02) * 2
+            ctx.fillStyle = '#f8d03077'; ctx.beginPath(); ctx.arc(icx - 10 + sh, icy - 10, 15, 0, Math.PI * 2); ctx.fill()
+            ctx.fillStyle = '#8899bb'
+            ctx.beginPath(); ctx.arc(icx + 4, icy + 4, 16, 0, Math.PI * 2)
+            ctx.arc(icx - 8, icy + 9, 12, 0, Math.PI * 2)
+            ctx.arc(icx + 18, icy + 9, 11, 0, Math.PI * 2); ctx.fill()
+          } else if (code >= 45 && code <= 48) {
+            // Fog: drifting lines
+            for (let li = 0; li < 5; li++) {
+              const ly = icy - 20 + li * 10
+              const ph = (t * 0.015 + li * 0.3) % 1
+              ctx.strokeStyle = `rgba(180,200,220,${0.25 + 0.4 * Math.sin(ph * Math.PI)})`
+              ctx.lineWidth = 3; ctx.lineCap = 'round'
+              ctx.beginPath(); ctx.moveTo(icx - 34, ly); ctx.lineTo(icx + 34, ly); ctx.stroke()
+            }
+          } else if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
+            // Rain
+            ctx.fillStyle = '#5577aa'
+            ctx.beginPath(); ctx.arc(icx, icy - 14, 17, 0, Math.PI * 2)
+            ctx.arc(icx - 13, icy - 8, 12, 0, Math.PI * 2)
+            ctx.arc(icx + 13, icy - 8, 12, 0, Math.PI * 2); ctx.fill()
+            for (let d = 0; d < 6; d++) {
+              const ph = ((t * 0.04 + d * 0.18) % 1)
+              const dy = icy + 4 + ph * 30
+              ctx.strokeStyle = `rgba(110,170,230,${1 - ph})`
+              ctx.lineWidth = 1.5; ctx.lineCap = 'round'
+              ctx.beginPath(); ctx.moveTo(icx - 20 + d * 8, dy); ctx.lineTo(icx - 22 + d * 8, dy + 8); ctx.stroke()
+            }
+          } else if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) {
+            // Snow
+            ctx.fillStyle = '#8899aa'
+            ctx.beginPath(); ctx.arc(icx, icy - 14, 17, 0, Math.PI * 2)
+            ctx.arc(icx - 13, icy - 8, 12, 0, Math.PI * 2)
+            ctx.arc(icx + 13, icy - 8, 12, 0, Math.PI * 2); ctx.fill()
+            for (let s = 0; s < 5; s++) {
+              const ph = ((t * 0.02 + s * 0.22) % 1)
+              const sy2 = icy + 4 + ph * 28
+              ctx.fillStyle = `rgba(210,230,255,${1 - ph * 0.5})`
+              ctx.beginPath(); ctx.arc(icx - 18 + s * 9, sy2, 2.5, 0, Math.PI * 2); ctx.fill()
+            }
+          } else if (code >= 95) {
+            // Thunderstorm
+            ctx.fillStyle = '#334455'
+            ctx.beginPath(); ctx.arc(icx, icy - 18, 19, 0, Math.PI * 2)
+            ctx.arc(icx - 14, icy - 11, 14, 0, Math.PI * 2)
+            ctx.arc(icx + 14, icy - 11, 14, 0, Math.PI * 2); ctx.fill()
+            if (Math.floor(t / 25) % 3 !== 0) {
+              ctx.fillStyle = '#f8d030dd'
+              ctx.beginPath(); ctx.moveTo(icx + 2, icy - 4)
+              ctx.lineTo(icx - 5, icy + 9); ctx.lineTo(icx + 1, icy + 9)
+              ctx.lineTo(icx - 4, icy + 23); ctx.lineTo(icx + 9, icy + 7)
+              ctx.lineTo(icx + 2, icy + 7); ctx.closePath(); ctx.fill()
+            }
+          } else {
+            // Generic cloud
+            ctx.fillStyle = '#7788aa'
+            ctx.beginPath(); ctx.arc(icx, icy - 8, 17, 0, Math.PI * 2)
+            ctx.arc(icx - 13, icy, 12, 0, Math.PI * 2)
+            ctx.arc(icx + 13, icy, 12, 0, Math.PI * 2); ctx.fill()
+          }
+
+          // ── Right side: data ──
+          const rx = 148
+          ctx.fillStyle = C + 'bb'; ctx.font = '9px "Courier New"'; ctx.textAlign = 'left'
+          ctx.fillText('\u{1F4CD} ' + (wx.city || '---'), rx, 38)
+
+          ctx.globalAlpha = 0.94 + Math.sin(t * 0.02) * 0.06
+          ctx.fillStyle = C; ctx.font = 'bold 50px "Courier New"'; ctx.textAlign = 'left'
+          ctx.fillText((wx.temp ?? '--') + '°F', rx, 90)
+          ctx.globalAlpha = 1
+
+          ctx.fillStyle = C + 'aa'; ctx.font = '10px "Courier New"'; ctx.textAlign = 'left'
+          ctx.fillText(WX_LABEL[wx.code] ?? 'UNKNOWN', rx, 110)
+
+          // Divider
+          ctx.strokeStyle = C + '22'; ctx.lineWidth = 0.5
+          ctx.beginPath(); ctx.moveTo(8, 150); ctx.lineTo(W - 8, 150); ctx.stroke()
+
+          // Stats row
+          const wxStats = [
+            { label: 'FEELS', val: (wx.feelsLike ?? '--') + '°F' },
+            { label: 'WIND',  val: (wx.wind     ?? '--') + ' MPH' },
+            { label: 'HUMID', val: (wx.humidity ?? '--') + '%' },
+          ]
+          const colW = (W - 16) / 3
+          wxStats.forEach((s, i) => {
+            const sx = 8 + i * colW
+            ctx.fillStyle = C + '66'; ctx.font = '7px "Courier New"'; ctx.textAlign = 'left'
+            ctx.fillText(s.label, sx, 165)
+            ctx.fillStyle = C + 'cc'; ctx.font = 'bold 11px "Courier New"'
+            ctx.fillText(s.val, sx, 179)
+          })
+
+          // Temperature gradient bar
+          const pct = Math.max(0, Math.min(1, ((wx.temp ?? 60) - 20) / 100))
+          const bx = 8, bw = W - 16, by = 192, bh = 5
+          ctx.fillStyle = C + '18'; ctx.fillRect(bx, by, bw, bh)
+          const fw = pct * bw * (1 + Math.sin(t * 0.025) * 0.005)
+          const gr = ctx.createLinearGradient(bx, by, bx + bw, by)
+          gr.addColorStop(0, '#3dd6c8'); gr.addColorStop(0.5, '#f0b84a'); gr.addColorStop(1, '#fb923c')
+          ctx.fillStyle = gr; ctx.fillRect(bx, by, fw, bh)
+
+          if (wx.status === 'denied') {
+            ctx.fillStyle = '#f87171cc'; ctx.font = '7px "Courier New"'; ctx.textAlign = 'center'
+            ctx.fillText('[ CLICK TO RETRY LOCATION ]', W / 2, 215)
+          } else {
+            ctx.fillStyle = C + '44'; ctx.font = '7px "Courier New"'; ctx.textAlign = 'center'
+            ctx.fillText('LIVE · ' + (wx.updatedAt ?? '--:--'), W / 2, 215)
+          }
+        }
+      }
+
+      // ── STOCKS treemap ──
+      if (cur === 'stocks') {
+        hdr('MARKETS', 'S&P 500 TOP')
+        const stocks = stocksRef.current
+        const pad = 3, cols = 4, rows = 2
+        const sy   = 26
+        const cw   = (W - pad * (cols + 1)) / cols
+        const ch   = (H - sy - pad * (rows + 1)) / rows
+        stocks.forEach((s, i) => {
+          const col  = i % cols, row = Math.floor(i / cols)
+          const x    = pad + col * (cw + pad)
+          const y    = sy + pad + row * (ch + pad)
+          const up   = s.change >= 0
+          const inten = Math.min(Math.abs(s.change) / 3, 1)
+          const bgA  = Math.round(0x14 + inten * 0x32).toString(16).padStart(2,'0')
+          const hue  = up ? '#4ade80' : '#f87171'
+          ctx.fillStyle = hue + bgA; ctx.fillRect(x, y, cw, ch)
+          ctx.strokeStyle = hue + '77'; ctx.lineWidth = 1
+          ctx.strokeRect(x + 0.5, y + 0.5, cw - 1, ch - 1)
+          ctx.fillStyle = '#eeffff'; ctx.font = 'bold 14px "Courier New"'; ctx.textAlign = 'center'
+          ctx.fillText(s.sym, x + cw / 2, y + ch * 0.40)
+          const chStr = (up ? '▲' : '▼') + Math.abs(s.change).toFixed(2) + '%'
+          ctx.fillStyle = hue; ctx.font = 'bold 12px "Courier New"'
+          ctx.fillText(chStr, x + cw / 2, y + ch * 0.68)
+          const pr = s.price >= 1000 ? '$' + s.price.toFixed(0) : '$' + s.price.toFixed(2)
+          ctx.fillStyle = '#ffffffaa'; ctx.font = '10px "Courier New"'
+          ctx.fillText(pr, x + cw / 2, y + ch * 0.92)
+        })
+      }
+
+      // ── CARDS: HI-LO or BLACKJACK ──
+      if (cur === 'cards') {
+        const mode = gameModeRef.current
+
+        // ── Shared small card draw helper (blackjack) ──
+        const bjCard = (cx, cy, cw2, ch2, card, faceDown) => {
+          if (faceDown) {
+            ctx.fillStyle = '#1a2244'; ctx.fillRect(cx, cy, cw2, ch2)
+            ctx.strokeStyle = C + '66'; ctx.lineWidth = 1; ctx.strokeRect(cx, cy, cw2, ch2)
+            ctx.strokeStyle = C + '1e'; ctx.lineWidth = 0.5
+            for (let px = cx + 5; px < cx + cw2 - 3; px += 5) {
+              ctx.beginPath(); ctx.moveTo(px, cy + 2); ctx.lineTo(px, cy + ch2 - 2); ctx.stroke()
+            }
+            return
+          }
+          const isRed2 = card.suit === 'HEARTS' || card.suit === 'DIAMONDS'
+          const sym2   = SUIT_SYM[card.suit] ?? '?'
+          const vs2    = { JACK:'J', QUEEN:'Q', KING:'K', ACE:'A' }[card.value] ?? card.value
+          const tc2    = isRed2 ? '#cc2200' : '#111133'
+          ctx.shadowBlur = 8; ctx.shadowColor = C + '44'
+          ctx.fillStyle = '#f0f0f5'; ctx.fillRect(cx, cy, cw2, ch2)
+          ctx.shadowBlur = 0
+          ctx.strokeStyle = C + 'aa'; ctx.lineWidth = 1; ctx.strokeRect(cx, cy, cw2, ch2)
+          const fs2 = Math.round(cw2 * 0.24)
+          ctx.fillStyle = tc2; ctx.font = `bold ${fs2}px "Courier New"`; ctx.textAlign = 'left'
+          ctx.fillText(vs2, cx + 3, cy + fs2 + 2)
+          ctx.font = `${Math.round(fs2 * 0.8)}px serif`; ctx.fillText(sym2, cx + 3, cy + fs2 * 2 + 1)
+          ctx.font = `${Math.round(cw2 * 0.5)}px serif`; ctx.textAlign = 'center'
+          ctx.fillText(sym2, cx + cw2 / 2, cy + ch2 * 0.65)
+        }
+
+        if (mode === 'blackjack') {
+          hdr('BLACKJACK', 'deckofcardsapi')
+          const bj = bjRef.current
+          const cw2 = 48, ch2 = 68, gap = 5
+
+          // Score row
+          ;[
+            { label:'WINS',   v: bj.wins,   col:'#4ade80' },
+            { label:'PUSHES', v: bj.pushes, col: C        },
+            { label:'LOSSES', v: bj.losses, col:'#f87171' },
+          ].forEach((s, i) => {
+            const sx = 8 + i * (W / 3)
+            ctx.fillStyle = s.col + '77'; ctx.font = '7px "Courier New"'; ctx.textAlign = 'left'
+            ctx.fillText(s.label, sx, 35)
+            ctx.fillStyle = s.col; ctx.font = 'bold 14px "Courier New"'
+            ctx.fillText(String(s.v), sx, 51)
+          })
+          ctx.strokeStyle = C + '22'; ctx.lineWidth = 0.5
+          ctx.beginPath(); ctx.moveTo(8, 59); ctx.lineTo(W - 8, 59); ctx.stroke()
+
+          if (bj.phase === 'idle') {
+            ctx.fillStyle = C + '44'; ctx.font = '9px "Courier New"'; ctx.textAlign = 'center'
+            ctx.fillText('PRESS DEAL TO START', W / 2, 145)
+          } else if (bj.phase === 'dealing') {
+            const dots = '.'.repeat(Math.floor(t / 18) % 4)
+            ctx.fillStyle = C + '88'; ctx.font = '11px "Courier New"'; ctx.textAlign = 'center'
+            ctx.fillText('DEALING' + dots, W / 2, 145)
+          } else if (bj.phase === 'error') {
+            ctx.fillStyle = '#f87171'; ctx.font = '10px "Courier New"'; ctx.textAlign = 'center'
+            ctx.fillText('CONNECTION ERROR', W / 2, 145)
+          } else {
+            const dCards = bj.dealerCards, pCards = bj.playerCards
+            const dVal = bj.dealerHidden ? handValue(dCards.slice(1)) : handValue(dCards)
+            const pVal = handValue(pCards)
+
+            // Dealer row
+            const dLabel = bj.dealerHidden ? `DEALER: ${dVal} + ?` : `DEALER: ${handValue(dCards)}${handValue(dCards) > 21 ? ' BUST' : ''}`
+            ctx.fillStyle = '#f87171bb'; ctx.font = 'bold 9px "Courier New"'; ctx.textAlign = 'left'
+            ctx.fillText(dLabel, 8, 72)
+            const dTotal = dCards.length
+            const dStartX = (W - (dTotal * (cw2 + gap) - gap)) / 2
+            dCards.forEach((card, i) => bjCard(dStartX + i * (cw2 + gap), 78, cw2, ch2, card, i === 0 && bj.dealerHidden))
+
+            ctx.strokeStyle = C + '22'; ctx.lineWidth = 0.5
+            ctx.beginPath(); ctx.moveTo(8, 154); ctx.lineTo(W - 8, 154); ctx.stroke()
+
+            // Player row
+            const bust = pVal > 21
+            const blink2 = bust && Math.floor(t / 15) % 2 === 0
+            ctx.fillStyle = blink2 ? '#f87171' : (pVal === 21 ? '#4ade80' : C + 'aa')
+            ctx.font = 'bold 9px "Courier New"'; ctx.textAlign = 'left'
+            ctx.fillText(`YOU: ${pVal}${bust ? ' — BUST' : pVal === 21 ? ' — 21!' : ''}`, 8, 168)
+            const pTotal = pCards.length
+            const pStartX = (W - (pTotal * (cw2 + gap) - gap)) / 2
+            pCards.forEach((card, i) => bjCard(pStartX + i * (cw2 + gap), 174, cw2, ch2, card, false))
+
+            // Result / prompt
+            if (bj.phase === 'result') {
+              const MSG = { win:'YOU WIN!', loss:'DEALER WINS', push:'PUSH', blackjack:'BLACKJACK!', bust:'BUST' }
+              const COL = { win:'#4ade80', loss:'#f87171', push:C, blackjack:'#f8d030', bust:'#f87171' }
+              ctx.globalAlpha = 0.85 + Math.sin(t * 0.09) * 0.15
+              ctx.fillStyle = COL[bj.result] ?? C; ctx.font = 'bold 14px "Courier New"'; ctx.textAlign = 'center'
+              ctx.fillText(MSG[bj.result] ?? '', W / 2, 250)
+              ctx.globalAlpha = 1
+              ctx.fillStyle = C + '44'; ctx.font = '7px "Courier New"'
+              ctx.fillText('DEAL AGAIN ↓', W / 2, 260)
+            } else if (bj.phase === 'dealer') {
+              const ddots = '.'.repeat(Math.floor(t / 20) % 4)
+              ctx.fillStyle = C + '66'; ctx.font = '8px "Courier New"'; ctx.textAlign = 'center'
+              ctx.fillText('DEALER DRAWING' + ddots, W / 2, 250)
+            } else {
+              ctx.fillStyle = C + '55'; ctx.font = '8px "Courier New"'; ctx.textAlign = 'center'
+              ctx.fillText('HIT or STAND?', W / 2, 250)
+            }
+          }
+        } else {
+          hdr('HI-LO', 'deckofcardsapi')
+        const cg = cardGameRef.current
+
+        // Helper: draw a playing card
+        const drawCard = (cx, cy, cw2, ch2, card, faded) => {
+          const isRed = card.suit === 'HEARTS' || card.suit === 'DIAMONDS'
+          const sym   = SUIT_SYM[card.suit] ?? '?'
+          const valStr = { JACK:'J', QUEEN:'Q', KING:'K', ACE:'A' }[card.value] ?? card.value
+          ctx.globalAlpha = faded ? 0.45 : 1
+          ctx.fillStyle = faded ? '#1a1a2e' : '#f0f0f5'
+          if (!faded) { ctx.shadowBlur = 14; ctx.shadowColor = C + '55' }
+          ctx.fillRect(cx, cy, cw2, ch2)
+          ctx.shadowBlur = 0
+          ctx.strokeStyle = faded ? C + '44' : C + 'cc'
+          ctx.lineWidth = faded ? 0.8 : 1.5
+          ctx.strokeRect(cx, cy, cw2, ch2)
+          if (!faded) {
+            const tc = isRed ? '#cc2200' : '#111133'
+            const fs  = Math.round(cw2 * 0.21)
+            ctx.fillStyle = tc; ctx.font = `bold ${fs}px "Courier New"`; ctx.textAlign = 'left'
+            ctx.fillText(valStr, cx + 4, cy + fs + 3)
+            ctx.font = `${Math.round(fs * 0.82)}px serif`
+            ctx.fillText(sym, cx + 4, cy + fs * 2 + 3)
+            const bigFs = Math.round(cw2 * 0.52)
+            ctx.font = `${bigFs}px serif`; ctx.textAlign = 'center'
+            ctx.fillText(sym, cx + cw2 / 2, cy + ch2 * 0.62)
+            ctx.font = `bold ${fs}px "Courier New"`; ctx.textAlign = 'right'
+            ctx.fillText(valStr, cx + cw2 - 4, cy + ch2 - 10)
+          } else {
+            ctx.fillStyle = C + '33'; ctx.font = `bold ${Math.round(cw2 * 0.35)}px "Courier New"`; ctx.textAlign = 'center'
+            ctx.fillText('?', cx + cw2 / 2, cy + ch2 * 0.6)
+          }
+          ctx.globalAlpha = 1
+        }
+
+        if (cg.status === 'pending' || cg.status === 'drawing') {
+          const dots = '.'.repeat(Math.floor(t / 18) % 4)
+          ctx.fillStyle = C + '88'; ctx.font = '11px "Courier New"'; ctx.textAlign = 'center'
+          ctx.fillText((cg.status === 'pending' ? 'SHUFFLING' : 'DRAWING') + dots, W / 2, H / 2)
+        } else if (cg.status === 'error') {
+          ctx.fillStyle = '#f87171'; ctx.font = '10px "Courier New"'; ctx.textAlign = 'center'
+          ctx.fillText('CONNECTION ERROR', W / 2, H / 2)
+          ctx.fillStyle = C + '66'; ctx.font = '8px "Courier New"'
+          ctx.fillText('[ CLICK TO RETRY ]', W / 2, H / 2 + 20)
+        } else if (cg.status === 'gameover') {
+          ctx.fillStyle = C; ctx.font = 'bold 16px "Courier New"'; ctx.textAlign = 'center'
+          ctx.fillText('GAME OVER', W / 2, 105)
+          ctx.fillStyle = C + 'aa'; ctx.font = '13px "Courier New"'
+          ctx.fillText('FINAL SCORE: ' + cg.score, W / 2, 132)
+          ctx.fillStyle = '#f8d030'; ctx.font = 'bold 11px "Courier New"'
+          ctx.fillText('BEST STREAK: ' + cg.streak, W / 2, 154)
+          ctx.fillStyle = C + '55'; ctx.font = '8px "Courier New"'
+          ctx.fillText('[ CLICK OR USE BUTTON BELOW ]', W / 2, 180)
+        } else {
+          // Score row
+          ctx.fillStyle = C + '77'; ctx.font = '7px "Courier New"'; ctx.textAlign = 'left'
+          ctx.fillText('SCORE', 12, 36)
+          ctx.fillStyle = C; ctx.font = 'bold 14px "Courier New"'
+          ctx.fillText(String(cg.score), 12, 52)
+          ctx.fillStyle = C + '77'; ctx.font = '7px "Courier New"'; ctx.textAlign = 'center'
+          ctx.fillText('STREAK', W / 2, 36)
+          ctx.fillStyle = '#f8d030'; ctx.font = 'bold 14px "Courier New"'
+          ctx.fillText('×' + cg.streak, W / 2, 52)
+          ctx.fillStyle = C + '77'; ctx.font = '7px "Courier New"'; ctx.textAlign = 'right'
+          ctx.fillText('LEFT', W - 12, 36)
+          ctx.fillStyle = C + 'cc'; ctx.font = 'bold 14px "Courier New"'
+          ctx.fillText(String(cg.remaining), W - 12, 52)
+
+          ctx.strokeStyle = C + '22'; ctx.lineWidth = 0.5
+          ctx.beginPath(); ctx.moveTo(8, 60); ctx.lineTo(W - 8, 60); ctx.stroke()
+
+          // Previous card (small, faded) — left
+          if (cg.previous) {
+            drawCard(22, 75, 60, 84, cg.previous, true)
+            ctx.fillStyle = C + '44'; ctx.font = '7px "Courier New"'; ctx.textAlign = 'center'
+            ctx.fillText('PREV', 52, 170)
+          } else {
+            ctx.fillStyle = '#0d0d1a'; ctx.fillRect(22, 75, 60, 84)
+            ctx.strokeStyle = C + '22'; ctx.lineWidth = 1; ctx.strokeRect(22, 75, 60, 84)
+          }
+
+          // Arrow
+          const arrowY = 117
+          ctx.strokeStyle = C + '55'; ctx.lineWidth = 1.5
+          ctx.beginPath(); ctx.moveTo(92, arrowY); ctx.lineTo(112, arrowY)
+          ctx.moveTo(107, arrowY - 5); ctx.lineTo(112, arrowY); ctx.lineTo(107, arrowY + 5)
+          ctx.stroke()
+
+          // Current card (large, bright) — right
+          if (cg.current) drawCard(122, 65, 90, 124, cg.current, false)
+
+          // Result flash
+          const lr = lastResultRef.current
+          const age = Date.now() - lr.at
+          if (lr.type && age < 1100) {
+            const alpha = Math.max(0, 1 - age / 1100)
+            const col = lr.type === 'correct' ? '#4ade80' : lr.type === 'tie' ? '#f8d030' : '#f87171'
+            const msg = lr.type === 'correct' ? '✓ CORRECT' : lr.type === 'tie' ? '~ TIE' : '✗ WRONG'
+            ctx.globalAlpha = alpha
+            ctx.fillStyle = col; ctx.font = 'bold 12px "Courier New"'; ctx.textAlign = 'center'
+            ctx.fillText(msg, 232, 52)
+            ctx.globalAlpha = 1
+          }
+
+          // Prompt
+          ctx.fillStyle = C + '66'; ctx.font = '8px "Courier New"'; ctx.textAlign = 'left'
+          ctx.fillText('IS THE NEXT CARD:', 8, 218)
+          ctx.fillStyle = C + '44'; ctx.font = '7px "Courier New"'
+          ctx.fillText('use buttons below ↓', 8, 231)
+        }
+        } // end else (hilo)
+      }
+
+      // ── POKÉMON ──
+      if (cur === 'pokemon') {
+        hdr('POKÉMON', 'PokéAPI')
+        const { name, num, stats, sprite, moves } = pokemonRef.current
+
+        // Load sprite image when URL changes
+        if (sprite && spriteImgRef.current.url !== sprite) {
+          const img = new Image()
+          img.crossOrigin = 'anonymous'
+          spriteImgRef.current = { url: sprite, img, loaded: false }
+          img.onload = () => { spriteImgRef.current.loaded = true }
+          img.src = sprite
+        }
+
+        if (!stats.length) {
+          const dots = '.'.repeat(Math.floor(t / 18) % 4)
+          ctx.fillStyle = C + '88'; ctx.font = '10px "Courier New"'; ctx.textAlign = 'center'
+          ctx.fillText('LOADING' + dots, W / 2, H / 2)
+        } else {
+          const sprLoaded = spriteImgRef.current.loaded && spriteImgRef.current.url === sprite
+          const sprSize   = 120
+          const sprX      = W - sprSize - 6
+          const sprY      = 26
+          const barX      = 52
+          const bmw       = sprLoaded ? sprX - barX - 16 : W - barX - 12
+
+          // Stats — tall bars, big font
+          const rowH = 21, barH = 17, sy3 = 28
+          stats.forEach((s, i) => {
+            const y   = sy3 + i * rowH
+            const col = STAT_COLS[s.name] ?? C
+            const bw  = (s.val / 255) * bmw * (1 + Math.sin(t * 0.02 + i * 1.1) * 0.008)
+            ctx.fillStyle = '#0e0e2299'; ctx.fillRect(barX, y, bmw, barH)
+            const g = ctx.createLinearGradient(barX, y, barX + bw, y)
+            g.addColorStop(0, col + 'ee'); g.addColorStop(1, col + '55')
+            ctx.fillStyle = g; ctx.fillRect(barX, y, bw, barH)
+            ctx.fillStyle = col; ctx.font = 'bold 12px "Courier New"'; ctx.textAlign = 'right'
+            ctx.fillText(s.name, barX - 5, y + 13)
+            ctx.fillStyle = '#ddeeffcc'; ctx.font = '11px "Courier New"'; ctx.textAlign = 'right'
+            ctx.fillText(String(s.val), sprX - 6, y + 13)
+          })
+
+          // Sprite — drawn after stats so it renders on top cleanly
+          if (sprLoaded) {
+            ctx.save()
+            ctx.imageSmoothingEnabled = false
+            ctx.strokeStyle = C + '44'; ctx.lineWidth = 1.5
+            ctx.strokeRect(sprX - 1, sprY - 1, sprSize + 2, sprSize + 2)
+            ctx.drawImage(spriteImgRef.current.img, sprX, sprY, sprSize, sprSize)
+            ctx.restore()
+          }
+
+          // Name + number below sprite (no overlap)
+          const sprCx = sprLoaded ? sprX + sprSize / 2 : W / 2
+          const nameY = sprLoaded ? sprY + sprSize + 14 : sy3 + 6 * rowH + 16
+          ctx.fillStyle = C; ctx.font = 'bold 10px "Courier New"'; ctx.textAlign = 'center'
+          ctx.fillText(name.toUpperCase(), sprCx, nameY)
+          ctx.fillStyle = C + '88'; ctx.font = '9px "Courier New"'
+          ctx.fillText(num, sprCx, nameY + 13)
+
+          // Divider
+          const divY = nameY + 21
+          ctx.strokeStyle = C + '33'; ctx.lineWidth = 0.5
+          ctx.beginPath(); ctx.moveTo(8, divY); ctx.lineTo(W - 8, divY); ctx.stroke()
+
+          // ── Moves ──
+          const mLabelY = divY + 13
+          ctx.fillStyle = C + '88'; ctx.font = 'bold 9px "Courier New"'; ctx.textAlign = 'left'
+          ctx.fillText('TOP MOVES', 10, mLabelY)
+
+          const halfW  = (W - 24) / 2
+          const badgeH = 22
+          ;(moves ?? []).forEach((mv, i) => {
+            const mx       = 10 + (i % 2) * (halfW + 4)
+            const badgeY   = mLabelY + 6 + Math.floor(i / 2) * (badgeH + 5)
+            const moveName = typeof mv === 'string' ? mv : mv.name
+            const moveType = typeof mv === 'string' ? 'normal' : (mv.type ?? 'normal')
+            const tc       = TYPE_COLORS[moveType] ?? C
+            ctx.fillStyle = tc + '28'
+            ctx.fillRect(mx, badgeY, halfW, badgeH)
+            ctx.strokeStyle = tc + '88'; ctx.lineWidth = 0.8
+            ctx.strokeRect(mx, badgeY, halfW, badgeH)
+            ctx.font = '11px "Courier New"'
+            let label = moveName
+            const maxPx = halfW - 10
+            while (ctx.measureText(label).width > maxPx && label.length > 2)
+              label = label.slice(0, -1)
+            if (label !== moveName) label = label.slice(0, -1) + '…'
+            ctx.fillStyle = tc; ctx.textAlign = 'left'
+            ctx.fillText(label, mx + 5, badgeY + 15)
+          })
+        }
+      }
+
+      animId = requestAnimationFrame(frame)
+    }
+    animId = requestAnimationFrame(frame)
+    return () => { cancelAnimationFrame(animId); canvas.removeEventListener('click', onCanvasClick) }
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+
+  const btnSt = {
+    background: C + '22',
+    border: `2px solid ${C}`,
+    color: C,
+    fontFamily: '"Courier New", monospace',
+    fontSize: 10,
+    fontWeight: 'bold',
+    lineHeight: 1.4,
+    cursor: 'pointer',
+    padding: '6px 16px',
+    letterSpacing: '0.08em',
+  }
+  const btnStActive = {
+    ...btnSt,
+    background: C,
+    color: '#0d1117',
+  }
+
+  const btnHi  = { ...btnSt, borderColor: '#4ade80', color: '#4ade80', background: '#4ade8015' }
+  const btnLo  = { ...btnSt, borderColor: '#f87171', color: '#f87171', background: '#f8717115' }
+  const canGuess = cardStatus === 'ready'
 
   return (
-    <div className="llm-showcase" key={idx}>
-      <div className="llm-icon" style={{ borderColor: C + '55', color: C }}>{m.icon}</div>
-      <div className="llm-model-info">
-        <div className="llm-model-name" style={{ color: C }}>{m.name}</div>
-        <div className="llm-model-meta" style={{ color: C + 'aa' }}>
-          {m.creator} · {m.params} params · {m.ctx} ctx
+    <div style={{ position: 'relative' }}>
+      <canvas ref={canvasRef} className="domain-canvas" width={380} height={260} />
+
+      {lens === 'cards' && (
+        <div
+          style={{ borderTop: `1px solid ${C}33`, background: '#07090f' }}
+          onClick={e => e.stopPropagation()}
+        >
+          {/* Mode tabs */}
+          <div style={{ display:'flex', borderBottom:`1px solid ${C}22` }}>
+            {['hilo','blackjack'].map(m => (
+              <button
+                key={m}
+                onClick={e => { e.stopPropagation(); setGameMode(m) }}
+                style={{
+                  flex:1, background: gameMode === m ? C + '18' : 'transparent',
+                  border:'none', borderBottom: gameMode === m ? `2px solid ${C}` : '2px solid transparent',
+                  color: gameMode === m ? C : C + '55',
+                  fontFamily:'"Courier New"', fontSize:9, fontWeight:'bold',
+                  letterSpacing:'0.12em', cursor:'pointer', padding:'5px 0',
+                  textTransform:'uppercase',
+                }}
+              >{m === 'hilo' ? 'HI-LO' : 'BLACKJACK'}</button>
+            ))}
+          </div>
+
+          {/* Action buttons */}
+          <div style={{ display:'flex', gap:8, alignItems:'center', padding:'7px 10px', flexWrap:'wrap' }}>
+            {gameMode === 'hilo' ? (
+              cardStatus === 'gameover' ? (
+                <button onClick={e => { e.stopPropagation(); initDeck() }} style={btnSt}>↻ PLAY AGAIN</button>
+              ) : (
+                <>
+                  <button onClick={e => guessCard(e, 'higher')} disabled={!canGuess} style={{ ...btnHi, opacity: canGuess ? 1 : 0.4 }}>▲ HIGHER</button>
+                  <button onClick={e => guessCard(e, 'lower')}  disabled={!canGuess} style={{ ...btnLo, opacity: canGuess ? 1 : 0.4 }}>▼ LOWER</button>
+                  <span style={{ fontFamily:'"Courier New"', fontSize:9, color: C + '44', marginLeft:'auto', letterSpacing:'0.08em' }}>GUESS THE NEXT CARD</span>
+                </>
+              )
+            ) : (
+              bjStatus === 'result' || bjStatus === 'idle' || bjStatus === 'error' ? (
+                <button onClick={e => { e.stopPropagation(); bjDeal(bjStatus === 'result') }} style={btnSt}>
+                  {bjStatus === 'idle' ? '▶ DEAL' : '↻ DEAL AGAIN'}
+                </button>
+              ) : (
+                <>
+                  <button onClick={bjHit}   disabled={bjStatus !== 'player'} style={{ ...btnHi, opacity: bjStatus === 'player' ? 1 : 0.4 }}>+ HIT</button>
+                  <button onClick={bjStand} disabled={bjStatus !== 'player'} style={{ ...btnSt, opacity: bjStatus === 'player' ? 1 : 0.4 }}>■ STAND</button>
+                  {bjStatus === 'dealer' && (
+                    <span style={{ fontFamily:'"Courier New"', fontSize:9, color:'#f8d030', letterSpacing:'0.08em' }}>DEALER PLAYING…</span>
+                  )}
+                </>
+              )
+            )}
+          </div>
         </div>
-        <div className="llm-tags">
-          {m.tags.map(t => (
-            <span key={t} className="llm-tag" style={{ borderColor: C + '44', color: C + 'cc' }}>{t}</span>
-          ))}
+      )}
+
+      {lens === 'pokemon' && (
+        <div
+          style={{
+            display: 'flex', gap: 8, alignItems: 'center',
+            padding: '8px 10px', borderTop: `1px solid ${C}33`,
+            background: '#07090f', flexWrap: 'wrap',
+          }}
+          onClick={e => e.stopPropagation()}
+        >
+          <button onClick={refreshPokemon} style={btnSt} title="Random Pokémon">↻ RANDOM</button>
+          <button onClick={() => setShowSearch(s => !s)} style={showSearch ? btnStActive : btnSt} title="Search Pokémon">⌕ SEARCH</button>
+          {showSearch && (
+            <form onSubmit={handleSearch} style={{ display:'flex', gap:6, alignItems:'center' }}>
+              <input
+                value={pokSearch}
+                onChange={e => setPokSearch(e.target.value)}
+                placeholder="name or #"
+                autoFocus
+                style={{
+                  background:'#0d1117', border:`2px solid ${C}`, color:C,
+                  font:'10px "Courier New"', padding:'5px 10px', width:100, outline:'none',
+                }}
+              />
+              <button type="submit" style={btnSt}>GO</button>
+              <button type="button" onClick={() => { setShowSearch(false); setPokSearch('') }} style={btnSt}>✕</button>
+            </form>
+          )}
         </div>
-        <div className="llm-counter" style={{ color: C + '44' }}>
-          {idx + 1} / {MODELS.length} — click to cycle
-        </div>
-      </div>
-      <div className="llm-dots">
-        {MODELS.map((_, i) => (
-          <span key={i} className="llm-dot" style={{ background: i === idx ? C : C + '22' }} />
-        ))}
-      </div>
+      )}
+
+      <span className="ml-level-badge" style={{ color: C }}>
+        {lensIdx + 1}/{DATA_LENSES.length} — {DATA_META[lens].title}
+      </span>
     </div>
   )
 }
 
 // ─────────────────────────────────────────────────────────────
-// WEB — GROWING ARCHITECTURE DIAGRAM  (clicks → add nodes)
+// WEB — CODE INSPECTOR  (clicks → cycle stack panels)
 // ─────────────────────────────────────────────────────────────
-const FLOW_NODES = [
-  { id: 'user',   label: 'USER',      sub: 'browser',  row: 0, col: 0 },
-  { id: 'app',    label: 'REACT',     sub: 'frontend', row: 0, col: 1 },
-  { id: 'api',    label: 'EXPRESS',   sub: 'REST API', row: 0, col: 2 },
-  { id: 'db',     label: 'MONGO',     sub: 'database', row: 0, col: 3 },
-  { id: 'auth',   label: 'JWT',       sub: 'auth',     row: 1, col: 2 },
-  { id: 'ws',     label: 'SOCKET',    sub: 'realtime', row: 1, col: 1 },
-]
 
-const FLOW_EDGES = [
-  [0, 1], [1, 2], [2, 3], [2, 4], [1, 5],
-]
-
-// Per-node colors
-const NODE_COLORS = {
-  user:  '#58a6ff',
-  app:   '#61dafb',
-  api:   '#68d391',
-  db:    '#4db33d',
-  auth:  '#f6c90e',
-  ws:    '#9d7fff',
+const TOKEN = {
+  kw:   '#c792ea',
+  fn:   '#82aaff',
+  str:  '#c3e88d',
+  cm:   '#546e7a',
+  num:  '#f78c6c',
+  id:   '#eeffff',
+  tag:  '#f07178',
+  attr: '#ffcb6b',
+  pl:   '#a9b7c6',
 }
 
-// Proportional positions so canvas scales to any width
-function getNodePos(id, W, H) {
-  const positions = {
-    user:  { x: W * 0.07,  y: H * 0.32 },
-    app:   { x: W * 0.30,  y: H * 0.32 },
-    api:   { x: W * 0.55,  y: H * 0.32 },
-    db:    { x: W * 0.925, y: H * 0.32 },
-    auth:  { x: W * 0.55,  y: H * 0.75 },
-    ws:    { x: W * 0.30,  y: H * 0.75 },
-  }
-  return positions[id]
-}
+const WEB_PANELS = [
+  {
+    id: 'react', label: 'REACT', file: 'Projects.jsx', color: '#61dafb', badge: 'FRONTEND',
+    lines: [
+      [['kw','const '],['id','Projects'],['pl',' = () => {']],
+      [['pl','  '],['kw','const '],['pl','[data, setData] = '],['fn','useState'],['pl','([])']],
+      [['pl','  '],['fn','useEffect'],['pl','(() => {']],
+      [['pl','    '],['fn','fetch'],['pl','('],['str',"'/api/projects'"],['pl',')']],
+      [['pl','      .'],['fn','then'],['pl','(r => r.'],['fn','json'],['pl','()).'],['fn','then'],['pl','(setData)']],
+      [['pl','  }, [])']],
+      [['pl','  '],['kw','return '],['tag','<ProjectGrid '],['attr','items'],['pl','={data} />']],
+      [['pl','}']],
+    ],
+  },
+  {
+    id: 'express', label: 'EXPRESS', file: 'routes/api.js', color: '#68d391', badge: 'BACKEND',
+    lines: [
+      [['id','router'],['pl','.'],['fn','get'],['pl','('],['str',"'/api/projects'"],['pl',', '],['kw','async '],['pl','(req, res) => {']],
+      [['pl','  '],['kw','const '],['pl','{ page = '],['num','1'],['pl',', limit = '],['num','9'],['pl',' } = req.query']],
+      [['pl','  '],['kw','const '],['id','docs'],['pl',' = '],['kw','await '],['id','Project']],
+      [['pl','    .'],['fn','find'],['pl','({ featured: '],['kw','true'],['pl',' })']],
+      [['pl','    .'],['fn','skip'],['pl','((page − '],['num','1'],['pl',') * limit).'],['fn','limit'],['pl','(+limit)']],
+      [['pl','  '],['id','res'],['pl','.'],['fn','json'],['pl','({ ok: '],['kw','true'],['pl',', data: '],['id','docs'],['pl',' })']],
+      [['pl','})']],
+    ],
+  },
+  {
+    id: 'mongo', label: 'MONGODB', file: 'models/Project.js', color: '#4db33d', badge: 'DATABASE',
+    lines: [
+      [['kw','const '],['id','ProjectSchema'],['pl',' = '],['kw','new '],['fn','Schema'],['pl','({']],
+      [['pl','  title:    { type: '],['id','String'],['pl',', required: '],['kw','true'],['pl',' },']],
+      [['pl','  stack:    ['],['id','String'],['pl','],']],
+      [['pl','  featured: '],['id','Boolean'],['pl',',']],
+      [['pl','  liveUrl:  '],['id','String'],['pl',',']],
+      [['pl','  date:     { type: '],['id','Date'],['pl',', default: '],['id','Date.now'],['pl',' }']],
+      [['pl','})']],
+    ],
+  },
+  {
+    id: 'socket', label: 'SOCKET.IO', file: 'socket/events.js', color: '#9d7fff', badge: 'REALTIME',
+    lines: [
+      [['id','io'],['pl','.'],['fn','on'],['pl','('],['str',"'connection'"],['pl',', socket => {']],
+      [['pl','  socket.'],['fn','on'],['pl','('],['str',"'join-room'"],['pl',', roomId => {']],
+      [['pl','    socket.'],['fn','join'],['pl','(roomId)']],
+      [['pl','    io.'],['fn','to'],['pl','(roomId).'],['fn','emit'],['pl','('],['str',"'user-joined'"],['pl',',']],
+      [['pl','      { id: socket.id, ts: '],['fn','Date.now'],['pl','() })']],
+      [['pl','  })']],
+      [['pl','})']],
+    ],
+  },
+]
 
-function WebFlowCanvas({ clicks }) {
-  const canvasRef = useRef(null)
-  const clicksRef = useRef(clicks)
-  useEffect(() => { clicksRef.current = clicks }, [clicks])
+function WebCodeInspector({ clicks }) {
+  const idx   = clicks % WEB_PANELS.length
+  const panel = WEB_PANELS[idx]
 
-  useEffect(() => {
-    const canvas = canvasRef.current
-    const dpr = window.devicePixelRatio || 1
-    const rect = canvas.getBoundingClientRect()
-    const W = rect.width
-    const H = rect.height || 160
-    canvas.width = Math.round(W * dpr)
-    canvas.height = Math.round(H * dpr)
-    const ctx = canvas.getContext('2d')
-    ctx.scale(dpr, dpr)
+  return (
+    <div className="wci" style={{ '--wci-c': panel.color }}>
 
-    let nodeProgress = {}   // id → opacity 0-1 for appear animation
-    let packetT = 0
-    let packetEdge = 0
-    let animId
+      <div className="wci-tabs">
+        {WEB_PANELS.map((p, i) => (
+          <span
+            key={p.id}
+            className={'wci-tab' + (i === idx ? ' wci-tab--on' : '')}
+            style={{ '--tc': p.color }}
+          >
+            {p.label}
+          </span>
+        ))}
+        <span className="wci-tab-gap" />
+        <span className="wci-badge" style={{ color: panel.color }}>{panel.badge}</span>
+      </div>
 
-    function drawNode(n, alpha) {
-      if (alpha <= 0) return
-      const { x, y } = getNodePos(n.id, W, H)
-      const C = NODE_COLORS[n.id]
-      const BW = 54, BH = 24
-      ctx.globalAlpha = alpha
-      ctx.fillStyle = C + '10'
-      ctx.fillRect(x - BW / 2, y - BH / 2, BW, BH)
-      ctx.strokeStyle = C + '88'
-      ctx.lineWidth = 1
-      ctx.strokeRect(x - BW / 2, y - BH / 2, BW, BH)
-      ctx.fillStyle = C
-      ctx.font = 'bold 7px "Courier New"'
-      ctx.textAlign = 'center'
-      ctx.fillText(n.label, x, y - 1)
-      ctx.fillStyle = C + '77'
-      ctx.font = '6px "Courier New"'
-      ctx.fillText(n.sub, x, y + 9)
-      ctx.globalAlpha = 1
-    }
+      <div key={clicks} className="wci-code">
+        <div className="wci-gutter">
+          {panel.lines.map((_, i) => <span key={i} className="wci-ln">{i + 1}</span>)}
+        </div>
+        <div className="wci-body">
+          {panel.lines.map((tokens, li) => (
+            <div
+              key={li}
+              className="wci-line"
+              style={{ animationDelay: `${li * 0.048}s` }}
+            >
+              {tokens.map(([type, text], ti) => (
+                <span key={ti} style={{ color: TOKEN[type] || '#eeffff' }}>{text}</span>
+              ))}
+              {li === panel.lines.length - 1 && <span className="wci-cursor" />}
+            </div>
+          ))}
+        </div>
+      </div>
 
-    function drawEdge(a, b, alpha) {
-      if (alpha <= 0) return
-      const p1 = getNodePos(a.id, W, H), p2 = getNodePos(b.id, W, H)
-      const C = NODE_COLORS[a.id]
-      ctx.globalAlpha = alpha * 0.4
-      ctx.beginPath()
-      ctx.setLineDash([3, 3])
-      ctx.strokeStyle = C
-      ctx.lineWidth = 1
-      // vertical/diagonal vs horizontal edge
-      if (a.id === b.id || (Math.abs(p1.x - p2.x) < 10)) {
-        ctx.moveTo(p1.x, p1.y + 12)
-        ctx.lineTo(p2.x, p2.y - 12)
-      } else if (p1.y !== p2.y) {
-        // cross row edge
-        ctx.moveTo(p1.x, p1.y + 12)
-        ctx.lineTo(p2.x, p2.y - 12)
-      } else {
-        ctx.moveTo(p1.x + 27, p1.y)
-        ctx.lineTo(p2.x - 27, p2.y)
-      }
-      ctx.stroke()
-      ctx.setLineDash([])
-      ctx.globalAlpha = 1
-    }
+      <div className="wci-status">
+        <span className="wci-file" style={{ color: panel.color + 'bb' }}>{panel.file}</span>
+        <div className="wci-pips">
+          {WEB_PANELS.map((_, i) => (
+            <span key={i} className="wci-pip" style={{ background: i === idx ? panel.color : '#1e2030' }} />
+          ))}
+        </div>
+        <span className="wci-hint" style={{ color: panel.color + '66' }}>click to cycle</span>
+      </div>
 
-    function frame() {
-      ctx.clearRect(0, 0, W, H)
-
-      const targetLevel = Math.min(clicksRef.current + 1, FLOW_NODES.length)
-
-      // animate node opacity
-      FLOW_NODES.forEach((n, i) => {
-        const target = i < targetLevel ? 1 : 0
-        const cur = nodeProgress[n.id] ?? 0
-        nodeProgress[n.id] = cur + (target - cur) * 0.07
-      })
-
-      // draw edges
-      FLOW_EDGES.forEach(([ai, bi]) => {
-        const a = FLOW_NODES[ai], b = FLOW_NODES[bi]
-        const alpha = Math.min(nodeProgress[a.id] ?? 0, nodeProgress[b.id] ?? 0)
-        drawEdge(a, b, alpha)
-      })
-
-      // animated packet along active edges
-      const visibleEdges = FLOW_EDGES.filter(([ai, bi]) =>
-        (nodeProgress[FLOW_NODES[ai].id] ?? 0) > 0.8 &&
-        (nodeProgress[FLOW_NODES[bi].id] ?? 0) > 0.8
-      )
-
-      if (visibleEdges.length > 0) {
-        packetT += 0.02
-        if (packetT > 1) {
-          packetT = 0
-          packetEdge = (packetEdge + 1) % visibleEdges.length
-        }
-        const [ai, bi] = visibleEdges[packetEdge % visibleEdges.length]
-        const destNode = FLOW_NODES[bi]
-        const C = NODE_COLORS[destNode.id]
-        const a = getNodePos(FLOW_NODES[ai].id, W, H), b = getNodePos(FLOW_NODES[bi].id, W, H)
-        const sameRow = Math.abs(a.y - b.y) < 5
-        const px = sameRow ? (a.x + 27) + ((b.x - 27) - (a.x + 27)) * packetT : a.x + (b.x - a.x) * packetT
-        const py = sameRow ? a.y : (a.y + 12) + ((b.y - 12) - (a.y + 12)) * packetT
-
-        const g = ctx.createRadialGradient(px, py, 0, px, py, 7)
-        g.addColorStop(0, C)
-        g.addColorStop(1, C + '00')
-        ctx.fillStyle = g
-        ctx.beginPath()
-        ctx.arc(px, py, 7, 0, Math.PI * 2)
-        ctx.fill()
-      }
-
-      // draw nodes
-      FLOW_NODES.forEach(n => drawNode(n, nodeProgress[n.id] ?? 0))
-
-      // hint label
-      if (clicksRef.current < FLOW_NODES.length - 1) {
-        ctx.fillStyle = NODE_COLORS.user + '33'
-        ctx.font = '6px "Courier New"'
-        ctx.textAlign = 'center'
-        ctx.fillText('click to expand architecture', W / 2, H - 6)
-      }
-
-      animId = requestAnimationFrame(frame)
-    }
-
-    animId = requestAnimationFrame(frame)
-    return () => cancelAnimationFrame(animId)
-  }, [])
-
-  return <canvas ref={canvasRef} className="domain-canvas" />
+    </div>
+  )
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -474,11 +1366,14 @@ function PixelBattleCanvas() {
     const canvas = canvasRef.current
     const ctx = canvas.getContext('2d')
     ctx.imageSmoothingEnabled = false
-    const W = canvas.width, H = canvas.height
+    const dpr = window.devicePixelRatio || 1
+    const W = canvas.clientWidth || 380, H = 260
+    canvas.width = W * dpr; canvas.height = H * dpr
+    ctx.scale(dpr, dpr)
     const C = ACCENT.game
 
-    const GROUND = 100
-    const CMD_Y  = 108
+    const GROUND = 140
+    const CMD_Y  = 150
     const KX = 20
     const GX = W - GOBLIN_IDLE[0].length * PS - 20
     const KH = KNIGHT_IDLE.length * PS
@@ -1159,7 +2054,7 @@ function PixelBattleCanvas() {
       ref={canvasRef}
       className="domain-canvas pixel-canvas"
       width={380}
-      height={190}
+      height={260}
     />
   )
 }
@@ -1169,8 +2064,8 @@ function PixelBattleCanvas() {
 // ─────────────────────────────────────────────────────────────
 const DOMAINS = [
   { id: 'ml',   accent: ACCENT.ml,   label: 'Machine Learning',  desc: 'RL agents, custom Gymnasium environments, PPO training loops.',         skills: ['Python', 'Stable-Baselines3', 'Gymnasium', 'PPO / RL'], Anim: NeuralNetCanvas,    hint: '[ CLICK TO TRAIN ]' },
-  { id: 'llm',  accent: ACCENT.llm,  label: 'Local AI / LLMs',   desc: 'On-device inference, prompt engineering, Gemini API integration.',      skills: ['Ollama', 'Gemini API', 'Node.js', 'Prompt Eng.'],       Anim: LLMModelShowcase,   hint: '[ CLICK TO CYCLE MODEL ]' },
-  { id: 'web',  accent: ACCENT.web,  label: 'Web Development',    desc: 'Full-stack MERN apps, REST APIs, real-time Socket.io features.',        skills: ['React', 'Node.js / Express', 'MongoDB', 'Vite'],        Anim: WebFlowCanvas,      hint: '[ CLICK TO EXPAND STACK ]' },
+  { id: 'data', accent: ACCENT.llm,  label: 'Data & APIs',        desc: 'Live integrations — geolocation weather, S&P 500 market data, live airspace tracking, and Pokémon stats.', skills: ['REST APIs', 'Data Viz', 'React', 'Async/Await', 'JSON'], Anim: DataAPIShowcase,    hint: '[ CLICK TO CYCLE DATA SOURCE ]' },
+  { id: 'web',  accent: ACCENT.web,  label: 'Web Development',    desc: 'Full-stack MERN — React frontends, Express REST APIs, Socket.io realtime, MongoDB schemas.',  skills: ['React', 'Express.js', 'MongoDB', 'Socket.io', 'Vite'],  Anim: WebCodeInspector,   hint: '[ CLICK TO CYCLE PANEL ]' },
   { id: 'game', accent: ACCENT.game, label: 'Game Development',   desc: 'Unity systems, C# scripting, enemy AI state machines, combat feel.',   skills: ['Unity', 'C#', 'Figma', 'Game Design'],                  Anim: PixelBattleCanvas,  hint: '[ HOVER COMMANDS ABOVE TO BATTLE ]' },
 ]
 

@@ -50,8 +50,8 @@
 
 .field-error {
   font-family: var(--font-mono);
-  font-size: 0.62rem;
-  color: #e05555;
+  font-size: 0.78rem;
+  color: #f07070;
   letter-spacing: 0.06em;
 }
 

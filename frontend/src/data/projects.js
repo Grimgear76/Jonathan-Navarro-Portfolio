@@ -2,13 +2,22 @@ export const projects = [
   {
     id: 'pokemon-battle-bot',
     title: 'Pokémon Battle Bot',
-    description: 'Reinforcement learning agent that masters competitive Pokémon battles using PPO.',
-    technologies: ['Python', 'PPO', 'Stable-Baselines3', 'Gymnasium'],
+    description: 'Reinforcement learning agent that learns competitive Pokémon strategy from scratch using MaskablePPO — trained to 18.4M timesteps.',
+    technologies: ['Python', 'MaskablePPO', 'Stable-Baselines3', 'Gymnasium', 'poke-env', 'TensorBoard'],
     accentColor: '#e8a838',
+    images: [
+      '/screenshots/pokemon-battle-bot/battle-demo.gif',
+    ],
     detail: {
-      problem: 'Training an AI to play competitive Pokémon requires handling complex game state, partial information, and long-horizon rewards with sparse feedback.',
-      built: 'Implemented a Proximal Policy Optimization agent using Stable-Baselines3 and a custom Gymnasium environment wrapping the Pokémon Showdown battle simulator.',
-      outcome: 'Agent surpassed random baseline play and demonstrated adaptive battle strategies — switching moves based on type matchups — after extended training.',
+      problem: 'Pokémon battles are a hard RL problem: 839-dimensional game state, 11 possible actions per turn (4 moves + 6 switches + 1 forced default), partial information, and rewards that only arrive at the end of a ~47-turn game. Standard PPO samples illegal moves and diverges — the bot needs to learn which actions are even legal before it can learn strategy.',
+      built: `Built a full RL training pipeline on top of Pokémon Showdown (local Node.js server) using poke-env as the battle connector and a custom Gymnasium environment. Key decisions:
+
+• MaskablePPO (Stable-Baselines3): illegal action logits are forced to −∞ so the policy never samples invalid moves — this was essential for stable training.
+• 839-dim observation vector encoding HP, moves, status conditions, and field effects for both sides.
+• Shaped reward function: +2.0 win / −2.0 loss, +0.25 for KO'ing opponent, −0.25 for losing own Pokémon, ±0.04×HP for damage dealt/received — provides signal before the battle ends.
+• 3-phase curriculum: Phase 1 trains from scratch vs a random bot to build legal play; Phase 2 seeds from the Phase 1 model and faces a heuristic opponent pool; Phase 3 evaluates against any target opponent.
+• TensorBoard tracked episode reward, KL divergence, entropy loss, and explained variance across the full training run.`,
+      outcome: 'Agent 29 — the final model — reached 18.4M+ timesteps trained over ~1.9 days of continuous learning. Metrics at convergence: 0.56 explained variance, ~0.021 KL divergence, −0.49 entropy loss, 47 turns average battle length. The bot beat the random baseline and demonstrated adaptive play including switching Pokémon in response to type disadvantages.',
     },
   },
   {

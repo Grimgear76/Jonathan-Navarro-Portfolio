@@ -11,8 +11,8 @@
 
 .projects-hint {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
-  color: #555;
+  font-size: 0.82rem;
+  color: #999;
   letter-spacing: 0.12em;
   margin-bottom: 2.5rem;
 }

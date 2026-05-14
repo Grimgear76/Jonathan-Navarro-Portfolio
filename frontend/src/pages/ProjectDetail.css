@@ -80,11 +80,11 @@
 
 .detail-eyebrow {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   letter-spacing: 0.25em;
   color: var(--accent);
   margin-bottom: 1rem;
-  opacity: 0.6;
+  opacity: 0.8;
 }
 
 .detail-title {
@@ -151,11 +151,11 @@
 
 .detail-section h2 {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   letter-spacing: 0.25em;
   color: var(--accent);
   margin-bottom: 1rem;
-  opacity: 0.75;
+  opacity: 0.9;
 }
 
 .detail-section p {
@@ -239,11 +239,11 @@
 
 .detail-media h2 {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.78rem;
   letter-spacing: 0.25em;
   color: var(--accent);
   margin-bottom: 1.25rem;
-  opacity: 0.75;
+  opacity: 0.9;
 }
 
 .detail-media-grid {

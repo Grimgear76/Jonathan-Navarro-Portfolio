@@ -12,6 +12,7 @@ import ParticleBackground from './components/ParticleBackground'
 import Toast from './components/Toast'
 import ScrollZoneWatcher from './components/ScrollZoneWatcher'
 import ProjectDetail from './pages/ProjectDetail'
+import PokemonDetail from './pages/PokemonDetail'
 import './styles/globals.css'
 
 function HomePage() {
@@ -38,6 +39,7 @@ export default function App() {
         <ScrollZoneWatcher />
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/projects/pokemon-battle-bot" element={<PokemonDetail />} />
           <Route path="/projects/:id" element={<ProjectDetail />} />
         </Routes>
       </ColorProvider>

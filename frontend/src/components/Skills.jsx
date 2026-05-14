@@ -346,27 +346,34 @@ function DataAPIShowcase({ clicks }) {
     const prevWins = bj.wins, prevLosses = bj.losses, prevPushes = bj.pushes
     bjRef.current = { ...bjRef.current, dealerCards:[], playerCards:[], dealerHidden:true, phase:'dealing', result:null, wins:prevWins, losses:prevLosses, pushes:prevPushes }
     setBjStatus('dealing')
+    const CARD_DELAY = 420 // ms between each card
     const doFetch = (deckId) =>
       fetch(`https://deckofcardsapi.com/api/deck/${deckId}/draw/?count=4`)
         .then(r => r.json())
         .then(d => {
+          // Deal order: player[0] → dealer[0] → player[1] → dealer[1] (face-down)
           const [c0, c1, c2, c3] = d.cards
           const bj2 = bjRef.current
           bj2.deckId = deckId
-          bj2.playerCards = [c0, c2]
-          bj2.dealerCards = [c1, c3]
-          bj2.dealerHidden = true
           bj2.remaining = d.remaining
-          const pVal = handValue(bj2.playerCards)
-          if (pVal === 21) {
-            bj2.dealerHidden = false
-            if (handValue(bj2.dealerCards) === 21) { bj2.result = 'push'; bj2.pushes++ }
-            else { bj2.result = 'blackjack'; bj2.wins++ }
-            bj2.phase = 'result'
-          } else {
-            bj2.phase = 'player'
-          }
-          setBjStatus(bj2.phase)
+          // Stagger reveals — canvas rAF picks up mutations automatically
+          setTimeout(() => { bj2.playerCards = [c0] }, CARD_DELAY)
+          setTimeout(() => { bj2.dealerCards = [c1] }, CARD_DELAY * 2)
+          setTimeout(() => { bj2.playerCards = [c0, c2] }, CARD_DELAY * 3)
+          setTimeout(() => {
+            bj2.dealerCards = [c1, c3]
+            bj2.dealerHidden = true
+            const pVal = handValue(bj2.playerCards)
+            if (pVal === 21) {
+              bj2.dealerHidden = false
+              if (handValue(bj2.dealerCards) === 21) { bj2.result = 'push'; bj2.pushes++ }
+              else { bj2.result = 'blackjack'; bj2.wins++ }
+              bj2.phase = 'result'
+            } else {
+              bj2.phase = 'player'
+            }
+            setBjStatus(bj2.phase)
+          }, CARD_DELAY * 4)
         })
     if (keepDeck && bj.deckId) {
       const needShuffle = bj.remaining < 20
@@ -396,10 +403,13 @@ function DataAPIShowcase({ clicks }) {
         setBjStatus('result')
         return
       }
-      fetch(`https://deckofcardsapi.com/api/deck/${bj.deckId}/draw/?count=1`)
-        .then(r => r.json())
-        .then(d => { bj.dealerCards.push(d.cards[0]); bj.remaining = d.remaining; dealerPlay() })
-        .catch(() => { bj.phase = 'error'; setBjStatus('error') })
+      // Delay each dealer card draw so they appear one at a time
+      setTimeout(() => {
+        fetch(`https://deckofcardsapi.com/api/deck/${bj.deckId}/draw/?count=1`)
+          .then(r => r.json())
+          .then(d => { bj.dealerCards.push(d.cards[0]); bj.remaining = d.remaining; dealerPlay() })
+          .catch(() => { bj.phase = 'error'; setBjStatus('error') })
+      }, 600)
     }
     dealerPlay()
   }

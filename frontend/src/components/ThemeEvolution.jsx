@@ -16,9 +16,8 @@ function lerpColor(from, to, t) {
   return `rgb(${r},${g},${b})`
 }
 
-// 0 unlocked — cold near-black
-const DARK = {
-  bg:         '#0f0f0f',
+// Color mode: cold near-black → warm charcoal as projects unlock
+const COLOR_FROM = {
   text:       '#c8c8c8',
   textMuted:  '#555555',
   cardBg:     '#0b0b0b',
@@ -26,10 +25,7 @@ const DARK = {
   cardTitle:  '#777777',
   cardDesc:   '#484848',
 }
-
-// All unlocked — warm dark retro charcoal (think old CRT casing / vintage hardware)
-const LIGHT = {
-  bg:         '#2e2b28',
+const COLOR_TO = {
   text:       '#d4cfc8',
   textMuted:  '#9a9590',
   cardBg:     '#26241f',
@@ -38,20 +34,44 @@ const LIGHT = {
   cardDesc:   '#7a7570',
 }
 
+// Mono mode: starts white/crisp → warms to parchment as projects unlock
+const MONO_FROM = {
+  text:       '#111111',
+  textMuted:  '#3a3a3a',
+  cardBg:     '#ffffff',
+  cardBorder: '#e0e0e0',
+  cardTitle:  '#1e1e1e',
+  cardDesc:   '#3a3a3a',
+}
+const MONO_TO = {
+  text:       '#111111',
+  textMuted:  '#3a3a3a',
+  cardBg:     '#f7f3ec',
+  cardBorder: '#d4cfc6',
+  cardTitle:  '#1e1e1e',
+  cardDesc:   '#3a3a3a',
+}
+
 export default function ThemeEvolution() {
   const { state } = useColorContext()
   const t = state.unlockedIds.size / projects.length
+  const { monoMode } = state
 
   useEffect(() => {
+    document.documentElement.setAttribute('data-theme', monoMode ? 'mono' : 'color')
+  }, [monoMode])
+
+  useEffect(() => {
+    const FROM = monoMode ? MONO_FROM : COLOR_FROM
+    const TO   = monoMode ? MONO_TO   : COLOR_TO
     const root = document.documentElement
-    root.style.setProperty('--bg',           lerpColor(DARK.bg,         LIGHT.bg,         t))
-    root.style.setProperty('--text',         lerpColor(DARK.text,       LIGHT.text,       t))
-    root.style.setProperty('--text-muted',   lerpColor(DARK.textMuted,  LIGHT.textMuted,  t))
-    root.style.setProperty('--card-bg',      lerpColor(DARK.cardBg,     LIGHT.cardBg,     t))
-    root.style.setProperty('--card-border',  lerpColor(DARK.cardBorder, LIGHT.cardBorder, t))
-    root.style.setProperty('--card-title',   lerpColor(DARK.cardTitle,  LIGHT.cardTitle,  t))
-    root.style.setProperty('--card-desc',    lerpColor(DARK.cardDesc,   LIGHT.cardDesc,   t))
-  }, [t])
+    root.style.setProperty('--text',        lerpColor(FROM.text,       TO.text,       t))
+    root.style.setProperty('--text-muted',  lerpColor(FROM.textMuted,  TO.textMuted,  t))
+    root.style.setProperty('--card-bg',     lerpColor(FROM.cardBg,     TO.cardBg,     t))
+    root.style.setProperty('--card-border', lerpColor(FROM.cardBorder, TO.cardBorder, t))
+    root.style.setProperty('--card-title',  lerpColor(FROM.cardTitle,  TO.cardTitle,  t))
+    root.style.setProperty('--card-desc',   lerpColor(FROM.cardDesc,   TO.cardDesc,   t))
+  }, [t, monoMode])
 
   return null
 }

@@ -23,10 +23,13 @@ const DRIFT_FORCE    = 0.007  // slowed down
 const MAX_STARS      = 65
 const STAR_INTERVAL  = 12    // frames between each star spawn
 
+const MONO_PALETTE = ['#888888', '#777777', '#999999', '#666666', '#aaaaaa', '#555555']
+
 export default function ParticleBackground() {
   const { state }       = useColorContext()
   const paletteRef      = useRef([])
   const unlockedCountRef = useRef(0)
+  const monoModeRef     = useRef(false)
   const canvasRef       = useRef(null)
 
   useEffect(() => {
@@ -35,6 +38,10 @@ export default function ParticleBackground() {
       .map(p => p.accentColor)
     unlockedCountRef.current = state.unlockedIds.size
   }, [state.unlockedIds])
+
+  useEffect(() => {
+    monoModeRef.current = state.monoMode
+  }, [state.monoMode])
 
   useEffect(() => {
     const canvas = canvasRef.current

@@ -1,20 +1,21 @@
 .projects {
-  padding: 5rem 2rem;
+  padding: 6rem 2rem;
   position: relative;
   z-index: 1;
 }
 
 .projects-container {
-  max-width: 900px;
+  max-width: 920px;
   margin: 0 auto;
 }
 
 .projects-hint {
   font-family: var(--font-mono);
-  font-size: 0.82rem;
-  color: #999;
-  letter-spacing: 0.12em;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  letter-spacing: 0.14em;
   margin-bottom: 2.5rem;
+  text-transform: uppercase;
 }
 
 .projects-grid {

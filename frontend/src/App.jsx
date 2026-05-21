@@ -13,6 +13,7 @@ import Toast from './components/Toast'
 import ScrollZoneWatcher from './components/ScrollZoneWatcher'
 import ProjectDetail from './pages/ProjectDetail'
 import PokemonDetail from './pages/PokemonDetail'
+import ThemeEvolution from './components/ThemeEvolution'
 import './styles/globals.css'
 
 function HomePage() {
@@ -32,6 +33,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <ColorProvider>
+        <ThemeEvolution />
         <ParticleBackground />
         <AmbientOverlay />
         <Navbar />

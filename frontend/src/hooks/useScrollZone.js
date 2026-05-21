@@ -1,10 +1,17 @@
 import { useEffect } from 'react'
 import { useColorContext } from '../context/ColorContext'
 
-const ZONES = [
+const COLOR_ZONES = [
   { zone: 1, bg: '#111111', accent: '#e8a838' },
   { zone: 2, bg: '#0d1117', accent: '#3dd6c8' },
   { zone: 3, bg: '#10101a', accent: '#9d7fff' },
+]
+
+// Mono: near-white backgrounds, same accent colors as dark mode (color unlocks via exploration)
+const MONO_ZONES = [
+  { zone: 1, bg: '#f9f8f5', accent: '#e8a838' },
+  { zone: 2, bg: '#f5f8f7', accent: '#3dd6c8' },
+  { zone: 3, bg: '#f5f5f9', accent: '#9d7fff' },
 ]
 
 export function getZoneIndex(scrollPercent) {
@@ -27,37 +34,40 @@ export function interpolateColor(hex1, hex2, t) {
 }
 
 export default function useScrollZone() {
-  const { dispatch } = useColorContext()
+  const { state, dispatch } = useColorContext()
 
   useEffect(() => {
+    const ZONES = state.monoMode ? MONO_ZONES : COLOR_ZONES
     let rafId = null
+
+    function applyZone() {
+      const scrollY = window.scrollY
+      const maxScroll = document.documentElement.scrollHeight - window.innerHeight
+      const scrollPercent = maxScroll > 0 ? scrollY / maxScroll : 0
+
+      const zoneIdx = getZoneIndex(scrollPercent)
+      const nextIdx = Math.min(zoneIdx + 1, ZONES.length - 1)
+
+      const zoneFraction =
+        zoneIdx === 0 ? scrollPercent / 0.33
+        : zoneIdx === 1 ? (scrollPercent - 0.33) / 0.33
+        : (scrollPercent - 0.66) / 0.34
+
+      const bg     = interpolateColor(ZONES[zoneIdx].bg,     ZONES[nextIdx].bg,     zoneFraction)
+      const accent = interpolateColor(ZONES[zoneIdx].accent, ZONES[nextIdx].accent, zoneFraction)
+
+      document.documentElement.style.setProperty('--bg',     bg)
+      document.documentElement.style.setProperty('--accent', accent)
+      dispatch({ type: 'SET_ZONE', zone: zoneIdx + 1 })
+    }
 
     function handleScroll() {
       if (rafId) return
-      rafId = requestAnimationFrame(() => {
-        rafId = null
-        const scrollY = window.scrollY
-        const maxScroll = document.documentElement.scrollHeight - window.innerHeight
-        const scrollPercent = maxScroll > 0 ? scrollY / maxScroll : 0
-
-        const zoneIdx = getZoneIndex(scrollPercent)
-        const nextIdx = Math.min(zoneIdx + 1, ZONES.length - 1)
-
-        const zoneFraction =
-          zoneIdx === 0 ? scrollPercent / 0.33
-          : zoneIdx === 1 ? (scrollPercent - 0.33) / 0.33
-          : (scrollPercent - 0.66) / 0.34
-
-        const bg = interpolateColor(ZONES[zoneIdx].bg, ZONES[nextIdx].bg, zoneFraction)
-        const accent = interpolateColor(ZONES[zoneIdx].accent, ZONES[nextIdx].accent, zoneFraction)
-
-        document.documentElement.style.setProperty('--bg', bg)
-        document.documentElement.style.setProperty('--accent', accent)
-        dispatch({ type: 'SET_ZONE', zone: zoneIdx + 1 })
-      })
+      rafId = requestAnimationFrame(() => { rafId = null; applyZone() })
     }
 
+    applyZone()
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [dispatch])
+  }, [dispatch, state.monoMode])
 }

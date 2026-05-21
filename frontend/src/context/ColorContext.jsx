@@ -5,6 +5,7 @@ const ColorContext = createContext(null)
 const initialState = {
   scrollZone: 1,
   unlockedIds: new Set(),
+  monoMode: false,
 }
 
 export function colorReducer(state, action) {
@@ -14,6 +15,8 @@ export function colorReducer(state, action) {
     case 'UNLOCK_PROJECT':
       if (state.unlockedIds.has(action.id)) return state
       return { ...state, unlockedIds: new Set([...state.unlockedIds, action.id]) }
+    case 'TOGGLE_MONO':
+      return { ...state, monoMode: !state.monoMode }
     default:
       return state
   }

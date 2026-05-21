@@ -1,11 +1,11 @@
 .skills {
-  padding: 5rem 2rem;
+  padding: 6rem 2rem;
   position: relative;
   z-index: 1;
 }
 
 .skills-container {
-  max-width: 1140px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
@@ -13,24 +13,25 @@
 .domains-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+  gap: 1.75rem;
 }
 
 /* ── Card ── */
 .domain-card {
-  border: 1px solid #222;
-  background: #0a0a0a;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  border-radius: var(--radius);
   cursor: pointer;
   position: relative;
   outline: none;
-  /* Scroll-in: start hidden */
   opacity: 0;
   transform: translateY(28px);
   transition:
     opacity    0.55s ease,
     transform  0.55s ease,
     border-color 0.3s ease,
-    box-shadow 0.3s ease;
+    box-shadow 0.3s ease,
+    background 0.3s ease;
 }
 
 /* Reveal when section is in view */
@@ -57,8 +58,9 @@
 .domain-anim {
   width: 100%;
   overflow: hidden;
-  background: #050505;
-  border-bottom: 1px solid #181818;
+  background: var(--surface-2);
+  border-bottom: 1px solid var(--border);
+  border-radius: var(--radius) var(--radius) 0 0;
 }
 
 .domain-canvas {
@@ -74,36 +76,37 @@
 
 /* ── Info ── */
 .domain-info {
-  padding: 1.5rem 1.75rem 1.25rem;
+  padding: 1.4rem 1.6rem 1.2rem;
 }
 
 .domain-label {
   font-family: var(--font-mono);
-  font-size: 1rem;
-  letter-spacing: 0.2em;
+  font-size: 0.78rem;
+  letter-spacing: 0.22em;
   color: var(--da);
   text-transform: uppercase;
-  margin-bottom: 0.7rem;
+  margin-bottom: 0.6rem;
 }
 
 .domain-desc {
-  font-size: 1rem;
-  color: #bbb;
-  line-height: 1.75;
-  margin-bottom: 1.1rem;
+  font-size: 0.93rem;
+  color: var(--text-muted);
+  line-height: 1.72;
+  margin-bottom: 1rem;
 }
 
 .domain-chips {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 0.45rem;
 }
 
 .domain-chip {
   font-family: var(--font-mono);
-  font-size: 0.72rem;
-  padding: 0.25rem 0.65rem;
+  font-size: 0.68rem;
+  padding: 0.22rem 0.6rem;
   border: 1px solid color-mix(in srgb, var(--da) 40%, transparent);
+  border-radius: var(--radius);
   color: var(--da);
   letter-spacing: 0.06em;
   opacity: 0.8;
@@ -119,7 +122,7 @@
 .domain-click-hint {
   display: block;
   font-family: var(--font-mono);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   letter-spacing: 0.12em;
   color: var(--da);
   opacity: 0.7;
@@ -140,9 +143,14 @@
   opacity: 0.9;
 }
 
-/* ── Idle pulse — invites interaction before first click ── */
+/* ── Mono mode: gently soften neon saturation for white background ── */
+[data-theme="mono"] .domains-grid {
+  filter: saturate(0.62) brightness(0.94);
+}
+
+/* ── Idle pulse ── */
 @keyframes idle-pulse {
-  0%, 100% { box-shadow: 0 0 0px color-mix(in srgb, var(--da) 0%, transparent); border-color: #222; }
+  0%, 100% { box-shadow: 0 0 0px color-mix(in srgb, var(--da) 0%, transparent); border-color: var(--border); }
   50%       { box-shadow: 0 0 18px color-mix(in srgb, var(--da) 28%, transparent); border-color: color-mix(in srgb, var(--da) 45%, transparent); }
 }
 
@@ -170,7 +178,7 @@
   align-items: center;
   gap: 1.25rem;
   padding: 0 1.5rem;
-  background: #050505;
+  background: var(--surface-2);
   animation: llm-fade 0.25s ease;
 }
 
@@ -187,6 +195,7 @@
   align-items: center;
   justify-content: center;
   border: 1px solid;
+  border-radius: var(--radius);
   flex-shrink: 0;
   font-family: var(--font-mono);
 }
@@ -223,6 +232,7 @@
   font-size: 0.74rem;
   padding: 0.18rem 0.48rem;
   border: 1px solid;
+  border-radius: var(--radius);
   letter-spacing: 0.04em;
 }
 
@@ -246,7 +256,7 @@
   transition: background 0.3s ease;
 }
 
-/* ── LLM Terminal (kept for fallback) ── */
+/* ── LLM Terminal ── */
 .llm-terminal {
   width: 100%;
   height: 190px;
@@ -257,13 +267,13 @@
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  background: #050505;
+  background: var(--surface-2);
   color: #3dd6c8;
 }
 
 .lt-line { min-height: 1em; }
 .lt-cmd   { color: #3dd6c8dd; }
-.lt-in    { color: #cccccc; margin-top: 3px; }
+.lt-in    { color: var(--text-muted); margin-top: 3px; }
 .lt-think { color: #3dd6c877; letter-spacing: 0.4em; margin-top: 3px; }
 .lt-out   { color: #3dd6c8aa; }
 .lt-cursor { color: #3dd6c8; line-height: 1; }
@@ -278,7 +288,7 @@
 .wci {
   width: 100%;
   height: 190px;
-  background: #06080f;
+  background: var(--surface-2);
   display: flex;
   flex-direction: column;
   font-family: 'Courier New', monospace;
@@ -288,8 +298,8 @@
 .wci-tabs {
   display: flex;
   align-items: stretch;
-  background: #0a0c18;
-  border-bottom: 1px solid #181a2e;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
   height: 28px;
   flex-shrink: 0;
   padding: 0 6px;
@@ -302,16 +312,18 @@
   padding: 0 10px;
   display: flex;
   align-items: center;
-  color: #363850;
+  color: var(--text-muted);
   border-bottom: 2px solid transparent;
   white-space: nowrap;
   transition: color 0.25s;
+  opacity: 0.5;
 }
 
 .wci-tab--on {
   color: var(--tc);
   border-bottom-color: var(--tc);
   background: color-mix(in srgb, var(--tc) 7%, transparent);
+  opacity: 1;
 }
 
 .wci-tab-gap { flex: 1; }
@@ -324,6 +336,7 @@
   align-self: center;
   margin-right: 4px;
   opacity: 0.75;
+  border-radius: var(--radius);
 }
 
 .wci-code {
@@ -338,15 +351,16 @@
   flex-direction: column;
   width: 30px;
   flex-shrink: 0;
-  border-right: 1px solid #141628;
+  border-right: 1px solid var(--border);
   padding-right: 6px;
 }
 
 .wci-ln {
   font-size: 0.6rem;
-  color: #2c2e44;
+  color: var(--text-muted);
   line-height: 1.62;
   text-align: right;
+  opacity: 0.35;
 }
 
 .wci-body {
@@ -385,8 +399,8 @@
 
 .wci-status {
   height: 20px;
-  background: #0a0c18;
-  border-top: 1px solid #181a2e;
+  background: var(--surface);
+  border-top: 1px solid var(--border);
   display: flex;
   align-items: center;
   padding: 0 12px;
@@ -398,6 +412,8 @@
   font-size: 0.6rem;
   letter-spacing: 0.04em;
   flex: 1;
+  color: var(--text-muted);
+  opacity: 0.6;
 }
 
 .wci-pips {
@@ -415,4 +431,6 @@
 .wci-hint {
   font-size: 0.58rem;
   letter-spacing: 0.08em;
+  color: var(--text-muted);
+  opacity: 0.5;
 }

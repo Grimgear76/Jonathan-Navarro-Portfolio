@@ -140,6 +140,7 @@
   font-size: 0.72rem;
   letter-spacing: 0.14em;
   padding: 0.7rem 1.9rem;
+  min-height: 44px;
   background: var(--accent);
   color: #111;
   border: none;
@@ -178,6 +179,7 @@
   font-size: 0.72rem;
   letter-spacing: 0.14em;
   padding: 0.7rem 1.9rem;
+  min-height: 44px;
   background: transparent;
   color: var(--accent);
   border: 1px solid var(--accent);
@@ -243,4 +245,28 @@
   31%  { transform: scaleY(1); transform-origin: bottom; opacity: 1; }
   80%  { transform: scaleY(0); transform-origin: bottom; opacity: 0; }
   100% { transform: scaleY(0); transform-origin: top;    opacity: 0; }
+}
+
+@media (max-width: 700px) {
+  .hero-content {
+    padding: 1.25rem;
+  }
+
+  .hero-title {
+    letter-spacing: 0.12em;
+  }
+
+  .hero-ctas {
+    gap: 0.75rem;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.7rem;
+  }
+
+  .hero-scroll-hint {
+    bottom: 1.5rem;
+  }
 }

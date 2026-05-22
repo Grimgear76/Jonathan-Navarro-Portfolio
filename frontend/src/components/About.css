@@ -78,5 +78,9 @@
 @media (max-width: 640px) {
   .about-grid {
     grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+  .about {
+    padding: 4rem 1.25rem;
   }
 }

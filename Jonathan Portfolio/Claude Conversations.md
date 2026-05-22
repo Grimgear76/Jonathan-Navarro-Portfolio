@@ -346,3 +346,95 @@ Complete interactive redesign of the game development skill card + comprehensive
 
 **Committed:** `d8b0bce` — feat(skills): game dev card interactive hover menus + full readability overhaul
 
+
+## 2026-05-20 — Mono Mode Redesign: Color-Unlock Mechanic on Light Background
+
+Major design overhaul session focused on professionalizing the site and adding a second theme mode.
+
+**Starting point:** User requested a more professional/clean look with a light mode option. Through iteration the user settled on "two modes: one full color (dark), one monochrome (light) — and mono should follow the same color-unlock journey as dark mode but start monochrome."
+
+**What was built:**
+
+**Mono/Color theme toggle:**
+- `TOGGLE_MONO` action added to ColorContext reducer
+- Navbar gains a `MONO` / `COLOR` text button (monospace, bordered, 28px)
+- `ThemeEvolution.jsx` sets `data-theme="mono"` or `data-theme="color"` on `<html>` based on state
+
+**Light background system (mono mode):**
+- `useScrollZone.js` has two zone sets: dark (existing) and `MONO_ZONES` with near-white backgrounds (`#f9f8f5`, `#f5f8f7`, `#f5f5f9`) that still carry the scroll-accent journey
+- Instant mode switch: `monoMode` added to `useScrollZone` dependency array so background updates immediately on toggle
+
+**Card evolution in mono:**
+- `ThemeEvolution.jsx` has `MONO_FROM` (white/light) → `MONO_TO` (warm parchment) lerp
+- Text stays dark throughout (`#111111`) for maximum readability on light bg
+- Cards warm subtly from white to parchment as projects unlock
+
+**Ambient overlay re-enabled in mono:**
+- `AmbientOverlay.jsx` uses `alpha = '26'` (15% hex) in mono vs `'1a'` (10%) in dark
+- Multi-color radial blobs are clearly visible on white background
+- Full unlock creates a gorgeous pastel cloud effect across the page
+
+**Particle colors:**
+- Identical mechanic in both modes — unlock-driven color lerp, no grey fallback
+- Particles gain project accent colors as cards are unlocked in both dark and mono
+
+**Skills section in mono:**
+- CSS `filter: saturate(0.62) brightness(0.94)` applied to `.domains-grid` in mono
+- Keeps all color from the interactive animations but softens the neon for a light bg
+- Applied at the container level — no JS changes needed
+
+**Global CSS improvements (Inter font, design system):**
+- Added Inter via Google Fonts for body text
+- `--font-sans` variable added, body uses it with antialiasing
+- `--radius: 3px` throughout — cards, inputs, chips
+- All hardcoded hex colors replaced with CSS custom properties across every CSS file
+- `[data-theme="mono"]` overrides for static surface tokens (`--surface`, `--border`, etc.)
+
+**Readability fixes site-wide:**
+- Scroll label visible in mono (`opacity: 1`)
+- Hero, About, Contact, Footer — all text uses CSS vars, no hardcoded dark colors that would vanish on light bg
+- Navbar in mono: `rgba(252,251,249,0.85)` glass; nav links hover uses `rgba(0,0,0,0.05)`
+
+**Verified in browser preview:**
+- Dark mode: unchanged — all scroll transitions, unlock glow, particles, stars work
+- Mono mode start: clean white/grey, no color
+- Mono mode after unlocking 1 project: card lights up with accent color, ambient overlay appears, progress bar updates
+- Mono mode all 6 unlocked: full pastel ambient cloud, all card colors live, 100% progress, toast fires
+
+**Committed:** `583cb84` — feat: add mono mode with full color-unlock mechanic mirroring dark mode  
+**Pushed to:** `origin/main`
+
+## 2026-05-22 — Mobile Experience Improvements
+
+Comprehensive mobile responsiveness pass across the entire portfolio.
+
+**Hamburger menu (biggest fix — navigation was broken on mobile):**
+- Nav links were hidden on screens ≤700px with no replacement; users had no way to navigate
+- Added hamburger button (3-bar → X animation) to `Navbar.jsx` using `useState(menuOpen)`
+- Added slide-down mobile drawer below navbar with all 4 nav links + EXPLORED % progress bar
+- Body scroll locked (`overflow: hidden`) when menu is open; closes on link click or window resize to desktop
+- CSS: hamburger only visible ≤700px; mobile-menu `display: block` via media query; open state controlled by `--open` class with opacity/transform transition
+
+**Hero padding / section padding reduced on mobile:**
+- Hero `padding: 2rem` already OK, added `@media (max-width: 700px)` block with tighter content padding
+- ProjectDetail hero: `padding: 8rem 2rem 4rem` → `5.5rem 1.25rem 2.5rem` on ≤640px
+- PokemonDetail hero: `padding: 10rem 2rem 5rem` → `6rem 1.25rem 3.5rem` on ≤700px
+- About, Skills, Projects, Contact sections: all reduced from `6rem 2rem` → `4rem 1.25rem` on mobile
+
+**Touch target sizes:**
+- `.btn-primary` and `.btn-secondary` got `min-height: 44px`
+- `.nav-link` got `min-height: 44px`
+- `.theme-toggle` bumped from `height: 28px` → `36px` + `min-width: 44px`
+
+**Other fixes:**
+- PokemonDetail: RL node size reduced on mobile, masking/frame padding reduced
+- Skills: canvas height reduced from 260px → 200px on mobile (less wasted vertical space)
+- Projects grid gap reduced to 1.25rem on mobile
+
+**Verified in browser preview at 375×812 (mobile):**
+- Hero renders correctly with amber title, CTA buttons have good tap targets
+- Hamburger button visible top-right; opens clean dark menu with all nav links
+- X icon appears when open, reverts to ≡ on close
+- Projects single-column layout, readable card text and tags
+- Contact form full-width with proper padding
+- No console errors

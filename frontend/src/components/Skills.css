@@ -286,6 +286,12 @@
   .domains-grid {
     grid-template-columns: 1fr;
   }
+  .skills {
+    padding: 4rem 1.25rem;
+  }
+  .domain-canvas {
+    height: 200px;
+  }
 }
 
 /* ── Web Code Inspector ── */

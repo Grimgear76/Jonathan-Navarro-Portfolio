@@ -8,14 +8,16 @@ export default function About() {
         <div className="about-grid">
           <div className="about-bio">
             <p>
-              I'm a Computer Science student at UTRGV with a passion for building things —
-              from reinforcement learning bots to full-stack web apps to 2D games.
-              I thrive at the intersection of engineering and creativity, and I love
-              competitions: two hackathon placements (1st and 2nd) in 2024.
+              I'm a Computer Science graduate from UTRGV — Magna Cum Laude — with deep
+              expertise across full-stack development, machine learning, and game engineering.
+              I build things end-to-end: reinforcement learning bots, production web apps,
+              2D games, and everything in between.
             </p>
             <p>
-              When I'm not coding, I'm designing, gaming, or thinking about
-              how AI is changing the way we build software.
+              I also love a good hackathon — grabbed <strong>1st place</strong> at the Frontera
+              Gemini Hackathon and <strong>2nd place</strong> at an AI/ML one, both throughout 2024 - 2026.
+              Outside of that I'm usually deep in a side project or thinking about how AI
+              is changing the way we build things.
             </p>
           </div>
           <div className="terminal-card">
@@ -29,9 +31,9 @@ export default function About() {
               <p className="terminal-output">Jonathan Navarro</p>
               <p><span className="terminal-prompt">$ cat info.txt</span></p>
               <p className="terminal-output">📍 Rio Grande Valley, TX</p>
-              <p className="terminal-output">🎓 CS @ UTRGV</p>
-              <p className="terminal-output">🏆 2× Hackathon winner</p>
-              <p className="terminal-output">⚡ ML · Web · Game Dev</p>
+              <p className="terminal-output">🎓 CS @ UTRGV — Magna Cum Laude</p>
+              <p className="terminal-output">🏆 2× Hackathon Finalist (1st + 2nd)</p>
+              <p className="terminal-output">⚡ ML · Full-Stack · Game Dev</p>
               <p><span className="terminal-cursor">_</span></p>
             </div>
           </div>

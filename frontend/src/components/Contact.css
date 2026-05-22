@@ -63,6 +63,12 @@
   padding: 5rem 0;
 }
 
+@media (max-width: 640px) {
+  .contact {
+    padding: 4rem 1.25rem;
+  }
+}
+
 .success-text {
   font-family: var(--font-mono);
   font-size: 1.4rem;

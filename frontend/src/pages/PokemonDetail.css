@@ -656,4 +656,28 @@
   .poke-limits__inner { grid-template-columns: 1fr; gap: 2.5rem; }
 
   .poke-section { padding: 4rem 1.25rem; }
+
+  .poke-hero {
+    padding: 6rem 1.25rem 3.5rem;
+    min-height: 80vh;
+  }
+
+  .poke-rl-node {
+    width: 130px;
+    height: 100px;
+  }
+
+  .poke-rl-arrows {
+    width: 100%;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+
+  .poke-frame {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .poke-masking__side {
+    padding: 1.5rem 1.25rem;
+  }
 }

@@ -15,7 +15,7 @@ export default function Hero() {
           <span className="glitch" data-text="Navarro">Navarro</span>
           <span className="cursor">_</span>
         </h1>
-        <p className="hero-title">CS Student · Developer · Builder</p>
+        <p className="hero-title">CS Graduate · Developer · Builder</p>
         <div className="hero-ctas">
           <button className="btn-primary" onClick={() => scrollTo('projects')}>
             VIEW PROJECTS

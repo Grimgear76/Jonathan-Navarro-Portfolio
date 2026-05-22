@@ -286,6 +286,15 @@
   .detail-section {
     padding-left: 1rem;
   }
+  .detail-hero {
+    padding: 5.5rem 1.25rem 2.5rem;
+  }
+  .detail-body {
+    padding: 2.5rem 1.25rem 4rem;
+  }
+  .detail-title {
+    font-size: clamp(1.9rem, 8vw, 3rem);
+  }
 }
 
 .detail-not-found {

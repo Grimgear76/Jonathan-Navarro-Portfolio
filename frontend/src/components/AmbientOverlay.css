@@ -5,3 +5,9 @@
   z-index: 0;
   transition: background 0.8s ease;
 }
+
+/* Light/mono mode: multiply blend tints the warm-white bg instead of washing out */
+[data-theme="mono"] .ambient-overlay {
+  mix-blend-mode: multiply;
+  opacity: 0.85;
+}

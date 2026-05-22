@@ -143,9 +143,13 @@
   opacity: 0.9;
 }
 
-/* ── Mono mode: gently soften neon saturation for white background ── */
-[data-theme="mono"] .domains-grid {
-  filter: saturate(0.62) brightness(0.94);
+/* ── Mono mode: shift accent-colored text darker so it pops on white ── */
+[data-theme="mono"] .domain-label,
+[data-theme="mono"] .domain-chip,
+[data-theme="mono"] .domain-click-hint,
+[data-theme="mono"] .llm-terminal,
+[data-theme="mono"] .ml-level-badge {
+  filter: saturate(1.3) brightness(0.68);
 }
 
 /* ── Idle pulse ── */

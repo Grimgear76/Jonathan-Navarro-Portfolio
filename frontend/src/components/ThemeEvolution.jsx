@@ -18,12 +18,12 @@ function lerpColor(from, to, t) {
 
 // Color mode: cold near-black → warm charcoal as projects unlock
 const COLOR_FROM = {
-  text:       '#c8c8c8',
-  textMuted:  '#555555',
+  text:       '#d0d0d0',
+  textMuted:  '#848484',
   cardBg:     '#0b0b0b',
   cardBorder: '#1c1c1c',
-  cardTitle:  '#777777',
-  cardDesc:   '#484848',
+  cardTitle:  '#9e9e9e',
+  cardDesc:   '#707070',
 }
 const COLOR_TO = {
   text:       '#d4cfc8',

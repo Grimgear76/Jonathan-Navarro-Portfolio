@@ -681,3 +681,43 @@
     padding: 1.5rem 1.25rem;
   }
 }
+
+/* ══ MONO MODE OVERRIDES ════════════════════════════════
+   All dark-mode hardcoded colors flipped for light bg
+══════════════════════════════════════════════════════ */
+[data-theme="mono"] .poke-page                { color: #201c18; }
+[data-theme="mono"] .poke-section__title       { color: #201c18; }
+[data-theme="mono"] .poke-section__lead        { color: #4a4440; }
+[data-theme="mono"] .poke-hero__sub            { color: #4a4440; }
+
+[data-theme="mono"] .poke-rl-node__sub         { color: #5a5650; }
+[data-theme="mono"] .poke-rl-arrow             { color: #5a5650; }
+
+[data-theme="mono"] .poke-frame                { background: var(--surface-2); }
+[data-theme="mono"] .poke-frame:hover          { background: var(--surface); }
+[data-theme="mono"] .poke-frame p              { color: #4a4440; }
+
+[data-theme="mono"] .poke-pipeline__name       { color: #201c18; }
+[data-theme="mono"] .poke-pipeline__sub        { color: #5a5650; }
+[data-theme="mono"] .poke-pipeline__note       { color: #5a5650; }
+
+[data-theme="mono"] .poke-masking__side        { background: var(--surface-2); }
+[data-theme="mono"] .poke-masking__side ul li  { color: #4a4440; }
+[data-theme="mono"] .poke-masking__note        { color: #4a4440; }
+
+[data-theme="mono"] .poke-reward-card          { background: var(--surface-2); }
+[data-theme="mono"] .poke-reward-card:hover    { background: var(--surface); }
+[data-theme="mono"] .poke-reward-card__label   { color: #5a5650; }
+
+[data-theme="mono"] .poke-phase__title         { color: #201c18; }
+[data-theme="mono"] .poke-phase__body          { color: #4a4440; }
+
+[data-theme="mono"] .poke-stat                 { background: var(--surface-2); }
+[data-theme="mono"] .poke-stat:hover           { background: var(--surface); }
+[data-theme="mono"] .poke-stat__label          { color: #5a5650; }
+
+[data-theme="mono"] .poke-title__line2         { color: #201c18; opacity: 1; }
+
+[data-theme="mono"] .poke-limits__list li      { color: #4a4440; }
+
+[data-theme="mono"] .poke-demo__gif-wrap       { background: var(--surface-2); }

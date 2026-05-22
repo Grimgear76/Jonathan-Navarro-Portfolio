@@ -1065,7 +1065,7 @@ function DataAPIShowcase({ clicks }) {
 
       {lens === 'cards' && (
         <div
-          style={{ borderTop: `1px solid ${C}33`, background: '#07090f' }}
+          style={{ borderTop: `1px solid ${C}33`, background: 'var(--surface)' }}
           onClick={e => e.stopPropagation()}
         >
           {/* Mode tabs */}
@@ -1122,7 +1122,7 @@ function DataAPIShowcase({ clicks }) {
           style={{
             display: 'flex', gap: 8, alignItems: 'center',
             padding: '8px 10px', borderTop: `1px solid ${C}33`,
-            background: '#07090f', flexWrap: 'wrap',
+            background: 'var(--surface)', flexWrap: 'wrap',
           }}
           onClick={e => e.stopPropagation()}
         >
@@ -1136,7 +1136,7 @@ function DataAPIShowcase({ clicks }) {
                 placeholder="name or #"
                 autoFocus
                 style={{
-                  background:'#0d1117', border:`2px solid ${C}`, color:C,
+                  background:'var(--surface-2)', border:`2px solid ${C}`, color:C,
                   font:'10px "Courier New"', padding:'5px 10px', width:100, outline:'none',
                 }}
               />
@@ -1168,6 +1168,18 @@ const TOKEN = {
   tag:  '#f07178',
   attr: '#ffcb6b',
   pl:   '#a9b7c6',
+}
+
+const TOKEN_MONO = {
+  kw:   '#9c27b0',
+  fn:   '#1565c0',
+  str:  '#2e7d32',
+  cm:   '#607d8b',
+  num:  '#e65100',
+  id:   '#212121',
+  tag:  '#c62828',
+  attr: '#c66900',
+  pl:   '#37474f',
 }
 
 const WEB_PANELS = [
@@ -1222,9 +1234,25 @@ const WEB_PANELS = [
   },
 ]
 
+function useThemeMono() {
+  const [mono, setMono] = useState(document.documentElement.dataset.theme === 'mono')
+  useEffect(() => {
+    const obs = new MutationObserver(() =>
+      setMono(document.documentElement.dataset.theme === 'mono')
+    )
+    obs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
+    return () => obs.disconnect()
+  }, [])
+  return mono
+}
+
 function WebCodeInspector({ clicks }) {
-  const idx   = clicks % WEB_PANELS.length
-  const panel = WEB_PANELS[idx]
+  const idx    = clicks % WEB_PANELS.length
+  const panel  = WEB_PANELS[idx]
+  const isMono = useThemeMono()
+  const tokens = isMono ? TOKEN_MONO : TOKEN
+  const fallbackId   = isMono ? '#212121' : '#eeffff'
+  const inactivePip  = isMono ? '#c8c3b8' : '#1e2030'
 
   return (
     <div className="wci" style={{ '--wci-c': panel.color }}>
@@ -1248,14 +1276,14 @@ function WebCodeInspector({ clicks }) {
           {panel.lines.map((_, i) => <span key={i} className="wci-ln">{i + 1}</span>)}
         </div>
         <div className="wci-body">
-          {panel.lines.map((tokens, li) => (
+          {panel.lines.map((lineTokens, li) => (
             <div
               key={li}
               className="wci-line"
               style={{ animationDelay: `${li * 0.048}s` }}
             >
-              {tokens.map(([type, text], ti) => (
-                <span key={ti} style={{ color: TOKEN[type] || '#eeffff' }}>{text}</span>
+              {lineTokens.map(([type, text], ti) => (
+                <span key={ti} style={{ color: tokens[type] || fallbackId }}>{text}</span>
               ))}
               {li === panel.lines.length - 1 && <span className="wci-cursor" />}
             </div>
@@ -1267,7 +1295,7 @@ function WebCodeInspector({ clicks }) {
         <span className="wci-file" style={{ color: panel.color + 'bb' }}>{panel.file}</span>
         <div className="wci-pips">
           {WEB_PANELS.map((_, i) => (
-            <span key={i} className="wci-pip" style={{ background: i === idx ? panel.color : '#1e2030' }} />
+            <span key={i} className="wci-pip" style={{ background: i === idx ? panel.color : inactivePip }} />
           ))}
         </div>
         <span className="wci-hint" style={{ color: panel.color + '66' }}>click to cycle</span>
@@ -1492,9 +1520,17 @@ function PixelBattleCanvas() {
     }
 
     function drawCommandBox() {
-      ctx.fillStyle = '#0c0e18'
+      const mono = document.documentElement.dataset.theme === 'mono'
+      const boxBg    = mono ? '#e8e4db' : '#0c0e18'
+      const textHigh = mono ? '#5d45a0' : C
+      const textMid  = mono ? '#7a63bc' : C + 'aa'
+      const textLow  = mono ? '#9075cc' : C + '99'
+      const textSub  = mono ? '#7a63bc' : C + 'cc'
+      const borderC  = mono ? C + '88'  : C + 'cc'
+
+      ctx.fillStyle = boxBg
       ctx.fillRect(0, CMD_Y, W, H - CMD_Y)
-      ctx.strokeStyle = C + 'cc'
+      ctx.strokeStyle = borderC
       ctx.lineWidth = 1
       ctx.strokeRect(1, CMD_Y, W - 2, H - CMD_Y - 1)
 
@@ -1506,17 +1542,17 @@ function PixelBattleCanvas() {
           const cx = slotW * i + slotW / 2
           const hot = i === s.hoverMain
           if (hot) {
-            ctx.fillStyle = C + '28'
+            ctx.fillStyle = mono ? C + '18' : C + '28'
             ctx.fillRect(slotW * i + 1, ROW1_Y, slotW - 2, ROW1_H - 1)
           }
-          ctx.fillStyle = hot ? C : C + 'aa'
+          ctx.fillStyle = hot ? textHigh : textMid
           ctx.font = hot ? 'bold 10px "Courier New"' : '9px "Courier New"'
           ctx.textAlign = 'center'
           ctx.fillText(hot ? '▶ ' + cmd : cmd, cx, row1TextY)
         })
 
         // ── Divider ──
-        ctx.strokeStyle = C + '55'
+        ctx.strokeStyle = mono ? C + '44' : C + '55'
         ctx.lineWidth = 0.5
         ctx.setLineDash([2, 3])
         ctx.beginPath()
@@ -1532,21 +1568,21 @@ function PixelBattleCanvas() {
             const cx = subSlotW * i + subSlotW / 2
             const hot = i === s.hoverSub
             if (hot) {
-              ctx.fillStyle = C + '30'
+              ctx.fillStyle = mono ? C + '20' : C + '30'
               ctx.fillRect(subSlotW * i + 1, ROW2_Y, subSlotW - 2, ROW2_H - 1)
             }
-            ctx.fillStyle = hot ? C : C + 'cc'
+            ctx.fillStyle = hot ? textHigh : textSub
             ctx.font = hot ? 'bold 9px "Courier New"' : '8px "Courier New"'
             ctx.textAlign = 'center'
             ctx.fillText(hot ? '▶ ' + sub : sub, cx, row2TextY)
           })
         } else if (s.hoverMain === 3) {
-          ctx.fillStyle = C + 'cc'
+          ctx.fillStyle = textSub
           ctx.font = '8px "Courier New"'
           ctx.textAlign = 'center'
           ctx.fillText('[ CLICK TO ATTEMPT ESCAPE ]', W / 2, row2TextY)
         } else if (!s.firstClick) {
-          ctx.fillStyle = C + '99'
+          ctx.fillStyle = textLow
           ctx.font = '8px "Courier New"'
           ctx.textAlign = 'center'
           ctx.fillText('hover a command to choose', W / 2, row2TextY)
@@ -1557,7 +1593,7 @@ function PixelBattleCanvas() {
       // ── Active action phases ──
       const mid = CMD_Y + (H - CMD_Y) / 2 + 5
       if (s.phase === 'player' && s.selectedMain === 3 && s.tick > 10) {
-        ctx.fillStyle = C
+        ctx.fillStyle = textHigh
         ctx.font = 'bold 11px "Courier New"'
         ctx.textAlign = 'center'
         ctx.fillText('…but failed to escape!', W / 2, mid)
@@ -1565,7 +1601,7 @@ function PixelBattleCanvas() {
       }
       const subs = SUBCOMMANDS[s.selectedMain]
       const actionName = subs ? subs[s.selectedSub] : 'RUN'
-      ctx.fillStyle = s.phase === 'enemy' ? '#ff7777' : C
+      ctx.fillStyle = s.phase === 'enemy' ? '#ff7777' : textHigh
       ctx.font = 'bold 10px "Courier New"'
       ctx.textAlign = 'center'
       ctx.fillText(s.phase === 'enemy' ? '⚔ ENEMY COUNTER!' : '▶ ' + actionName, W / 2, mid)

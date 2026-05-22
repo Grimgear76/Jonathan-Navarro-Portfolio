@@ -7,11 +7,11 @@ const COLOR_ZONES = [
   { zone: 3, bg: '#10101a', accent: '#9d7fff' },
 ]
 
-// Mono: near-white backgrounds — accents shifted darker/richer to pop on light bg
+// Mono: soft off-white backgrounds — lightly tinted per zone, accents darkened for readability
 const MONO_ZONES = [
-  { zone: 1, bg: '#f9f8f5', accent: '#c07810' },
-  { zone: 2, bg: '#f5f8f7', accent: '#0e9e94' },
-  { zone: 3, bg: '#f5f5f9', accent: '#6840e0' },
+  { zone: 1, bg: '#f5f2ee', accent: '#c07800' },
+  { zone: 2, bg: '#f1f4f2', accent: '#0a9e96' },
+  { zone: 3, bg: '#f2f1f6', accent: '#6638cc' },
 ]
 
 export function getZoneIndex(scrollPercent) {

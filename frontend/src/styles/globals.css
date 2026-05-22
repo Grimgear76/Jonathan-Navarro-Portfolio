@@ -30,11 +30,11 @@
 
 /* ── Mono mode overrides (static tokens only; JS-controlled vars handled in ThemeEvolution) ── */
 [data-theme="mono"] {
-  --surface: #fafaf7;
-  --surface-2: #f0eee9;
-  --border: #d8d4ca;
-  --border-hover: #b8b3a8;
-  --text-dim: #6a6a6a;
+  --surface: #ece8e2;
+  --surface-2: #e4e0d8;
+  --border: #ccc8be;
+  --border-hover: #aaa69a;
+  --text-dim: #5a5650;
 }
 
 /* ── Mono mode: small mono labels need weight to read on white ── */

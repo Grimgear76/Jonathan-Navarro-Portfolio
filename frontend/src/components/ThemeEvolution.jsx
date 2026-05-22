@@ -34,22 +34,22 @@ const COLOR_TO = {
   cardDesc:   '#7a7570',
 }
 
-// Mono mode: starts white/crisp → warms to parchment as projects unlock
+// Mono mode: soft off-white — dark neutral text on lightly tinted cards
 const MONO_FROM = {
-  text:       '#111111',
-  textMuted:  '#3a3a3a',
-  cardBg:     '#ffffff',
-  cardBorder: '#e0e0e0',
-  cardTitle:  '#1e1e1e',
-  cardDesc:   '#3a3a3a',
+  text:       '#201c18',
+  textMuted:  '#585450',
+  cardBg:     '#f0ece4',
+  cardBorder: '#d4cec4',
+  cardTitle:  '#201c18',
+  cardDesc:   '#585450',
 }
 const MONO_TO = {
-  text:       '#111111',
-  textMuted:  '#3a3a3a',
-  cardBg:     '#f7f3ec',
-  cardBorder: '#d4cfc6',
-  cardTitle:  '#1e1e1e',
-  cardDesc:   '#3a3a3a',
+  text:       '#1a1612',
+  textMuted:  '#504c48',
+  cardBg:     '#e8e2d8',
+  cardBorder: '#c8c0b2',
+  cardTitle:  '#1a1612',
+  cardDesc:   '#504c48',
 }
 
 export default function ThemeEvolution() {

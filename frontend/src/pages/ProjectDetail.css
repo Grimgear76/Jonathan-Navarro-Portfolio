@@ -318,3 +318,8 @@
   cursor: pointer;
   transition: border-color 0.3s ease, color 0.3s ease;
 }
+
+/* ── Mono mode: fix hardcoded dark-mode colors ── */
+[data-theme="mono"] .detail-section p   { color: #4a4440; }
+[data-theme="mono"] .detail-media-slot  { color: #5a5650; }
+[data-theme="mono"] .detail-not-found button { border-color: var(--border); }

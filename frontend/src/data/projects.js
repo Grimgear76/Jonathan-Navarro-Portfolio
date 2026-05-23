@@ -89,6 +89,22 @@ export const projects = [
     },
   },
   {
+    id: 'rapp956',
+    title: 'RAPP956 Website',
+    description: 'Single-page marketing website pitching a youth mental health & life skills program to RGV school districts — built and deployed to production.',
+    technologies: ['Vite', 'React', 'CSS Modules', 'Cloudflare Pages'],
+    accentColor: '#4ade80',
+    monoAccentColor: '#16a34a',
+    github: null,
+    demo: 'https://rapp956-website.pages.dev/',
+    demoLabel: 'LIVE SITE',
+    detail: {
+      problem: 'The Rise Above Pressure Program needed a professional online presence to pitch its youth mental health and life skills curriculum to Rio Grande Valley school districts — with no existing web footprint.',
+      built: 'Single-page React app built with Vite and CSS Modules: multi-section layout (Hero, Problem, Program Components, Speakers, Contact) with anchor-based navigation and no external routing library. Styled with a gold/black design system using Google Fonts. Deployed to Cloudflare Pages with SPA redirect handling via _redirects.',
+      outcome: 'Live production site serving real visitors and school district contacts across the Rio Grande Valley.',
+    },
+  },
+  {
     id: 'roblox-ux-redesign',
     title: 'Roblox UX/UI Redesign',
     description: "Figma redesign of Roblox's core UI targeting improved discoverability, modern search, and a full design system.",

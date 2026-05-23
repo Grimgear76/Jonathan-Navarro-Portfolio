@@ -8,6 +8,7 @@ const POSITIONS = {
   'frontera-hackathon': '50% 15%',
   '2d-action-rpg': '30% 75%',
   'college-social-app': '80% 40%',
+  'rapp956':            '60% 65%',
   'roblox-ux-redesign': '10% 85%',
 }
 

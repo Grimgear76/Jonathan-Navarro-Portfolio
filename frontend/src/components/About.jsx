@@ -37,6 +37,7 @@ export default function About() {
               <p><span className="terminal-prompt">$ cat info.txt</span></p>
               <p className="terminal-output">📍 Rio Grande Valley, TX</p>
               <p className="terminal-output">🎓 CS @ UTRGV — Magna Cum Laude</p>
+              <p className="terminal-output">🏅 Dean's List '23–'24 · President's List '24–'26</p>
               <p className="terminal-output">🏆 2× Hackathon Finalist (1st + 2nd)</p>
               <p className="terminal-output">⚡ ML · Full-Stack · Game Dev</p>
               <p><span className="terminal-cursor">_</span></p>

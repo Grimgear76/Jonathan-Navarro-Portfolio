@@ -159,7 +159,7 @@
 }
 
 .detail-section p {
-  color: #c0c0c0;
+  color: var(--text);
   line-height: 1.9;
   font-size: 1.05rem;
 }
@@ -260,7 +260,7 @@
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  color: #666;
+  color: var(--text-dim);
   font-family: var(--font-mono);
   font-size: 0.65rem;
   letter-spacing: 0.1em;
@@ -320,6 +320,6 @@
 }
 
 /* ── Mono mode: fix hardcoded dark-mode colors ── */
-[data-theme="mono"] .detail-section p   { color: #4a4440; }
-[data-theme="mono"] .detail-media-slot  { color: #5a5650; }
+[data-theme="mono"] .detail-section p   { color: var(--text-muted); }
+[data-theme="mono"] .detail-media-slot  { color: var(--text-muted); }
 [data-theme="mono"] .detail-not-found button { border-color: var(--border); }

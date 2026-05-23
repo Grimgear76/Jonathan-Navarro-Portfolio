@@ -102,6 +102,20 @@
   50%       { color: var(--text-muted); }
 }
 
+/* ── Award badge ── */
+.card-award {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.16em;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  padding: 0.2rem 0.55rem;
+  display: inline-block;
+  margin-bottom: 0.85rem;
+  transition: color 0.4s ease, border-color 0.4s ease;
+}
+
 /* ── Header ── */
 .card-header {
   display: flex;

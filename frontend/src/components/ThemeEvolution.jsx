@@ -36,20 +36,20 @@ const COLOR_TO = {
 
 // Mono mode: soft off-white — dark neutral text on lightly tinted cards
 const MONO_FROM = {
-  text:       '#201c18',
-  textMuted:  '#585450',
-  cardBg:     '#f0ece4',
-  cardBorder: '#d4cec4',
-  cardTitle:  '#201c18',
-  cardDesc:   '#585450',
+  text:       '#1a1714',
+  textMuted:  '#4a4642',
+  cardBg:     '#e6dfd5',
+  cardBorder: '#b0a898',
+  cardTitle:  '#1a1714',
+  cardDesc:   '#4a4642',
 }
 const MONO_TO = {
-  text:       '#1a1612',
-  textMuted:  '#504c48',
-  cardBg:     '#e8e2d8',
-  cardBorder: '#c8c0b2',
-  cardTitle:  '#1a1612',
-  cardDesc:   '#504c48',
+  text:       '#141210',
+  textMuted:  '#3e3a36',
+  cardBg:     '#dcd4c8',
+  cardBorder: '#9e9688',
+  cardTitle:  '#141210',
+  cardDesc:   '#3e3a36',
 }
 
 export default function ThemeEvolution() {

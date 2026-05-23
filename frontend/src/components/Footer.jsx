@@ -10,7 +10,7 @@ export default function Footer() {
         <span className="footer-sep">/</span>
         <a href="mailto:jonathan63592@gmail.com">EMAIL</a>
       </div>
-      <p className="footer-copy">© 2025 Jonathan Navarro</p>
+      <p className="footer-copy">© 2026 Jonathan Navarro</p>
     </footer>
   )
 }

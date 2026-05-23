@@ -26,15 +26,21 @@
 
   /* Geometry */
   --radius: 3px;
+
+  /* Semantic status colors */
+  --color-success: #4ade80;
+  --color-error:   #f87171;
 }
 
 /* ── Mono mode overrides (static tokens only; JS-controlled vars handled in ThemeEvolution) ── */
 [data-theme="mono"] {
-  --surface: #ece8e2;
-  --surface-2: #e4e0d8;
-  --border: #ccc8be;
-  --border-hover: #aaa69a;
-  --text-dim: #5a5650;
+  --surface: #e2dbd2;
+  --surface-2: #d8d0c6;
+  --border: #aca49a;
+  --border-hover: #857d74;
+  --text-dim: #4a4642;
+  --color-success: #15803d;
+  --color-error:   #dc2626;
 }
 
 /* ── Mono mode: small mono labels need weight to read on white ── */
@@ -42,6 +48,10 @@
 [data-theme="mono"] .section-label {
   font-weight: 700;
   letter-spacing: 0.2em;
+}
+
+[data-theme="mono"] .field-error {
+  color: var(--color-error);
 }
 
 [data-theme="mono"] .hero-title {

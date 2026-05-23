@@ -9,7 +9,6 @@ function scrollTo(id) {
 
 const NAV_LINKS = [
   { label: 'About',    id: 'about' },
-  { label: 'Skills',   id: 'skills' },
   { label: 'Projects', id: 'projects' },
   { label: 'Contact',  id: 'contact' },
 ]
@@ -52,6 +51,11 @@ export default function Navbar() {
             </li>
           ))}
         </ul>
+
+        <div className="navbar-social">
+          <a href="https://github.com/Grimgear76" target="_blank" rel="noopener noreferrer" className="navbar-social-link">GH</a>
+          <a href="https://linkedin.com/in/jonathan-navarro-44923b307" target="_blank" rel="noopener noreferrer" className="navbar-social-link">LI</a>
+        </div>
 
         <div className="navbar-right">
           <div className="navbar-progress">

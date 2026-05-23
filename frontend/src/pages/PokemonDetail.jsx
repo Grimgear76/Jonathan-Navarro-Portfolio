@@ -1,18 +1,12 @@
 import { useNavigate } from 'react-router-dom'
+import { useColorContext } from '../context/ColorContext'
+import { projects } from '../data/projects'
 import './PokemonDetail.css'
 
-const ACCENT = '#e8a838'
+const ACCENT_DARK = projects.find(p => p.id === 'pokemon-battle-bot')?.accentColor ?? '#ffa60d'
+const ACCENT_MONO = projects.find(p => p.id === 'pokemon-battle-bot')?.monoAccentColor ?? '#9a5c00'
 
 const TAGS = ['Python', 'MaskablePPO', 'Stable-Baselines3', 'Gymnasium', 'poke-env', 'TensorBoard']
-
-const REWARDS = [
-  { value: '+2.0', label: 'WIN', color: '#4ade80' },
-  { value: '−2.0', label: 'LOSS', color: '#f87171' },
-  { value: '−1.0', label: 'DRAW', color: '#94a3b8' },
-  { value: '+0.25', label: 'OPPONENT KO', color: '#4ade80' },
-  { value: '−0.25', label: 'OWN KO', color: '#f87171' },
-  { value: '±0.04×HP', label: 'HP DAMAGE', color: ACCENT },
-]
 
 const PHASES = [
   {
@@ -50,9 +44,22 @@ const PIPELINE = [
 
 export default function PokemonDetail() {
   const navigate = useNavigate()
+  const { state } = useColorContext()
+  const { monoMode } = state
+
+  const accent = monoMode ? ACCENT_MONO : ACCENT_DARK
+
+  const REWARDS = [
+    { value: '+2.0',     label: 'WIN',         color: monoMode ? '#15803d' : '#4ade80' },
+    { value: '−2.0',     label: 'LOSS',        color: monoMode ? '#dc2626' : '#f87171' },
+    { value: '−1.0',     label: 'DRAW',        color: monoMode ? '#64748b' : '#94a3b8' },
+    { value: '+0.25',    label: 'OPPONENT KO', color: monoMode ? '#15803d' : '#4ade80' },
+    { value: '−0.25',    label: 'OWN KO',      color: monoMode ? '#dc2626' : '#f87171' },
+    { value: '±0.04×HP', label: 'HP DAMAGE',   color: accent },
+  ]
 
   return (
-    <div className="poke-page">
+    <div className="poke-page" style={{ '--poke-accent': accent }}>
 
       {/* ── Ambient glows ── */}
       <div className="poke-glow poke-glow--tr" />

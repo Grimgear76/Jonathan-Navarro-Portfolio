@@ -196,6 +196,54 @@
   transform: translateY(-2px);
 }
 
+/* ── Light mode: mix accent with white so filled buttons look vibrant, not muddy ── */
+[data-theme="mono"] .btn-primary {
+  background: color-mix(in srgb, var(--accent) 65%, white 35%);
+}
+
+[data-theme="mono"] .btn-secondary:hover {
+  background: color-mix(in srgb, var(--accent) 65%, white 35%);
+  color: #111;
+}
+
+/* ── Social row ── */
+.hero-social {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  margin-top: 1.5rem;
+  opacity: 0;
+  animation: fadeSlideUp 0.6s ease 0.95s forwards;
+}
+
+.hero-social-link {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.hero-social-link:hover {
+  color: var(--accent);
+}
+
+.hero-social-sep {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--border-hover);
+}
+
+.hero-available {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  color: var(--color-success);
+  opacity: 0.85;
+}
+
 /* ── Scroll hint ── */
 .hero-scroll-hint {
   position: absolute;

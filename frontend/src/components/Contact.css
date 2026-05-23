@@ -54,7 +54,7 @@
 .field-error {
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  color: #f07070;
+  color: var(--color-error);
   letter-spacing: 0.06em;
 }
 

@@ -65,6 +65,36 @@
   background: rgba(0, 0, 0, 0.05);
 }
 
+/* ── Social links ── */
+.navbar-social {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+.navbar-social-link {
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.25rem 0.55rem;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+
+.navbar-social-link:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+@media (max-width: 700px) {
+  .navbar-social { display: none; }
+}
+
 /* ── Right cluster ── */
 .navbar-right {
   display: flex;

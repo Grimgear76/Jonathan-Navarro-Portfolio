@@ -17,8 +17,8 @@ export default function AmbientOverlay() {
 
   if (unlockedProjects.length === 0) return null
 
-  // Mono mode: higher alpha + multiply blend (in CSS) tints warm-white bg without washing out
-  const alpha = state.monoMode ? '55' : '1a'
+  // Mono mode: slightly stronger than dark mode but still subtle on the white bg
+  const alpha = state.monoMode ? '30' : '1a'
 
   const gradients = unlockedProjects
     .map(p => `radial-gradient(ellipse 50% 40% at ${POSITIONS[p.id]}, ${p.accentColor}${alpha} 0%, transparent 70%)`)

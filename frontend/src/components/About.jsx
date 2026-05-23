@@ -15,10 +15,15 @@ export default function About() {
             </p>
             <p>
               I also love a good hackathon — grabbed <strong>1st place</strong> at the Frontera
-              Gemini Hackathon and <strong>2nd place</strong> at an AI/ML one, both throughout 2024 - 2026.
+              Gemini Hackathon (2024) and <strong>2nd place</strong> at an AI/ML Hackathon (2026).
               Outside of that I'm usually deep in a side project or thinking about how AI
               is changing the way we build things.
             </p>
+            <div className="about-stack">
+              {['Python','JavaScript','C++','C#','Java','React','Node.js','Express','Flutter','Unity','MongoDB','Stable-Baselines3','Figma','AWS','Azure'].map(t => (
+                <span key={t} className="about-stack-tag">{t}</span>
+              ))}
+            </div>
           </div>
           <div className="terminal-card">
             <div className="terminal-header">

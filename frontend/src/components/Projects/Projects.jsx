@@ -7,7 +7,7 @@ export default function Projects() {
     <section className="projects" id="projects">
       <div className="projects-container">
         <h2 className="section-label">// PROJECTS</h2>
-        <p className="projects-hint">Click a project to unlock its story.</p>
+        <p className="projects-hint">Click to unlock · Double-click to explore.</p>
         <div className="projects-grid">
           {projects.map(project => (
             <ProjectCard key={project.id} project={project} />

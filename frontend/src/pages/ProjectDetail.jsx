@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import { projects } from '../data/projects'
+import { useColorContext } from '../context/ColorContext'
 import './ProjectDetail.css'
 
 const AWARDS = {
@@ -42,6 +43,7 @@ function MediaSlot({ label }) {
 export default function ProjectDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
+  const { state } = useColorContext()
   const project = projects.find(p => p.id === id)
 
   useEffect(() => { window.scrollTo(0, 0) }, [])
@@ -55,7 +57,9 @@ export default function ProjectDetail() {
     )
   }
 
-  const accent = project.accentColor
+  const accent = state.monoMode && project.monoAccentColor
+    ? project.monoAccentColor
+    : project.accentColor
   const award = AWARDS[project.id]
 
   const themeVars = {
@@ -90,7 +94,7 @@ export default function ProjectDetail() {
               )}
               {project.demo && (
                 <a href={project.demo} target="_blank" rel="noopener noreferrer" className="detail-link">
-                  ↗ DEMO
+                  ↗ {project.demoLabel ?? 'DEMO'}
                 </a>
               )}
             </div>

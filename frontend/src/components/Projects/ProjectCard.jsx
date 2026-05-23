@@ -1,11 +1,17 @@
 import { useNavigate } from 'react-router-dom'
 import useColorUnlock from '../../hooks/useColorUnlock'
+import { useColorContext } from '../../context/ColorContext'
 import './ProjectCard.css'
 
 export default function ProjectCard({ project }) {
   const { unlockProject, unlockedIds } = useColorUnlock()
+  const { state } = useColorContext()
   const navigate = useNavigate()
   const isUnlocked = unlockedIds.has(project.id)
+
+  const accent = state.monoMode && project.monoAccentColor
+    ? project.monoAccentColor
+    : project.accentColor
 
   function handleCardClick() {
     unlockProject(project.id)
@@ -18,7 +24,7 @@ export default function ProjectCard({ project }) {
   }
 
   const unlockedStyles = isUnlocked
-    ? { '--project-accent': project.accentColor, borderColor: project.accentColor }
+    ? { '--project-accent': accent, borderColor: accent }
     : {}
 
   return (
@@ -33,10 +39,19 @@ export default function ProjectCard({ project }) {
     >
       {isUnlocked && <div className="card-ripple" />}
 
+      {project.award && (
+        <div
+          className="card-award"
+          style={isUnlocked ? { color: accent, borderColor: `${accent}55` } : {}}
+        >
+          ⬡ {project.award}
+        </div>
+      )}
+
       <div className="card-header">
         <h3
           className="card-title"
-          style={isUnlocked ? { color: project.accentColor } : {}}
+          style={isUnlocked ? { color: accent } : {}}
         >
           {project.title}
         </h3>
@@ -57,7 +72,7 @@ export default function ProjectCard({ project }) {
             key={tech}
             className="card-tag"
             style={isUnlocked
-              ? { borderColor: `${project.accentColor}55`, color: project.accentColor }
+              ? { borderColor: `${accent}55`, color: accent }
               : {}
             }
           >

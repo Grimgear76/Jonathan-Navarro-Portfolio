@@ -9,9 +9,9 @@ const COLOR_ZONES = [
 
 // Mono: soft off-white backgrounds — lightly tinted per zone, accents darkened for readability
 const MONO_ZONES = [
-  { zone: 1, bg: '#f5f2ee', accent: '#c07800' },
-  { zone: 2, bg: '#f1f4f2', accent: '#0a9e96' },
-  { zone: 3, bg: '#f2f1f6', accent: '#6638cc' },
+  { zone: 1, bg: '#f5f2ee', accent: '#e98c00' },
+  { zone: 2, bg: '#f1f4f2', accent: '#006fd6' },
+  { zone: 3, bg: '#f2f1f6', accent: '#9100d4' },
 ]
 
 export function getZoneIndex(scrollPercent) {

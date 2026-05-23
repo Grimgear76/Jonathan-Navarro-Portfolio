@@ -52,7 +52,9 @@
       "Bash(Remove-Item -Recurse -Force frontend/node_modules)",
       "Bash(rm frontend/package-lock.json)",
       "Bash(rm -rf frontend/node_modules)",
-      "Bash(Remove-Item package-lock.json -Force)"
+      "Bash(Remove-Item package-lock.json -Force)",
+      "WebFetch(domain:youtu.be)",
+      "WebFetch(domain:www.youtube.com)"
     ]
   }
 }

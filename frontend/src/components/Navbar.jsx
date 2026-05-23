@@ -52,42 +52,43 @@ export default function Navbar() {
           ))}
         </ul>
 
-        <div className="navbar-social">
-          <a href="https://github.com/Grimgear76" target="_blank" rel="noopener noreferrer" className="navbar-social-link">GH</a>
-          <a href="https://linkedin.com/in/jonathan-navarro-44923b307" target="_blank" rel="noopener noreferrer" className="navbar-social-link">LI</a>
-        </div>
-
-        <div className="navbar-right">
-          <div className="navbar-progress">
-            <span className="progress-label">EXPLORED {exploredPercent}%</span>
-            <div
-              className="progress-bar"
-              role="progressbar"
-              aria-valuenow={exploredPercent}
-              aria-valuemin={0}
-              aria-valuemax={100}
-            >
-              <div className="progress-fill" style={{ width: `${exploredPercent}%` }} />
-            </div>
+        <div className="navbar-end">
+          <div className="navbar-social">
+            <a href="https://github.com/Grimgear76" target="_blank" rel="noopener noreferrer" className="navbar-social-link">GitHub</a>
+            <a href="https://linkedin.com/in/jonathan-navarro-44923b307" target="_blank" rel="noopener noreferrer" className="navbar-social-link">LinkedIn</a>
           </div>
-          <button
-            className="theme-toggle"
-            onClick={toggleMono}
-            aria-label={state.monoMode ? 'Switch to color mode' : 'Switch to mono mode'}
-            title={state.monoMode ? 'Color mode' : 'Mono mode'}
-          >
-            {state.monoMode ? 'COLOR' : 'MONO'}
-          </button>
-          <button
-            className="hamburger"
-            onClick={() => setMenuOpen(o => !o)}
-            aria-label={menuOpen ? 'Close menu' : 'Open menu'}
-            aria-expanded={menuOpen}
-          >
-            <span className={`hamburger-bar${menuOpen ? ' hamburger-bar--top-open' : ''}`} />
-            <span className={`hamburger-bar${menuOpen ? ' hamburger-bar--mid-open' : ''}`} />
-            <span className={`hamburger-bar${menuOpen ? ' hamburger-bar--bot-open' : ''}`} />
-          </button>
+          <div className="navbar-right">
+            <div className="navbar-progress">
+              <span className="progress-label">EXPLORED {exploredPercent}%</span>
+              <div
+                className="progress-bar"
+                role="progressbar"
+                aria-valuenow={exploredPercent}
+                aria-valuemin={0}
+                aria-valuemax={100}
+              >
+                <div className="progress-fill" style={{ width: `${exploredPercent}%` }} />
+              </div>
+            </div>
+            <button
+              className="theme-toggle"
+              onClick={toggleMono}
+              aria-label={state.monoMode ? 'Switch to color mode' : 'Switch to mono mode'}
+              title={state.monoMode ? 'Color mode' : 'Mono mode'}
+            >
+              {state.monoMode ? 'COLOR' : 'MONO'}
+            </button>
+            <button
+              className="hamburger"
+              onClick={() => setMenuOpen(o => !o)}
+              aria-label={menuOpen ? 'Close menu' : 'Open menu'}
+              aria-expanded={menuOpen}
+            >
+              <span className={`hamburger-bar${menuOpen ? ' hamburger-bar--top-open' : ''}`} />
+              <span className={`hamburger-bar${menuOpen ? ' hamburger-bar--mid-open' : ''}`} />
+              <span className={`hamburger-bar${menuOpen ? ' hamburger-bar--bot-open' : ''}`} />
+            </button>
+          </div>
         </div>
       </nav>
 

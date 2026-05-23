@@ -6,8 +6,7 @@
   transition: background 0.8s ease;
 }
 
-/* Light/mono mode: multiply blend tints the warm-white bg instead of washing out */
+/* Light/mono mode: lower opacity to stay subtle on white without a blend mode */
 [data-theme="mono"] .ambient-overlay {
-  mix-blend-mode: multiply;
-  opacity: 0.85;
+  opacity: 0.55;
 }

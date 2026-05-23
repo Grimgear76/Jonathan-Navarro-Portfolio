@@ -119,7 +119,7 @@ export default function ProjectDetail() {
 
         <div className="detail-media">
           <h2>DEMO &amp; GALLERY</h2>
-          {project.demo ? (
+          {getYouTubeId(project.demo) ? (
             <div className="detail-video-container">
               <iframe
                 src={`https://www.youtube.com/embed/${getYouTubeId(project.demo)}`}

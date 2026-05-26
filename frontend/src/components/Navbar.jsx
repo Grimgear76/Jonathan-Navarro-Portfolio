@@ -1,4 +1,5 @@
 import { useCallback, useState, useEffect } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import useColorUnlock from '../hooks/useColorUnlock'
 import { useColorContext } from '../context/ColorContext'
 import './Navbar.css'
@@ -18,11 +19,18 @@ export default function Navbar() {
   const { state, dispatch } = useColorContext()
   const toggleMono = useCallback(() => dispatch({ type: 'TOGGLE_MONO' }), [dispatch])
   const [menuOpen, setMenuOpen] = useState(false)
+  const navigate = useNavigate()
+  const location = useLocation()
 
   const handleNavClick = useCallback((id) => {
-    scrollTo(id)
+    if (location.pathname === '/') {
+      scrollTo(id)
+    } else {
+      sessionStorage.setItem('scrollTo', id)
+      navigate('/')
+    }
     setMenuOpen(false)
-  }, [])
+  }, [location.pathname, navigate])
 
   // Close menu on resize to desktop
   useEffect(() => {
@@ -40,7 +48,7 @@ export default function Navbar() {
   return (
     <>
       <nav className={`navbar${menuOpen ? ' navbar--open' : ''}`}>
-        <span className="navbar-logo">JN.DEV</span>
+        <button className="navbar-logo" onClick={() => navigate('/')} aria-label="Go to home">JN.DEV</button>
 
         <ul className="navbar-links">
           {NAV_LINKS.map(({ label, id }) => (

@@ -54,7 +54,15 @@
       "Bash(rm -rf frontend/node_modules)",
       "Bash(Remove-Item package-lock.json -Force)",
       "WebFetch(domain:youtu.be)",
-      "WebFetch(domain:www.youtube.com)"
+      "WebFetch(domain:www.youtube.com)",
+      "Bash(dir \"C:\\\\Users\\\\Jonathan\\\\OneDrive\\\\Desktop\\\\Jonathan-Navarro-Portfolio\" /b /s)",
+      "Bash(findstr /i \"content\\\\|rapp\")",
+      "PowerShell(Get-ChildItem -Recurse \"C:\\\\Users\\\\Jonathan\\\\OneDrive\\\\Desktop\\\\Jonathan-Navarro-Portfolio\" -ErrorAction SilentlyContinue | Where-Object { $_.FullName -match 'content|rapp' -and $_.FullName -notmatch 'node_modules' } | Select-Object FullName)",
+      "PowerShell(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\Jonathan\\\\OneDrive\\\\Desktop\\\\Jonathan-Navarro-Portfolio\\\\frontend\\\\public\\\\screenshots\\\\rapp956\")",
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\Jonathan\\\\OneDrive\\\\Desktop\\\\Jonathan-Navarro-Portfolio\\\\Content\\\\rapp\\\\Screenshot 2026-05-25 222741.png\" \"C:\\\\Users\\\\Jonathan\\\\OneDrive\\\\Desktop\\\\Jonathan-Navarro-Portfolio\\\\frontend\\\\public\\\\screenshots\\\\rapp956\\\\hero.png\")",
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\Jonathan\\\\OneDrive\\\\Desktop\\\\Jonathan-Navarro-Portfolio\\\\Content\\\\rapp\\\\Screenshot 2026-05-25 222853.png\" \"C:\\\\Users\\\\Jonathan\\\\OneDrive\\\\Desktop\\\\Jonathan-Navarro-Portfolio\\\\frontend\\\\public\\\\screenshots\\\\rapp956\\\\problem.png\")",
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\Jonathan\\\\OneDrive\\\\Desktop\\\\Jonathan-Navarro-Portfolio\\\\Content\\\\rapp\\\\image.png\" \"C:\\\\Users\\\\Jonathan\\\\OneDrive\\\\Desktop\\\\Jonathan-Navarro-Portfolio\\\\frontend\\\\public\\\\screenshots\\\\rapp956\\\\contact.png\")",
+      "Bash(find \"/mnt/c/Users/Jonathan/OneDrive/Desktop/Jonathan-Navarro-Portfolio/Content\" -type f 2>/dev/null | sort)"
     ]
   }
 }

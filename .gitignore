@@ -25,3 +25,10 @@ Jonathan Portfolio/.obsidian/
 # Logs
 *.log
 npm-debug.log*
+
+# Raw content / source assets (too large for GitHub, copy to public/ instead)
+Content/
+
+# Large binary formats — never commit these directly
+*.gif
+frontend/public/screenshots/**/*.gif

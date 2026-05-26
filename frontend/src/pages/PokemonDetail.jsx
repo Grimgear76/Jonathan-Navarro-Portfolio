@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useColorContext } from '../context/ColorContext'
 import { projects } from '../data/projects'
@@ -46,6 +47,8 @@ export default function PokemonDetail() {
   const navigate = useNavigate()
   const { state } = useColorContext()
   const { monoMode } = state
+
+  useEffect(() => { window.scrollTo(0, 0) }, [])
 
   const accent = monoMode ? ACCENT_MONO : ACCENT_DARK
 

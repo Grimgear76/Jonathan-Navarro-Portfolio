@@ -80,6 +80,7 @@ body {
   color: var(--text);
   font-family: var(--font-sans);
   font-size: 1rem;
+  font-weight: 500;
   line-height: 1.65;
   transition: background-color 0.4s ease;
   will-change: background-color;
@@ -94,7 +95,7 @@ h1, h2, h3, label, .mono {
 
 .section-label {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.82rem;
   letter-spacing: 0.28em;
   text-transform: uppercase;
   color: var(--accent);

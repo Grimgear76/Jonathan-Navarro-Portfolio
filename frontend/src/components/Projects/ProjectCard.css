@@ -4,10 +4,41 @@
   cursor: pointer;
   background: var(--card-bg);
   border-radius: var(--radius);
-  transition: border-color 0.4s ease, box-shadow 0.5s ease, transform 0.22s ease, background 0.4s ease;
+  /* transform is set inline during tilt; only transition back on leave */
+  transition: border-color 0.4s ease, box-shadow 0.5s ease, transform 0.5s cubic-bezier(0.2, 0.8, 0.3, 1), background 0.4s ease;
   position: relative;
   z-index: 1;
   overflow: hidden;
+  will-change: transform;
+  transform-style: preserve-3d;
+}
+
+/* Moving specular highlight */
+.card-shine {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--shine-x, 50%) var(--shine-y, 50%),
+    rgba(255, 255, 255, 0.06) 0%,
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 2;
+}
+
+.project-card:hover .card-shine {
+  opacity: 1;
+}
+
+.project-card.unlocked:hover .card-shine {
+  background: radial-gradient(
+    circle at var(--shine-x, 50%) var(--shine-y, 50%),
+    color-mix(in srgb, var(--project-accent) 12%, white 4%) 0%,
+    transparent 65%
+  );
 }
 
 /* ── Corner brackets (top-left + bottom-right) ── */
@@ -36,7 +67,6 @@
 
 /* ── Hover ── */
 .project-card:hover {
-  transform: translateY(-4px);
   border-color: var(--border-hover);
   box-shadow: 0 10px 36px rgba(0, 0, 0, 0.3);
 }
@@ -58,7 +88,6 @@
 }
 
 .project-card.unlocked:hover {
-  transform: translateY(-5px);
   box-shadow:
     0 10px 42px color-mix(in srgb, var(--project-accent) 26%, transparent),
     inset 0 0 50px color-mix(in srgb, var(--project-accent) 6%, transparent);

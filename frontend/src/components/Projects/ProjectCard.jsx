@@ -1,3 +1,4 @@
+import { useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import useColorUnlock from '../../hooks/useColorUnlock'
 import { useColorContext } from '../../context/ColorContext'
@@ -8,6 +9,7 @@ export default function ProjectCard({ project }) {
   const { state } = useColorContext()
   const navigate = useNavigate()
   const isUnlocked = unlockedIds.has(project.id)
+  const cardRef = useRef(null)
 
   const accent = state.monoMode && project.monoAccentColor
     ? project.monoAccentColor
@@ -27,20 +29,43 @@ export default function ProjectCard({ project }) {
     handleNavigate()
   }
 
+  function handleMouseMove(e) {
+    const card = cardRef.current
+    if (!card) return
+    const { left, top, width, height } = card.getBoundingClientRect()
+    const x = (e.clientX - left) / width   // 0–1
+    const y = (e.clientY - top)  / height  // 0–1
+    const rotateY =  (x - 0.5) * 16  // –8 to +8 deg
+    const rotateX = -(y - 0.5) * 12  // –6 to +6 deg
+    card.style.transform = `perspective(700px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`
+    card.style.setProperty('--shine-x', `${x * 100}%`)
+    card.style.setProperty('--shine-y', `${y * 100}%`)
+  }
+
+  function handleMouseLeave() {
+    const card = cardRef.current
+    if (!card) return
+    card.style.transform = ''
+  }
+
   const unlockedStyles = isUnlocked
     ? { '--project-accent': accent, borderColor: accent }
     : {}
 
   return (
     <div
+      ref={cardRef}
       className={`project-card${isUnlocked ? ' unlocked' : ''}`}
       style={unlockedStyles}
       onClick={handleUnlock}
       onDoubleClick={handleNavigate}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
       role="button"
       tabIndex={0}
       onKeyDown={e => e.key === 'Enter' && handleNavigate()}
     >
+      <div className="card-shine" />
       {isUnlocked && <div className="card-ripple" />}
 
       {project.award && (

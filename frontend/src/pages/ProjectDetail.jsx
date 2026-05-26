@@ -24,6 +24,7 @@ function dimAccent(hex, opacity) {
 }
 
 function getYouTubeId(url) {
+  if (!url) return null
   const m = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/))([^?&]+)/)
   return m?.[1]
 }

@@ -62,7 +62,17 @@
       "PowerShell(Copy-Item \"C:\\\\Users\\\\Jonathan\\\\OneDrive\\\\Desktop\\\\Jonathan-Navarro-Portfolio\\\\Content\\\\rapp\\\\Screenshot 2026-05-25 222741.png\" \"C:\\\\Users\\\\Jonathan\\\\OneDrive\\\\Desktop\\\\Jonathan-Navarro-Portfolio\\\\frontend\\\\public\\\\screenshots\\\\rapp956\\\\hero.png\")",
       "PowerShell(Copy-Item \"C:\\\\Users\\\\Jonathan\\\\OneDrive\\\\Desktop\\\\Jonathan-Navarro-Portfolio\\\\Content\\\\rapp\\\\Screenshot 2026-05-25 222853.png\" \"C:\\\\Users\\\\Jonathan\\\\OneDrive\\\\Desktop\\\\Jonathan-Navarro-Portfolio\\\\frontend\\\\public\\\\screenshots\\\\rapp956\\\\problem.png\")",
       "PowerShell(Copy-Item \"C:\\\\Users\\\\Jonathan\\\\OneDrive\\\\Desktop\\\\Jonathan-Navarro-Portfolio\\\\Content\\\\rapp\\\\image.png\" \"C:\\\\Users\\\\Jonathan\\\\OneDrive\\\\Desktop\\\\Jonathan-Navarro-Portfolio\\\\frontend\\\\public\\\\screenshots\\\\rapp956\\\\contact.png\")",
-      "Bash(find \"/mnt/c/Users/Jonathan/OneDrive/Desktop/Jonathan-Navarro-Portfolio/Content\" -type f 2>/dev/null | sort)"
+      "Bash(find \"/mnt/c/Users/Jonathan/OneDrive/Desktop/Jonathan-Navarro-Portfolio/Content\" -type f 2>/dev/null | sort)",
+      "Bash(git update-ref *)",
+      "Bash(git reflog *)",
+      "Bash(git gc *)",
+      "Bash(git stash *)",
+      "Bash(ffmpeg -version)",
+      "Bash(ffprobe -v quiet -print_format json -show_streams \"C:/Users/Jonathan/OneDrive/Desktop/Jonathan-Navarro-Portfolio/frontend/public/screenshots/2d-action-rpg/attack-anim.mp4\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); v=[s for s in d['streams'] if s['codec_type']=='video'][0]; print\\(f\\\\\"Resolution: {v['width']}x{v['height']}, Duration: {v.get\\('duration','?'\\)}s, Codec: {v['codec_name']}\\\\\"\\)\")",
+      "PowerShell(winget list ffmpeg 2>$null; choco list --local-only ffmpeg 2>$null; \\(Get-Item \"C:/Users/Jonathan/OneDrive/Desktop/Jonathan-Navarro-Portfolio/frontend/public/screenshots/2d-action-rpg/attack-anim.mp4\"\\).Length / 1MB)",
+      "PowerShell(winget install --id Gyan.FFmpeg -e --accept-package-agreements --accept-source-agreements 2>&1)",
+      "PowerShell(Get-ChildItem \"$env:LOCALAPPDATA\\\\Microsoft\\\\WinGet\\\\Packages\" -Recurse -Filter \"ffmpeg.exe\" -ErrorAction SilentlyContinue | Select-Object -First 1 FullName)"
     ]
   }
 }

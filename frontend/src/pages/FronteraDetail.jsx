@@ -7,51 +7,51 @@ import './FronteraDetail.css'
 const ACCENT_DARK = projects.find(p => p.id === 'frontera-hackathon')?.accentColor ?? '#58a6ff'
 const ACCENT_MONO = projects.find(p => p.id === 'frontera-hackathon')?.monoAccentColor ?? '#003ce0'
 
-const TAGS = ['React', 'Node.js', 'Express', 'MongoDB', 'Gemini AI']
+const TAGS = ['HTML', 'CSS', 'JavaScript', 'Google Gemini API']
 
 const PROBLEM_STATS = [
-  { value: '57%', label: 'Of first-gen college students say they feel unprepared for financial decisions', source: 'NASPA' },
-  { value: '3×', label: 'More likely to drop out due to financial stress than continuing-gen students', source: 'Pell Institute' },
-  { value: '$37K', label: 'Average student loan debt for graduates — often taken without full context', source: 'NCES' },
-  { value: '24HRS', label: 'Total time to design, build, and ship a working product at the hackathon', source: 'UTRGV 2024' },
+  { value: '1ST', label: 'Place in the Financial Track — UTRGV Frontera Gemini Hackathon', source: 'UTRGV 2024' },
+  { value: '24HRS', label: 'To design, build, and demo a working multi-tool product', source: 'HACKATHON' },
+  { value: '3', label: 'Financial tools: payroll calculator, revenue calculator, and an AI assistant', source: 'FINANCABLE' },
+  { value: 'GEMINI', label: 'Google Gemini API powers the in-app small-business finance assistant', source: 'GOOGLE AI' },
 ]
 
 const FEATURES = [
   {
     num: '01',
-    title: 'Spending Dashboard',
-    body: 'Interactive React charts visualizing income, expenses, and savings rate in real time. Users see their financial picture at a glance — no spreadsheets required.',
+    title: 'Salary Cost Calculator',
+    body: 'Computes weekly, monthly, and yearly payroll cost from an hourly rate, hours worked, and employment type (full- or part-time) — turning an owner\'s payroll math into a few inputs.',
   },
   {
     num: '02',
-    title: 'REST API Layer',
-    body: 'Node.js + Express backend with RESTful endpoints for financial data ingestion, user auth, and AI query routing. Built in hours, stress-tested under hackathon demo conditions.',
+    title: 'Revenue Calculator',
+    body: 'Weighs income against the two big outflows — employee salaries and business purchases — to give a quick read on revenue, so owners can sanity-check the numbers without a spreadsheet.',
   },
   {
     num: '03',
-    title: 'MongoDB Storage',
-    body: 'Flexible document model for user financial profiles. Schema designed to accommodate diverse income/expense patterns across different student situations.',
+    title: 'Financable Assist',
+    body: 'A chatbot powered by the Google Gemini API that answers small-business finance questions in plain language — with a typing effect, light/dark theme, and chat history saved in localStorage.',
   },
   {
     num: '04',
-    title: 'Gemini AI Coach',
-    body: 'Google Gemini integration providing personalized financial coaching — explains loan terms, suggests budget adjustments, and answers specific questions in plain language.',
+    title: 'Multi-Page Site',
+    body: 'A cohesive five-page site — Home, Calculator, Revenue, Contact, and Gemini — sharing one nav and design language, built with plain HTML, CSS, and JavaScript for a fast, dependency-free demo.',
   },
 ]
 
 const PIPELINE = [
-  { step: '01', name: 'React', sub: 'Interactive dashboards + UI' },
-  { step: '02', name: 'Express', sub: 'REST API + routing layer' },
-  { step: '03', name: 'MongoDB', sub: 'User financial data storage' },
-  { step: '04', name: 'Gemini AI', sub: 'Personalized coaching responses' },
+  { step: '01', name: 'HTML', sub: 'Multi-page site structure' },
+  { step: '02', name: 'CSS', sub: 'Shared layout + theming' },
+  { step: '03', name: 'JavaScript', sub: 'Calculators + chat logic' },
+  { step: '04', name: 'Gemini API', sub: 'Finance assistant responses' },
 ]
 
 const TIMELINE = [
-  { time: '00:00', event: 'Hackathon begins — problem selected: financial literacy for first-gen students' },
-  { time: '02:00', event: 'Architecture decided: MERN stack + Gemini for AI coaching layer' },
-  { time: '06:00', event: 'Core API endpoints live, MongoDB schema defined, React scaffolded' },
-  { time: '14:00', event: 'Dashboard charts functional, Gemini integration working end-to-end' },
-  { time: '20:00', event: 'UI polish, bug fixes, demo flow rehearsed' },
+  { time: '00:00', event: 'Hackathon begins — idea chosen: a financial toolkit for small-business owners' },
+  { time: '02:00', event: 'Scope decided: payroll + revenue calculators and a Gemini-powered assistant' },
+  { time: '06:00', event: 'Multi-page site scaffolded; payroll calculator logic working' },
+  { time: '14:00', event: 'Revenue calculator done; Gemini API wired into "Financable Assist"' },
+  { time: '20:00', event: 'Shared styling, theme toggle, and chat persistence polished' },
   { time: '24:00', event: 'Presented to judges — awarded 1st Place, Financial Track' },
 ]
 
@@ -86,8 +86,9 @@ export default function FronteraDetail() {
           </h1>
 
           <p className="frontera-hero__sub">
-            A full-stack financial analytics app with AI coaching built in 24 hours at the UTRGV
-            Frontera Gemini Hackathon — first-place finish in the Financial Track.
+            Financable — a small-business financial toolkit with payroll and revenue calculators plus
+            a Gemini-powered finance assistant, built in 24 hours at the UTRGV Frontera Gemini
+            Hackathon for a first-place finish in the Financial Track.
           </p>
 
           <div className="frontera-tags">
@@ -113,11 +114,11 @@ export default function FronteraDetail() {
       <section className="frontera-section frontera-problem">
         <div className="frontera-section__inner">
           <span className="frontera-section__label">// THE PROBLEM</span>
-          <h2 className="frontera-section__title">Financial literacy has an access gap</h2>
+          <h2 className="frontera-section__title">Small-business finance, simplified</h2>
           <p className="frontera-section__lead">
-            First-generation college students navigate student loans, budgeting, and financial
-            decisions without the guidance that continuing-generation students take for granted.
-            The goal: close that gap with accessible, personalized AI coaching.
+            Small-business owners juggle payroll, revenue, and tax math without accessible tools —
+            getting clear answers usually means wrestling spreadsheets or paying an accountant.
+            The goal: bundle the everyday calculations and an AI finance assistant into one simple site.
           </p>
 
           <div className="frontera-stats-grid">
@@ -132,9 +133,9 @@ export default function FronteraDetail() {
 
           <div className="frontera-quote">
             <p className="frontera-quote__text">
-              "Nobody explained compound interest to me. I just signed the loan forms because everyone else did."
+              "At Financable, our mission is to empower small businesses with easy-to-use financial tools that simplify complex processes."
             </p>
-            <span className="frontera-quote__attr">— First-gen college student, RGV</span>
+            <span className="frontera-quote__attr">— Financable, project mission</span>
           </div>
         </div>
       </section>
@@ -165,10 +166,10 @@ export default function FronteraDetail() {
       <section className="frontera-section frontera-built">
         <div className="frontera-section__inner">
           <span className="frontera-section__label">// WHAT WAS BUILT</span>
-          <h2 className="frontera-section__title">Four layers. One cohesive product.</h2>
+          <h2 className="frontera-section__title">Four pieces. One cohesive product.</h2>
           <p className="frontera-section__lead">
-            The full stack — from React charts to Gemini AI responses — was designed, implemented,
-            and integrated within the 24-hour window.
+            Two calculators, an AI assistant, and a shared multi-page site — all designed,
+            implemented, and integrated within the 24-hour window.
           </p>
 
           <div className="frontera-features-grid">
@@ -187,7 +188,7 @@ export default function FronteraDetail() {
       <section className="frontera-section frontera-pipeline-section">
         <div className="frontera-section__inner">
           <span className="frontera-section__label">// TECH STACK</span>
-          <h2 className="frontera-section__title">Full MERN + AI in one weekend.</h2>
+          <h2 className="frontera-section__title">Vanilla web + Gemini, shipped fast.</h2>
 
           <div className="frontera-pipeline">
             {PIPELINE.map((p, i) => (
@@ -205,8 +206,9 @@ export default function FronteraDetail() {
           </div>
 
           <p className="frontera-pipeline__note">
-            Google Gemini was chosen for its generous hackathon API limits and strong performance
-            on financial reasoning tasks — critical for producing trustworthy coaching responses.
+            A no-framework, plain HTML/CSS/JS build was a deliberate hackathon call — zero setup
+            overhead meant more time on the calculators and the Gemini assistant, and the whole
+            site could be demoed instantly with a live server.
           </p>
         </div>
       </section>
@@ -218,18 +220,18 @@ export default function FronteraDetail() {
             <span className="frontera-section__label">// OUTCOME</span>
             <ul className="frontera-outcome__list">
               <li>1st Place — Financial Track, UTRGV Frontera Gemini Hackathon 2024</li>
-              <li>Complete full-stack app delivered within the 24-hour window</li>
-              <li>Live demo with real Gemini AI responses shown to judges</li>
-              <li>Real-time spending visualizations with interactive React charts</li>
+              <li>Working multi-tool product delivered within the 24-hour window</li>
+              <li>Live demo with real Gemini-powered assistant responses shown to judges</li>
+              <li>Payroll and revenue calculators producing instant results in-browser</li>
             </ul>
           </div>
           <div className="frontera-outcome__col">
             <span className="frontera-section__label">// WHAT I LEARNED</span>
             <ul className="frontera-outcome__list">
-              <li>Rapid architecture decisions under time pressure — choosing boring, proven tech wins</li>
-              <li>Gemini API integration: prompt engineering for domain-specific financial responses</li>
+              <li>Rapid scope decisions under time pressure — choosing boring, proven tech wins</li>
+              <li>Gemini API integration: fetch, streaming a typing effect, and localStorage chat history</li>
               <li>Demo-driven development: if it doesn't work in front of judges, it doesn't matter</li>
-              <li>MERN stack is fast to scaffold precisely because it's well-understood</li>
+              <li>Plain HTML/CSS/JS ships fast precisely because there's no build step to fight</li>
             </ul>
           </div>
         </div>

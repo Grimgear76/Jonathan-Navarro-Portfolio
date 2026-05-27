@@ -19,14 +19,10 @@ export default function ProjectCard({ project }) {
     unlockProject(project.id)
   }
 
-  function handleNavigate() {
+  function handleNavigate(e) {
+    e.stopPropagation()
     unlockProject(project.id)
     navigate(`/projects/${project.id}`)
-  }
-
-  function handleArrowClick(e) {
-    e.stopPropagation()
-    handleNavigate()
   }
 
   function handleMouseMove(e) {
@@ -58,12 +54,8 @@ export default function ProjectCard({ project }) {
       className={`project-card${isUnlocked ? ' unlocked' : ''}`}
       style={unlockedStyles}
       onClick={handleUnlock}
-      onDoubleClick={handleNavigate}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
-      role="button"
-      tabIndex={0}
-      onKeyDown={e => e.key === 'Enter' && handleNavigate()}
     >
       <div className="card-shine" />
       {isUnlocked && <div className="card-ripple" />}
@@ -86,7 +78,7 @@ export default function ProjectCard({ project }) {
         </h3>
         <button
           className="card-arrow"
-          onClick={handleArrowClick}
+          onClick={handleNavigate}
           aria-label={`View ${project.title} details`}
         >
           →

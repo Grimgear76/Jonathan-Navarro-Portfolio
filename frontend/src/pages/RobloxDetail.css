@@ -397,3 +397,12 @@
 [data-theme="mono"] .roblox-token-row__value { color: var(--text-muted); }
 [data-theme="mono"] .roblox-title__line2     { color: var(--text); opacity: 1; }
 [data-theme="mono"] .roblox-outcome__list li { color: var(--text-muted); }
+
+/* ── Figma overview image ───────────────────────────────────────────── */
+.roblox-preview { padding-top: 0; }
+.roblox-preview__img {
+  width: 100%;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  display: block;
+}

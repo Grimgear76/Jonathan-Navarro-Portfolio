@@ -12,18 +12,18 @@ const TAGS = ['MongoDB', 'Express', 'React', 'Node.js', 'Socket.io', 'JWT']
 const PROBLEMS = [
   {
     num: '01',
-    title: 'Event discovery is broken',
-    body: 'Campus events live on flyers, GroupMe chats, Instagram stories, and department emails — no single place to find what\'s happening this weekend. Students miss events they\'d actually care about.',
+    title: 'No campus-scoped feed',
+    body: 'Students bounce between Instagram, GroupMe, and Snapchat to keep up with campus life — none of them campus-scoped. The goal: one place to post, react, and connect with peers.',
   },
   {
     num: '02',
-    title: 'No interest filtering',
-    body: 'Generic bulletin boards dump everything on everyone. A computer science student doesn\'t need a flyer for a nursing mixer — but they\'re stuck sifting through it anyway.',
+    title: 'Real-time is hard',
+    body: 'A social feed that only updates on refresh feels dead. Likes and new posts need to land instantly across every connected client — which means WebSockets, not polling.',
   },
   {
     num: '03',
-    title: 'No social signal',
-    body: 'You can\'t tell if an event has 3 attendees or 300. No RSVP visibility means no social proof — the information that actually drives attendance decisions.',
+    title: 'Self-hosting end-to-end',
+    body: 'Beyond the app: how do you take a local server public, securely, without a cloud provider? This project doubled as a deep dive into networking, HTTPS, and tunneled deployment.',
   },
 ]
 
@@ -31,35 +31,35 @@ const FEATURES = [
   {
     num: '01',
     title: 'JWT Authentication',
-    body: 'Stateless auth with signed tokens — no server-side sessions. Tokens include user ID and interests, scoping the feed query at the middleware level before it hits the database.',
+    body: 'Stateless auth with signed tokens — no server-side sessions. The token carries the user ID and is verified in middleware before any protected route or socket event runs.',
   },
   {
     num: '02',
-    title: 'Event Creation & RSVP',
-    body: 'Any student can post an event: name, date, location, category, cap. RSVP atomically increments the attendee count and adds the user to the event\'s attendee list — race-condition safe via MongoDB atomic updates.',
+    title: 'Posts, Likes & Comments',
+    body: 'Users create posts with text and images, then like and comment on each other\'s posts. Likes are stored as a Map for O(1) toggles, and image uploads are handled with Multer.',
   },
   {
     num: '03',
-    title: 'Interest-Based Feed',
-    body: 'Feed queries filter events by the user\'s interest tags — set at registration, editable in profile. MongoDB aggregation pipeline sorts by proximity, then by RSVP momentum.',
+    title: 'Real-Time Feed',
+    body: 'Socket.io shares the Express server and pushes new posts and like updates to every connected client instantly — the feed stays live without any polling.',
   },
   {
     num: '04',
-    title: 'Real-Time Notifications',
-    body: 'Socket.io pushes live updates when a new event matches a user\'s interests, or when an RSVP\'d event gets a significant attendee spike — keeping the feed feeling alive without polling.',
+    title: 'Security Hardening',
+    body: 'Helmet security headers, global rate limiting, request sanitization, and express-validator on inputs — defense applied at the middleware layer before requests reach a controller.',
   },
 ]
 
 const PIPELINE = [
-  { step: '01', name: 'MongoDB', sub: 'Events, users, RSVPs' },
+  { step: '01', name: 'MongoDB', sub: 'Users, posts, friends' },
   { step: '02', name: 'Express', sub: 'REST API + JWT middleware' },
-  { step: '03', name: 'Socket.io', sub: 'Real-time event push' },
-  { step: '04', name: 'React', sub: 'Feed, event cards, profile UI' },
+  { step: '03', name: 'Socket.io', sub: 'Real-time post + like push' },
+  { step: '04', name: 'React', sub: 'Feed, post cards, profile UI' },
 ]
 
 const SCHEMA = [
-  { entity: 'User', fields: ['_id', 'name', 'email', 'passwordHash', 'interests[]', 'rsvpd[]'] },
-  { entity: 'Event', fields: ['_id', 'title', 'date', 'location', 'category', 'hostId', 'attendees[]', 'cap'] },
+  { entity: 'User', fields: ['_id', 'firstName', 'lastName', 'userName', 'email', 'password', 'picturePath', 'friends[]'] },
+  { entity: 'Post', fields: ['_id', 'userId', 'description', 'picturePath', 'likes{}', 'comments[]', 'createdAt'] },
 ]
 
 export default function CollegeSocialDetail() {
@@ -91,8 +91,8 @@ export default function CollegeSocialDetail() {
           </h1>
 
           <p className="social-hero__sub">
-            A MERN stack social platform that solves campus event discovery — interest-based feeds,
-            real-time RSVP, and Socket.io notifications so students never miss what's happening on campus.
+            A MERN stack social platform where students post, like, and comment in a real-time feed —
+            built with Socket.io live updates, JWT auth, and self-hosted publicly via Cloudflare Tunnel.
           </p>
 
           <div className="social-tags">
@@ -118,11 +118,11 @@ export default function CollegeSocialDetail() {
       <section className="social-section social-problem">
         <div className="social-section__inner">
           <span className="social-section__label">// THE PROBLEM</span>
-          <h2 className="social-section__title">Campus social life is fragmented</h2>
+          <h2 className="social-section__title">A campus feed, built end-to-end</h2>
           <p className="social-section__lead">
-            College students rely on a patchwork of platforms to find out what's happening —
-            and still miss most of it. The problem isn't a lack of events, it's a lack of a
-            single discoverable, filterable, social signal.
+            Campus social life is scattered across general-purpose apps that aren't built for it.
+            This project set out to build a campus-scoped social feed from scratch — and, just as
+            importantly, to learn how to ship and self-host it securely on a home server.
           </p>
 
           <div className="social-problems-grid">
@@ -141,10 +141,11 @@ export default function CollegeSocialDetail() {
       <section className="social-section social-schema">
         <div className="social-section__inner">
           <span className="social-section__label">// DATA MODEL</span>
-          <h2 className="social-section__title">Two collections. One relationship.</h2>
+          <h2 className="social-section__title">Two collections. One social graph.</h2>
           <p className="social-section__lead">
-            MongoDB's document model lets the interest array live directly on the user —
-            no join table needed. RSVP is an atomic array push that doubles as an attendee list.
+            MongoDB's document model lets the friends list live directly on the user as an array of
+            references — no join table needed. Post likes are a Map keyed by user ID, so toggling a
+            like is an O(1) update instead of scanning an array.
           </p>
 
           <div className="social-schema-grid">
@@ -171,8 +172,8 @@ export default function CollegeSocialDetail() {
           <span className="social-section__label">// WHAT WAS BUILT</span>
           <h2 className="social-section__title">Four systems. One campus feed.</h2>
           <p className="social-section__lead">
-            Each feature solves a discrete problem — auth, creation, discovery, real-time — and
-            they're decoupled enough that the feed renders whether or not the socket connection is live.
+            Each feature solves a discrete problem — auth, posting, real-time delivery, security —
+            and they're decoupled enough that the feed renders whether or not the socket connection is live.
           </p>
 
           <div className="social-features-grid">
@@ -221,19 +222,19 @@ export default function CollegeSocialDetail() {
           <div className="social-outcome__col">
             <span className="social-section__label">// OUTCOME</span>
             <ul className="social-outcome__list">
-              <li>Functional MVP: registration, event discovery, RSVP, and live-updating feed</li>
-              <li>Interest filtering reduces irrelevant events from the feed at the query level</li>
-              <li>Socket.io notifications fire on new event creation matching user interests</li>
-              <li>Atomic RSVP prevents double-booking at the database level</li>
+              <li>Functional platform: registration, a post feed, likes, comments, and friends</li>
+              <li>Socket.io pushes new posts and like updates live to every connected client</li>
+              <li>Security middleware — helmet, rate limiting, sanitization, express-validator</li>
+              <li>Self-hosted from a home server, exposed publicly via Cloudflare Tunnel</li>
             </ul>
           </div>
           <div className="social-outcome__col">
             <span className="social-section__label">// NEXT STEPS</span>
             <ul className="social-outcome__list">
-              <li>Image uploads for event banners via S3 or Cloudflare R2</li>
-              <li>Campus verification — .edu email required to post events</li>
-              <li>Map view for events within walking distance of campus</li>
-              <li>Friend system — see which friends RSVP'd to an event</li>
+              <li>Campus verification — require a .edu email to register</li>
+              <li>Direct messaging between friends over the existing socket layer</li>
+              <li>A questionnaire-driven interest feed to surface relevant posts</li>
+              <li>Move image storage off the server to S3 or Cloudflare R2</li>
             </ul>
           </div>
         </div>

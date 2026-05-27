@@ -71,6 +71,7 @@ export default function Navbar() {
               <div
                 className="progress-bar"
                 role="progressbar"
+                aria-label="Projects explored"
                 aria-valuenow={exploredPercent}
                 aria-valuemin={0}
                 aria-valuemax={100}

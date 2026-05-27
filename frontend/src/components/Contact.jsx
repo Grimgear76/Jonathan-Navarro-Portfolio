@@ -72,6 +72,7 @@ export default function Contact() {
     <section className="contact" id="contact">
       <div className="contact-container">
         <h2 className="section-label">// CONTACT</h2>
+        <div className="contact-layout">
         <form className="contact-form" onSubmit={handleSubmit} noValidate>
           <div className="field">
             <label htmlFor="name">NAME</label>
@@ -97,6 +98,29 @@ export default function Contact() {
             {status === 'sending' ? 'SENDING...' : 'SEND MESSAGE'}
           </button>
         </form>
+
+        <div className="contact-info">
+          <p className="contact-info-label">// REACH ME DIRECTLY</p>
+          <ul className="contact-info-list">
+            <li>
+              <span className="contact-info-key">EMAIL</span>
+              <a href="mailto:jonathan63592@gmail.com" className="contact-info-val">jonathan63592@gmail.com</a>
+            </li>
+            <li>
+              <span className="contact-info-key">LINKEDIN</span>
+              <a href="https://linkedin.com/in/jonathan-navarro-44923b307" target="_blank" rel="noopener noreferrer" className="contact-info-val">jonathan-navarro-44923b307</a>
+            </li>
+            <li>
+              <span className="contact-info-key">GITHUB</span>
+              <a href="https://github.com/Grimgear76" target="_blank" rel="noopener noreferrer" className="contact-info-val">Grimgear76</a>
+            </li>
+            <li>
+              <span className="contact-info-key">LOCATION</span>
+              <span className="contact-info-val contact-info-plain">Rio Grande Valley, TX</span>
+            </li>
+          </ul>
+        </div>
+        </div>
       </div>
     </section>
   )

@@ -35,11 +35,11 @@ export default function About() {
               <p><span className="terminal-prompt">$ whoami</span></p>
               <p className="terminal-output">Jonathan Navarro</p>
               <p><span className="terminal-prompt">$ cat info.txt</span></p>
-              <p className="terminal-output">📍 Rio Grande Valley, TX</p>
-              <p className="terminal-output">🎓 CS @ UTRGV — Magna Cum Laude</p>
-              <p className="terminal-output">🏅 Dean's List '23–'24 · President's List '24–'26</p>
-              <p className="terminal-output">🏆 2× Hackathon Finalist (1st + 2nd)</p>
-              <p className="terminal-output">⚡ ML · Full-Stack · Game Dev</p>
+              <p className="terminal-output">[loc] Rio Grande Valley, TX</p>
+              <p className="terminal-output">[edu] CS @ UTRGV — Magna Cum Laude</p>
+              <p className="terminal-output">[ach] Dean's List '23–'24 · President's List '24–'26</p>
+              <p className="terminal-output">[win] 2× Hackathon Finalist (1st + 2nd)</p>
+              <p className="terminal-output">[foc] ML · Full-Stack · Game Dev</p>
               <p><span className="terminal-cursor">_</span></p>
             </div>
           </div>

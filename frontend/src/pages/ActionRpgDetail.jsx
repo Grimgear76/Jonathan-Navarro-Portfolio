@@ -12,23 +12,23 @@ const TAGS = ['Unity', 'C#', 'Game Development', 'OOP']
 const SYSTEMS = [
   {
     num: '01',
-    title: 'Player Controller',
-    body: 'Smooth 8-directional movement with acceleration curves, a dodge-roll with i-frames, and a melee combo system with hitbox activation windows — all driven by a finite state machine.',
+    title: 'Combat System',
+    body: 'Melee attacks resolve via a Physics2D overlap-circle at the player\'s attack point, dealing damage pulled from a central StatsManager (damage, range). Hits are driven by animation events and answered with knockback feedback on the enemy.',
   },
   {
     num: '02',
-    title: 'Enemy AI',
-    body: 'Multiple enemy archetypes each built on a shared state machine base: Patrol → Chase → Attack → Retreat. Enemies read line-of-sight using Physics2D raycasts and aggro at configurable detection radii.',
+    title: 'Enemy AI & Types',
+    body: 'Multiple enemy archetypes — including a melee chaser and a dynamite-thrower — each with their own movement, combat, health, and knockback components, so adding a new enemy means dropping in a new prefab, not rewriting the player.',
   },
   {
     num: '03',
-    title: 'Combat System',
-    body: 'Hit detection via trigger colliders pooled per-attack frame. Damage is event-driven — enemies subscribe to a hit channel and respond with knockback physics, flash feedback, and health drain.',
+    title: 'Progression',
+    body: 'EXP-based leveling through an ExpManager, a togglable skill tree built on ScriptableObject skill data, and a StatsManager that centralizes speed, damage, and weapon range so upgrades flow through one source of truth.',
   },
   {
     num: '04',
-    title: 'Progression & UI',
-    body: 'Inventory system with scriptable-object items, a heads-up health bar, enemy health indicators, and a win/lose screen flow. All UI panels are driven off a singleton GameManager.',
+    title: 'Quests, Inventory & Shop',
+    body: 'A quest system with objectives and rewards, an inventory of ScriptableObject items, and a shop economy where gold from loot drops is spent with a shopkeeper — plus a main menu and scene transitions tying the loop together.',
   },
 ]
 
@@ -68,9 +68,9 @@ export default function ActionRpgDetail() {
           </h1>
 
           <p className="rpg-hero__sub">
-            A fully playable action RPG built from scratch in Unity — custom combat, enemy AI,
-            inventory, and a complete win/lose loop. No assets kits, no tutorials followed:
-            every system hand-rolled in C#.
+            A 2D action RPG built in Unity — melee combat, enemy AI, a quest system, a skill tree,
+            EXP-based leveling, and an inventory + shop economy, all wired together in C#.
+            Co-developed with Dustin Boston.
           </p>
 
           <div className="rpg-tags">
@@ -280,11 +280,11 @@ export default function ActionRpgDetail() {
           <div className="rpg-outcome__col">
             <span className="rpg-section__label">// OUTCOME</span>
             <ul className="rpg-outcome__list">
-              <li>Fully playable vertical slice with multiple enemy types and a boss encounter</li>
-              <li>Complete win/lose loop — goal state, death screen, and restart flow</li>
-              <li>Smooth player combat with dodge roll, melee combo, and frame-accurate hitboxes</li>
-              <li>Enemy AI reacts to line-of-sight, distances, and health thresholds</li>
-              <li>Inventory system with pickups, item stacking, and UI integration</li>
+              <li>Playable build with multiple enemy types, including a dynamite-thrower</li>
+              <li>Melee combat with overlap-circle hit detection and knockback feedback</li>
+              <li>EXP-based leveling, a togglable skill tree, and centralized stats</li>
+              <li>Quest system with objectives and rewards</li>
+              <li>Inventory + shop economy with gold and loot drops</li>
             </ul>
           </div>
           <div className="rpg-outcome__col">

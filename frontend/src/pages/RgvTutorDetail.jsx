@@ -7,13 +7,13 @@ import './RgvTutorDetail.css'
 const ACCENT_DARK = projects.find(p => p.id === 'rgv-tutor')?.accentColor ?? '#3dd6c8'
 const ACCENT_MONO = projects.find(p => p.id === 'rgv-tutor')?.monoAccentColor ?? '#007ef3'
 
-const TAGS = ['Flutter', 'Node.js', 'Ollama', 'SQLite', 'Llama3.2']
+const TAGS = ['Flutter', 'Node.js', 'Ollama', 'Hive', 'Llama3.2']
 
 const PIPELINE = [
-  { step: '01', name: 'Flutter', sub: 'Cross-platform mobile UI' },
-  { step: '02', name: 'Node.js', sub: 'Local inference backend' },
-  { step: '03', name: 'Ollama / Llama3.2', sub: 'Fully local LLM — no API keys' },
-  { step: '04', name: 'SQLite', sub: 'On-device session persistence' },
+  { step: '01', name: 'Flutter', sub: 'Cross-platform app UI' },
+  { step: '02', name: 'Ollama / Llama3.2', sub: 'Local LLM — no API keys' },
+  { step: '03', name: 'Node.js', sub: 'Express book-download proxy' },
+  { step: '04', name: 'Hive', sub: 'On-device persistence' },
 ]
 
 const FEATURES = [
@@ -25,25 +25,25 @@ const FEATURES = [
   {
     num: 'AI HELPER',
     title: 'Local LLM Chat',
-    body: 'Llama3.2:1b runs on the local Node.js server via Ollama. Students ask questions in natural language and get full explanations — no internet, no API cost.',
+    body: 'Llama3.2:1b runs locally via Ollama, called directly from the Flutter app over localhost. Students ask questions in natural language and get full explanations — no internet, no API cost.',
   },
   {
     num: 'PLANNER',
     title: 'Calendar Study Scheduler',
-    body: 'A built-in calendar lets students add and track study tasks by day. Persistent via SQLite so progress survives app restarts.',
+    body: 'A built-in calendar lets students add and track study tasks by day. Persistent via Hive so progress survives app restarts.',
   },
   {
     num: 'SUBJECTS',
-    title: 'Multi-Subject Curriculum',
-    body: 'Five core subject tracks — Math, Reading/Writing, Science, History, CS — plus an Import Subject option to scan content via QR code.',
+    title: 'Practice & Subject Sharing',
+    body: 'Practice problems across multiple subject tracks, plus an Import Subject option to load and share content between devices via QR code.',
   },
 ]
 
 const SCREENSHOTS = [
-  { src: '/screenshots/rgv-tutor/subject-select.png', label: 'SUBJECT SELECTION — 5 TRACKS + QR IMPORT' },
+  { src: '/screenshots/rgv-tutor/subject-select.png', label: 'SUBJECT SELECTION — PRACTICE TRACKS + QR IMPORT' },
   { src: '/screenshots/rgv-tutor/SignIn.png',         label: 'ACCOUNT CREATION — DATA STORED LOCALLY ON DEVICE' },
   { src: '/screenshots/rgv-tutor/Library.png',        label: 'BOOK HUB — DOWNLOAD CLASSICS FOR OFFLINE READING' },
-  { src: '/screenshots/rgv-tutor/Planner.png',        label: 'PLANNER — CALENDAR TASK SCHEDULER WITH SQLITE PERSISTENCE' },
+  { src: '/screenshots/rgv-tutor/Planner.png',        label: 'PLANNER — CALENDAR TASK SCHEDULER WITH HIVE PERSISTENCE' },
   { src: '/screenshots/rgv-tutor/Ollama.png',         label: 'AI HELPER — LLAMA3.2:1B RUNNING LOCALLY VIA OLLAMA' },
 ]
 
@@ -155,8 +155,9 @@ export default function RgvTutorDetail() {
           <span className="rgv-section__label">// SYSTEM ARCHITECTURE</span>
           <h2 className="rgv-section__title">100% local. Zero API keys.</h2>
           <p className="rgv-section__lead">
-            The entire stack runs on a single machine. Flutter handles the UI, Node.js spins up
-            Ollama for LLM inference, and SQLite keeps everything persistent — no cloud, no cost, no latency.
+            The entire stack runs on a single machine. Flutter handles the UI and calls a local
+            Ollama LLM directly for inference, a lightweight Node/Express server proxies book
+            downloads, and Hive keeps everything persistent — no cloud, no cost, no latency.
           </p>
 
           <div className="rgv-pipeline">
@@ -176,8 +177,8 @@ export default function RgvTutorDetail() {
 
           <p className="rgv-pipeline__note">
             Ollama serves <code>llama3.2:1b</code> locally — the model label visible in the app UI.
-            The Flutter app communicates with the Node.js backend over localhost, so every inference
-            call stays on-device with no network hop.
+            The Flutter app hits Ollama on <code>localhost:11434</code> directly, so every inference
+            call stays on-device with no network hop and no API key.
           </p>
         </div>
       </section>
@@ -258,7 +259,7 @@ export default function RgvTutorDetail() {
               <li>2nd Place at the AI/ML Hackathon: Intelligent Solutions to Real-World Problems</li>
               <li>Demonstrated real-time AI tutoring with zero cloud API costs</li>
               <li>Fully runnable on a standard laptop — no GPU, no subscriptions</li>
-              <li>Complete Flutter app with 5 subject tracks, book hub, planner, and AI chat</li>
+              <li>Complete Flutter app with practice problems, book hub, planner, and AI chat</li>
             </ul>
           </div>
           <div className="rgv-limits__col">

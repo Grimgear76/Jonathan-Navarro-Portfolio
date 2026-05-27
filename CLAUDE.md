@@ -88,6 +88,7 @@ Open in any browser to see the scroll color journey and click-to-unlock mechanic
 - Single-page app with React Router for project detail routes (not full multi-page)
 - The "explore to unlock color" mechanic is the primary hook that keeps recruiters scrolling
 - Monochrome-first: the site looks intentional before ANY unlocking happens
+- **Skills section removed** — `Skills.jsx` exists but is intentionally not rendered on the homepage and has no nav link. Removed for scope/simplicity; the About section stack tags cover tech coverage. Do not re-add without explicit instruction.
 
 ## Git / GitHub
 

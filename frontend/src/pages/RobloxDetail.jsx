@@ -32,29 +32,29 @@ const PROCESS = [
   { step: '02', name: 'UX Analysis', body: 'Identified the three core problem areas through heuristic evaluation using Nielsen\'s 10 usability principles as a rubric.' },
   { step: '03', name: 'Wireframes', body: 'Low-fidelity wireframes for home feed, game detail, search, and navigation — iterated on information architecture before touching visuals.' },
   { step: '04', name: 'Design System', body: 'Built a component library, color token set, and typography scale before designing any high-fidelity screens — all components derived from this single source.' },
-  { step: '05', name: 'Prototype', body: '30+ high-fidelity screens with interactive prototype connections — navigable from home through discovery to game detail and back.' },
+  { step: '05', name: 'Prototype', body: '11 high-fidelity screens with interactive prototype connections — navigable from home through charts/discovery and into settings, friends, and more.' },
 ]
 
 const SCREENS = [
   {
+    name: 'Charts',
+    change: 'Rebuilt the charts screen from scratch — replaced a flat, hard-to-scan ranked list with card-based rows that lead with thumbnail, active player count, and genre tags. Added category tabs (Top, Trending, New) to split discovery intent.',
+    impact: 'Users can assess a game at a glance without tapping in. The "Trending" tab surfaces rising titles that the old popularity sort permanently buried.',
+  },
+  {
     name: 'Home Feed',
-    change: 'Replaced the static popularity carousel with a personalized grid that surfaces games by play history, friend activity, and category affinity.',
+    change: 'Replaced the static popularity carousel with a grid that surfaces games by play history, friend activity, and category affinity.',
     impact: 'Niche titles get surface area. Users see different content on repeat visits.',
   },
   {
-    name: 'Game Detail Page',
-    change: 'Redesigned to lead with social proof (active players, friend plays) and media (thumbnails, trailers) before the description — matching how users actually evaluate games.',
-    impact: 'Key info above the fold; description and technical details below for those who want depth.',
-  },
-  {
-    name: 'Search & Filters',
-    change: 'Added category filters, player-count ranges, genre tags, and a "rising" sort option to surface trending-but-not-yet-popular titles.',
-    impact: 'Keyword-stuffed results pushed down by relevance scoring. Filters persist across session.',
-  },
-  {
     name: 'Navigation',
-    change: 'Collapsed the crowded top nav into a persistent bottom tab bar on mobile. Desktop gets a left-rail nav with a collapsible library section for user-created and favorited games.',
-    impact: 'Primary actions always reachable with one tap. Library accessible without leaving the current context.',
+    change: 'Collapsed the crowded top nav into a persistent bottom tab bar (Home, Charts, Friends, Avatar, More) — giving Charts a dedicated, always-visible entry point.',
+    impact: 'Game discovery is one tap away from anywhere in the app. Charts is no longer buried under a search flow.',
+  },
+  {
+    name: 'Settings & More',
+    change: 'Consolidated scattered settings and secondary features into a clean Settings panel with grouped toggles, and a More tab with a scannable icon grid for less-used features.',
+    impact: 'Reduces cognitive load on the primary nav. Power-user features remain accessible without crowding the main flow.',
   },
 ]
 
@@ -95,8 +95,8 @@ export default function RobloxDetail() {
           </h1>
 
           <p className="roblox-hero__sub">
-            A high-fidelity Figma redesign of Roblox's core UI — targeting broken discoverability,
-            visual inconsistency, and a weak search experience, with a full design system built from scratch.
+            A high-fidelity Figma redesign of Roblox's core UI — centered on fixing the Charts and
+            game lookup experience, with a consistent design language applied across all 11 primary screens.
           </p>
 
           <div className="roblox-tags">
@@ -171,7 +171,7 @@ export default function RobloxDetail() {
       <section className="roblox-section roblox-screens">
         <div className="roblox-section__inner">
           <span className="roblox-section__label">// SCREENS REDESIGNED</span>
-          <h2 className="roblox-section__title">Four screens. Every decision justified.</h2>
+          <h2 className="roblox-section__title">Key screens. Every decision justified.</h2>
           <p className="roblox-section__lead">
             Each screen change has a rationale — not aesthetic preference, but a specific usability
             problem it solves. The "before/after" is in the decision, not just the visual.
@@ -224,8 +224,8 @@ export default function RobloxDetail() {
           <div className="roblox-outcome__col">
             <span className="roblox-section__label">// OUTCOME</span>
             <ul className="roblox-outcome__list">
-              <li>30+ high-fidelity screens covering all primary user flows</li>
-              <li>Interactive Figma prototype — fully navigable from home to game detail</li>
+              <li>11 high-fidelity screens covering all primary user flows</li>
+              <li>Interactive Figma prototype — fully navigable from home through charts to settings and more</li>
               <li>40+ component library ready for developer handoff</li>
               <li>Full style guide: color tokens, type scale, spacing system, icon grid</li>
               <li>Heuristic audit documentation mapping each change to a specific UX problem</li>
@@ -240,6 +240,17 @@ export default function RobloxDetail() {
               <li>Figma's auto-layout and component variants eliminate a class of handoff ambiguity entirely</li>
             </ul>
           </div>
+        </div>
+      </section>
+
+      {/* ════════════════════════════════════ FIGMA OVERVIEW */}
+      <section className="roblox-section roblox-preview">
+        <div className="roblox-section__inner">
+          <img
+            src="/screenshots/roblox-ux-redesign/figma-overview.png"
+            alt="Figma canvas overview showing all redesigned Roblox screens"
+            className="roblox-preview__img"
+          />
         </div>
       </section>
 

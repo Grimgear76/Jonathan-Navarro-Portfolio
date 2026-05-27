@@ -72,7 +72,26 @@
       "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); v=[s for s in d['streams'] if s['codec_type']=='video'][0]; print\\(f\\\\\"Resolution: {v['width']}x{v['height']}, Duration: {v.get\\('duration','?'\\)}s, Codec: {v['codec_name']}\\\\\"\\)\")",
       "PowerShell(winget list ffmpeg 2>$null; choco list --local-only ffmpeg 2>$null; \\(Get-Item \"C:/Users/Jonathan/OneDrive/Desktop/Jonathan-Navarro-Portfolio/frontend/public/screenshots/2d-action-rpg/attack-anim.mp4\"\\).Length / 1MB)",
       "PowerShell(winget install --id Gyan.FFmpeg -e --accept-package-agreements --accept-source-agreements 2>&1)",
-      "PowerShell(Get-ChildItem \"$env:LOCALAPPDATA\\\\Microsoft\\\\WinGet\\\\Packages\" -Recurse -Filter \"ffmpeg.exe\" -ErrorAction SilentlyContinue | Select-Object -First 1 FullName)"
+      "PowerShell(Get-ChildItem \"$env:LOCALAPPDATA\\\\Microsoft\\\\WinGet\\\\Packages\" -Recurse -Filter \"ffmpeg.exe\" -ErrorAction SilentlyContinue | Select-Object -First 1 FullName)",
+      "Bash(coderabbit --version)",
+      "Read(//c/Users/Jonathan/OneDrive/Desktop/RAPP956 Program Website/**)",
+      "Read(//c/Users/Jonathan/OneDrive/Desktop/frontera-hackathon/**)",
+      "Read(//c/Users/Jonathan/OneDrive/Desktop/College-social-life-app/**)",
+      "Read(//c/Users/Jonathan/2D Action RPG/**)",
+      "Bash(echo \"===== College backend =====\"; find \"/c/Users/Jonathan/OneDrive/Desktop/College-social-life-app/backend\" -maxdepth 2 -not -path \"*/node_modules/*\" 2>&1 | head -40; echo; echo \"===== College package.json =====\"; cat \"/c/Users/Jonathan/OneDrive/Desktop/College-social-life-app/backend/package.json\" 2>&1; echo; echo \"===== RGV_Tutor tree =====\"; find \"/c/Users/Jonathan/2026Hackathon/RGV_Tutor\" -maxdepth 2 -not -path \"*/node_modules/*\" -not -path \"*/.git/*\" 2>&1 | head -50)",
+      "Bash(python -c ' *)",
+      "Bash(cp graphify-out/graph.json .graphify_old.json)",
+      "Bash(mkdir -p graphify-out)",
+      "Bash(PYTHONUTF8=1 python -c ' *)",
+      "Bash(rm -f .graphify_detect.json .graphify_extract.json .graphify_analysis.json .graphify_labels.json .graphify_incremental.json .graphify_old.json)",
+      "Read(//c/c/Users/Jonathan/OneDrive/Desktop/Jonathan-Navarro-Portfolio/**)",
+      "mcp__f06d0e2d-7264-4a91-b02b-5b6e6a043562__get_metadata",
+      "mcp__f06d0e2d-7264-4a91-b02b-5b6e6a043562__get_screenshot",
+      "Bash(curl -s -o \"C:\\\\Users\\\\Jonathan\\\\AppData\\\\Local\\\\Temp\\\\roblox_figma.png\" \"https://www.figma.com/api/mcp/asset/ef9d4732-99bc-46c9-8b55-5f378d38d97c\")",
+      "mcp__f06d0e2d-7264-4a91-b02b-5b6e6a043562__use_figma",
+      "Bash(copy \"C:\\\\Users\\\\Jonathan\\\\AppData\\\\Local\\\\Temp\\\\roblox_figma.png\" \"C:\\\\Users\\\\Jonathan\\\\OneDrive\\\\Desktop\\\\Jonathan-Navarro-Portfolio\\\\frontend\\\\public\\\\screenshots\\\\roblox-ux-redesign\\\\figma-overview.png\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"C:\\\\Users\\\\Jonathan\\\\OneDrive\\\\Desktop\\\\Jonathan-Navarro-Portfolio\\\\frontend\\\\public\\\\screenshots\\\\roblox-ux-redesign\")",
+      "PowerShell(Copy-Item \"C:\\\\Users\\\\Jonathan\\\\OneDrive\\\\Desktop\\\\Jonathan-Navarro-Portfolio\\\\Content\\\\Roblox\\\\Roblox \\(1\\).png\" \"C:\\\\Users\\\\Jonathan\\\\OneDrive\\\\Desktop\\\\Jonathan-Navarro-Portfolio\\\\frontend\\\\public\\\\screenshots\\\\roblox-ux-redesign\\\\figma-overview.png\")"
     ]
   }
 }

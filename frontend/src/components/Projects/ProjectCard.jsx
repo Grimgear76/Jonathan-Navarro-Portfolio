@@ -19,6 +19,12 @@ export default function ProjectCard({ project }) {
     unlockProject(project.id)
   }
 
+  function handleDoubleClick(e) {
+    e.stopPropagation()
+    unlockProject(project.id)
+    navigate(`/projects/${project.id}`)
+  }
+
   function handleNavigate(e) {
     e.stopPropagation()
     unlockProject(project.id)
@@ -54,6 +60,7 @@ export default function ProjectCard({ project }) {
       className={`project-card${isUnlocked ? ' unlocked' : ''}`}
       style={unlockedStyles}
       onClick={handleUnlock}
+      onDoubleClick={handleDoubleClick}
       onMouseMove={handleMouseMove}
       onMouseLeave={handleMouseLeave}
     >

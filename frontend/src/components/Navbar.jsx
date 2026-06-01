@@ -53,7 +53,7 @@ export default function Navbar() {
         <ul className="navbar-links">
           {NAV_LINKS.map(({ label, id }) => (
             <li key={id}>
-              <button className="nav-link" onClick={() => scrollTo(id)}>
+              <button className="nav-link" onClick={() => handleNavClick(id)}>
                 {label}
               </button>
             </li>

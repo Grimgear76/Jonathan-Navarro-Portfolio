@@ -12,16 +12,21 @@ function parseHex(hex) {
   ]
 }
 
-const N              = 110
-const CONNECT_DIST   = 160
 const MOUSE_R        = 130
 const MOUSE_FORCE    = 0.15
-const MAX_SPEED      = 1.0    // slowed down
+const MAX_SPEED      = 1.0
 const COLOR_LERP     = 0.018
-const DRIFT_FORCE    = 0.007  // slowed down
+const DRIFT_FORCE    = 0.007
 
-const MAX_STARS      = 65
-const STAR_INTERVAL  = 12    // frames between each star spawn
+function getMobileConfig() {
+  const mobile = window.innerWidth < 768
+  return {
+    N:             mobile ? 40  : 110,
+    CONNECT_DIST:  mobile ? 90  : 160,
+    MAX_STARS:     mobile ? 20  : 65,
+    STAR_INTERVAL: mobile ? 20  : 12,
+  }
+}
 
 const MONO_PALETTE = ['#888888', '#777777', '#999999', '#666666', '#aaaaaa', '#555555']
 
@@ -47,6 +52,8 @@ export default function ParticleBackground() {
     const canvas = canvasRef.current
     const ctx    = canvas.getContext('2d')
     let animId
+
+    const { N, CONNECT_DIST, MAX_STARS, STAR_INTERVAL } = getMobileConfig()
 
     const mouse = { x: -9999, y: -9999 }
 

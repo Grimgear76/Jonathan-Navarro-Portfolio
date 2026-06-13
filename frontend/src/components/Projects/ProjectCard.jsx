@@ -4,6 +4,10 @@ import useColorUnlock from '../../hooks/useColorUnlock'
 import { useColorContext } from '../../context/ColorContext'
 import './ProjectCard.css'
 
+const REDUCED_MOTION =
+  typeof window !== 'undefined' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
 export default function ProjectCard({ project }) {
   const { unlockProject, unlockedIds } = useColorUnlock()
   const { state } = useColorContext()
@@ -32,14 +36,15 @@ export default function ProjectCard({ project }) {
   }
 
   function handleMouseMove(e) {
+    if (REDUCED_MOTION) return
     const card = cardRef.current
     if (!card) return
     const { left, top, width, height } = card.getBoundingClientRect()
     const x = (e.clientX - left) / width   // 0–1
     const y = (e.clientY - top)  / height  // 0–1
-    const rotateY =  (x - 0.5) * 16  // –8 to +8 deg
-    const rotateX = -(y - 0.5) * 12  // –6 to +6 deg
-    card.style.transform = `perspective(700px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`
+    const rotateY =  (x - 0.5) * 8   // –4 to +4 deg
+    const rotateX = -(y - 0.5) * 6   // –3 to +3 deg
+    card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-4px)`
     card.style.setProperty('--shine-x', `${x * 100}%`)
     card.style.setProperty('--shine-y', `${y * 100}%`)
   }
@@ -67,30 +72,21 @@ export default function ProjectCard({ project }) {
       <div className="card-shine" />
       {isUnlocked && <div className="card-ripple" />}
 
-      {project.award && (
-        <div
-          className="card-award"
-          style={isUnlocked ? { color: accent, borderColor: `${accent}55` } : {}}
-        >
-          ⬡ {project.award}
-        </div>
-      )}
-
-      <div className="card-header">
-        <h3
-          className="card-title"
-          style={isUnlocked ? { color: accent } : {}}
-        >
-          {project.title}
-        </h3>
-        <button
-          className="card-arrow"
-          onClick={handleNavigate}
-          aria-label={`View ${project.title} details`}
-        >
-          →
-        </button>
+      {/* Reserved meta row keeps card titles aligned across a row whether or not an award exists */}
+      <div
+        className={`card-award${project.award ? '' : ' card-award--empty'}`}
+        style={project.award && isUnlocked ? { color: accent, borderColor: `${accent}55` } : {}}
+        aria-hidden={!project.award}
+      >
+        {project.award && <><span aria-hidden="true">★ </span>{project.award}</>}
       </div>
+
+      <h3
+        className="card-title"
+        style={isUnlocked ? { color: accent } : {}}
+      >
+        {project.title}
+      </h3>
 
       <p className="card-description">{project.description}</p>
 
@@ -108,6 +104,15 @@ export default function ProjectCard({ project }) {
           </span>
         ))}
       </div>
+
+      <button
+        className="card-cta"
+        onClick={handleNavigate}
+        style={isUnlocked ? { color: accent, borderColor: `${accent}66` } : {}}
+        aria-label={`View ${project.title} project details`}
+      >
+        VIEW PROJECT <span aria-hidden="true">→</span>
+      </button>
     </div>
   )
 }

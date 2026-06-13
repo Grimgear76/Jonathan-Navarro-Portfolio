@@ -59,7 +59,7 @@ export default function Contact() {
       <section className="contact" id="contact">
         <div className="contact-container">
           <h2 className="section-label">// CONTACT</h2>
-          <div className="contact-success">
+          <div className="contact-success" role="status" aria-live="polite">
             <p className="success-text">MESSAGE RECEIVED_</p>
             <p className="success-sub">I'll get back to you soon.</p>
           </div>
@@ -76,24 +76,37 @@ export default function Contact() {
         <form className="contact-form" onSubmit={handleSubmit} noValidate>
           <div className="field">
             <label htmlFor="name">NAME</label>
-            <input id="name" name="name" type="text" value={form.name} onChange={handleChange} disabled={status === 'sending'} />
-            {errors.name && <span className="field-error">{errors.name}</span>}
+            <input
+              id="name" name="name" type="text" value={form.name} onChange={handleChange}
+              disabled={status === 'sending'}
+              aria-invalid={!!errors.name}
+              aria-describedby={errors.name ? 'name-error' : undefined}
+            />
+            {errors.name && <span className="field-error" id="name-error" role="alert">{errors.name}</span>}
           </div>
           <div className="field">
             <label htmlFor="email">EMAIL</label>
-            <input id="email" name="email" type="email" value={form.email} onChange={handleChange} disabled={status === 'sending'} />
-            {errors.email && <span className="field-error">{errors.email}</span>}
+            <input
+              id="email" name="email" type="email" value={form.email} onChange={handleChange}
+              disabled={status === 'sending'}
+              aria-invalid={!!errors.email}
+              aria-describedby={errors.email ? 'email-error' : undefined}
+            />
+            {errors.email && <span className="field-error" id="email-error" role="alert">{errors.email}</span>}
           </div>
           <div className="field">
             <label htmlFor="message">MESSAGE</label>
-            <textarea id="message" name="message" rows={5} value={form.message} onChange={handleChange} disabled={status === 'sending'} />
-            {errors.message && <span className="field-error">{errors.message}</span>}
+            <textarea
+              id="message" name="message" rows={5} value={form.message} onChange={handleChange}
+              disabled={status === 'sending'}
+              aria-invalid={!!errors.message}
+              aria-describedby={errors.message ? 'message-error' : undefined}
+            />
+            {errors.message && <span className="field-error" id="message-error" role="alert">{errors.message}</span>}
           </div>
-          {status === 'error' && (
-            <p className="field-error" style={{ marginBottom: '1rem' }}>
-              Something went wrong — try emailing directly at jonathan63592@gmail.com
-            </p>
-          )}
+          <p className="field-error" role="alert" aria-live="assertive" style={{ marginBottom: status === 'error' ? '1rem' : 0 }}>
+            {status === 'error' && 'Something went wrong — try emailing directly at jonathan63592@gmail.com'}
+          </p>
           <button type="submit" className="btn-primary" disabled={status === 'sending'}>
             {status === 'sending' ? 'SENDING...' : 'SEND MESSAGE'}
           </button>

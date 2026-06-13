@@ -16,7 +16,7 @@ export default function Hero() {
           <span className="glitch" data-text="Navarro">Navarro</span>
           <span className="cursor">_</span>
         </h1>
-        <p className="hero-title">Full-Stack Developer · ML Engineer · 2× Hackathon Winner</p>
+        <p className="hero-title">Full-Stack Developer · ML Engineer · 2× Award-Winning Hackathons</p>
         <div className="hero-ctas">
           <button className="btn-primary" onClick={() => scrollTo('projects')}>
             VIEW PROJECTS
@@ -27,14 +27,14 @@ export default function Hero() {
         </div>
         <div className="hero-social">
           <a href="https://github.com/Grimgear76" target="_blank" rel="noopener noreferrer" className="hero-social-link">
-            GitHub ↗
+            GitHub <span aria-hidden="true">↗</span>
           </a>
-          <span className="hero-social-sep">/</span>
+          <span className="hero-social-sep" aria-hidden="true">/</span>
           <a href="https://linkedin.com/in/jonathan-navarro-44923b307" target="_blank" rel="noopener noreferrer" className="hero-social-link">
-            LinkedIn ↗
+            LinkedIn <span aria-hidden="true">↗</span>
           </a>
           <span className="hero-social-sep">/</span>
-          <span className="hero-available">● Open to opportunities</span>
+          <span className="hero-available">● Open to Software &amp; ML Engineer roles</span>
         </div>
       </div>
 

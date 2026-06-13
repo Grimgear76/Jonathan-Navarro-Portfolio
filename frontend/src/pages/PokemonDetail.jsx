@@ -82,7 +82,7 @@ export default function PokemonDetail() {
 
           <p className="poke-hero__sub">
             Teaching an AI to play competitive Pokémon from scratch — no hand-coded rules, no game knowledge.
-            Just trial, error, and 18.4 million battles.
+            Just trial, error, and 18.4 million training timesteps.
           </p>
 
           <div className="poke-tags">

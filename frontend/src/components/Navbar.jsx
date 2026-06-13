@@ -64,6 +64,7 @@ export default function Navbar() {
           <div className="navbar-social">
             <a href="https://github.com/Grimgear76" target="_blank" rel="noopener noreferrer" className="navbar-social-link">GitHub</a>
             <a href="https://linkedin.com/in/jonathan-navarro-44923b307" target="_blank" rel="noopener noreferrer" className="navbar-social-link">LinkedIn</a>
+            <a href="/resume.pdf" download="Jonathan_Navarro_Resume.pdf" className="navbar-social-link navbar-resume">Resume <span aria-hidden="true">↓</span></a>
           </div>
           <div className="navbar-right">
             <div className="navbar-progress">
@@ -102,7 +103,11 @@ export default function Navbar() {
       </nav>
 
       {/* Mobile drawer */}
-      <div className={`mobile-menu${menuOpen ? ' mobile-menu--open' : ''}`} aria-hidden={!menuOpen}>
+      <div
+        className={`mobile-menu${menuOpen ? ' mobile-menu--open' : ''}`}
+        aria-hidden={!menuOpen}
+        inert={!menuOpen || undefined}
+      >
         <ul className="mobile-menu__links">
           {NAV_LINKS.map(({ label, id }) => (
             <li key={id}>
@@ -111,6 +116,16 @@ export default function Navbar() {
               </button>
             </li>
           ))}
+          <li>
+            <a
+              href="/resume.pdf"
+              download="Jonathan_Navarro_Resume.pdf"
+              className="mobile-nav-link mobile-nav-link--resume"
+              onClick={() => setMenuOpen(false)}
+            >
+              Resume <span aria-hidden="true">↓</span>
+            </a>
+          </li>
         </ul>
         <div className="mobile-menu__footer">
           <div className="mobile-menu__progress">

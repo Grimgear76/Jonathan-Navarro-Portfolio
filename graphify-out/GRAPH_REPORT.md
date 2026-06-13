@@ -1,36 +1,37 @@
-# Graph Report - .  (2026-05-27)
+# Graph Report - C:\Users\Jonathan\OneDrive\Desktop\Jonathan-Navarro-Portfolio  (2026-06-13)
 
 ## Corpus Check
-- Large corpus: 78 files · ~791,968 words. Semantic extraction will be expensive (many Claude tokens). Consider running on a subfolder, or use --no-semantic to run AST-only.
+- 34 files · ~645,041 words
+- Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 81 nodes · 71 edges · 22 communities detected
-- Extraction: 73% EXTRACTED · 27% INFERRED · 0% AMBIGUOUS · INFERRED: 19 edges (avg confidence: 0.8)
+- 83 nodes · 73 edges · 22 communities detected
+- Extraction: 74% EXTRACTED · 26% INFERRED · 0% AMBIGUOUS · INFERRED: 19 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Community Hubs (Navigation)
-- [[_COMMUNITY_Color Unlock & Detail Pages|Color Unlock & Detail Pages]]
-- [[_COMMUNITY_Skills Canvas Demos|Skills Canvas Demos]]
-- [[_COMMUNITY_Nav, Cards & Unlock Hook|Nav, Cards & Unlock Hook]]
-- [[_COMMUNITY_Scroll Zone Theming|Scroll Zone Theming]]
-- [[_COMMUNITY_Generic Project Detail|Generic Project Detail]]
-- [[_COMMUNITY_Theme Color Lerp|Theme Color Lerp]]
-- [[_COMMUNITY_App Shell & Home|App Shell & Home]]
-- [[_COMMUNITY_Contact Form|Contact Form]]
-- [[_COMMUNITY_Particle Background|Particle Background]]
-- [[_COMMUNITY_About Section|About Section]]
-- [[_COMMUNITY_Footer|Footer]]
-- [[_COMMUNITY_Hero|Hero]]
-- [[_COMMUNITY_Projects Grid|Projects Grid]]
-- [[_COMMUNITY_ESLint Config|ESLint Config]]
-- [[_COMMUNITY_Vite Config|Vite Config]]
-- [[_COMMUNITY_App Entry|App Entry]]
-- [[_COMMUNITY_Contact Test|Contact Test]]
-- [[_COMMUNITY_ColorContext Test|ColorContext Test]]
-- [[_COMMUNITY_Projects Data|Projects Data]]
-- [[_COMMUNITY_ScrollZone Test|ScrollZone Test]]
-- [[_COMMUNITY_Test Setup|Test Setup]]
-- [[_COMMUNITY_Server|Server]]
+- [[_COMMUNITY_Community 0|Community 0]]
+- [[_COMMUNITY_Community 1|Community 1]]
+- [[_COMMUNITY_Community 2|Community 2]]
+- [[_COMMUNITY_Community 3|Community 3]]
+- [[_COMMUNITY_Community 4|Community 4]]
+- [[_COMMUNITY_Community 5|Community 5]]
+- [[_COMMUNITY_Community 6|Community 6]]
+- [[_COMMUNITY_Community 7|Community 7]]
+- [[_COMMUNITY_Community 8|Community 8]]
+- [[_COMMUNITY_Community 9|Community 9]]
+- [[_COMMUNITY_Community 10|Community 10]]
+- [[_COMMUNITY_Community 11|Community 11]]
+- [[_COMMUNITY_Community 12|Community 12]]
+- [[_COMMUNITY_Community 13|Community 13]]
+- [[_COMMUNITY_Community 14|Community 14]]
+- [[_COMMUNITY_Community 15|Community 15]]
+- [[_COMMUNITY_Community 16|Community 16]]
+- [[_COMMUNITY_Community 17|Community 17]]
+- [[_COMMUNITY_Community 18|Community 18]]
+- [[_COMMUNITY_Community 19|Community 19]]
+- [[_COMMUNITY_Community 20|Community 20]]
+- [[_COMMUNITY_Community 21|Community 21]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `useColorContext()` - 16 edges
@@ -46,143 +47,143 @@
 
 ## Surprising Connections (you probably didn't know these)
 - `ParticleBackground()` --calls--> `useColorContext()`  [INFERRED]
-  frontend\src\components\ParticleBackground.jsx → frontend\src\context\ColorContext.jsx
+  C:\Users\Jonathan\OneDrive\Desktop\Jonathan-Navarro-Portfolio\frontend\src\components\ParticleBackground.jsx → frontend\src\context\ColorContext.jsx
 - `ThemeEvolution()` --calls--> `useColorContext()`  [INFERRED]
-  frontend\src\components\ThemeEvolution.jsx → frontend\src\context\ColorContext.jsx
+  C:\Users\Jonathan\OneDrive\Desktop\Jonathan-Navarro-Portfolio\frontend\src\components\ThemeEvolution.jsx → frontend\src\context\ColorContext.jsx
 - `AmbientOverlay()` --calls--> `useColorContext()`  [INFERRED]
   frontend\src\components\AmbientOverlay.jsx → frontend\src\context\ColorContext.jsx
 - `Navbar()` --calls--> `useColorContext()`  [INFERRED]
-  frontend\src\components\Navbar.jsx → frontend\src\context\ColorContext.jsx
+  C:\Users\Jonathan\OneDrive\Desktop\Jonathan-Navarro-Portfolio\frontend\src\components\Navbar.jsx → frontend\src\context\ColorContext.jsx
 - `Toast()` --calls--> `useColorUnlock()`  [INFERRED]
   frontend\src\components\Toast.jsx → frontend\src\hooks\useColorUnlock.js
 
 ## Communities
 
-### Community 0 - "Color Unlock & Detail Pages"
+### Community 0 - "Community 0"
 Cohesion: 0.1
 Nodes (9): ActionRpgDetail(), AmbientOverlay(), CollegeSocialDetail(), useColorContext(), FronteraDetail(), PokemonDetail(), Rapp956Detail(), RgvTutorDetail() (+1 more)
 
-### Community 1 - "Skills Canvas Demos"
+### Community 1 - "Community 1"
 Cohesion: 0.22
 Nodes (2): useThemeMono(), WebCodeInspector()
 
-### Community 2 - "Nav, Cards & Unlock Hook"
+### Community 2 - "Community 2"
 Cohesion: 0.22
 Nodes (4): Navbar(), ProjectCard(), Toast(), useColorUnlock()
 
-### Community 3 - "Scroll Zone Theming"
+### Community 3 - "Community 3"
 Cohesion: 0.33
 Nodes (2): ScrollZoneWatcher(), useScrollZone()
 
-### Community 4 - "Generic Project Detail"
+### Community 4 - "Community 4"
 Cohesion: 0.53
 Nodes (4): darkTint(), dimAccent(), getYouTubeId(), ProjectDetail()
 
-### Community 5 - "Theme Color Lerp"
+### Community 5 - "Community 5"
+Cohesion: 0.5
+Nodes (0): 
+
+### Community 6 - "Community 6"
+Cohesion: 0.5
+Nodes (1): ParticleBackground()
+
+### Community 7 - "Community 7"
 Cohesion: 0.67
 Nodes (3): hexToRgb(), lerpColor(), ThemeEvolution()
 
-### Community 6 - "App Shell & Home"
+### Community 8 - "Community 8"
 Cohesion: 0.67
 Nodes (0): 
 
-### Community 7 - "Contact Form"
-Cohesion: 0.67
-Nodes (0): 
-
-### Community 8 - "Particle Background"
-Cohesion: 0.67
-Nodes (1): ParticleBackground()
-
-### Community 9 - "About Section"
+### Community 9 - "Community 9"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 10 - "Footer"
+### Community 10 - "Community 10"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 11 - "Hero"
+### Community 11 - "Community 11"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 12 - "Projects Grid"
+### Community 12 - "Community 12"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 13 - "ESLint Config"
+### Community 13 - "Community 13"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 14 - "Vite Config"
+### Community 14 - "Community 14"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 15 - "App Entry"
+### Community 15 - "Community 15"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 16 - "Contact Test"
+### Community 16 - "Community 16"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 17 - "ColorContext Test"
+### Community 17 - "Community 17"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 18 - "Projects Data"
+### Community 18 - "Community 18"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 19 - "ScrollZone Test"
+### Community 19 - "Community 19"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 20 - "Test Setup"
+### Community 20 - "Community 20"
 Cohesion: 1.0
 Nodes (0): 
 
-### Community 21 - "Server"
+### Community 21 - "Community 21"
 Cohesion: 1.0
 Nodes (0): 
 
 ## Knowledge Gaps
-- **Thin community `About Section`** (2 nodes): `About()`, `About.jsx`
+- **Thin community `Community 9`** (2 nodes): `About()`, `About.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Footer`** (2 nodes): `Footer()`, `Footer.jsx`
+- **Thin community `Community 10`** (2 nodes): `Footer()`, `Footer.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Hero`** (2 nodes): `Hero.jsx`, `Hero()`
+- **Thin community `Community 11`** (2 nodes): `Hero.jsx`, `Hero()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Projects Grid`** (2 nodes): `Projects.jsx`, `Projects()`
+- **Thin community `Community 12`** (2 nodes): `Projects.jsx`, `Projects()`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `ESLint Config`** (1 nodes): `eslint.config.js`
+- **Thin community `Community 13`** (1 nodes): `eslint.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Vite Config`** (1 nodes): `vite.config.js`
+- **Thin community `Community 14`** (1 nodes): `vite.config.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `App Entry`** (1 nodes): `main.jsx`
+- **Thin community `Community 15`** (1 nodes): `main.jsx`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Contact Test`** (1 nodes): `Contact.test.js`
+- **Thin community `Community 16`** (1 nodes): `Contact.test.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `ColorContext Test`** (1 nodes): `ColorContext.test.js`
+- **Thin community `Community 17`** (1 nodes): `ColorContext.test.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Projects Data`** (1 nodes): `projects.js`
+- **Thin community `Community 18`** (1 nodes): `projects.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `ScrollZone Test`** (1 nodes): `useScrollZone.test.js`
+- **Thin community `Community 19`** (1 nodes): `useScrollZone.test.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Test Setup`** (1 nodes): `setup.js`
+- **Thin community `Community 20`** (1 nodes): `setup.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
-- **Thin community `Server`** (1 nodes): `serve.js`
+- **Thin community `Community 21`** (1 nodes): `serve.js`
   Too small to be a meaningful cluster - may be noise or needs more connections extracted.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `useColorContext()` connect `Color Unlock & Detail Pages` to `Nav, Cards & Unlock Hook`, `Scroll Zone Theming`, `Generic Project Detail`, `Theme Color Lerp`, `Particle Background`?**
-  _High betweenness centrality (0.316) - this node is a cross-community bridge._
-- **Why does `useScrollZone()` connect `Scroll Zone Theming` to `Color Unlock & Detail Pages`?**
-  _High betweenness centrality (0.068) - this node is a cross-community bridge._
-- **Why does `ProjectDetail()` connect `Generic Project Detail` to `Color Unlock & Detail Pages`?**
+- **Why does `useColorContext()` connect `Community 0` to `Community 2`, `Community 3`, `Community 4`, `Community 6`, `Community 7`?**
+  _High betweenness centrality (0.314) - this node is a cross-community bridge._
+- **Why does `useScrollZone()` connect `Community 3` to `Community 0`?**
   _High betweenness centrality (0.067) - this node is a cross-community bridge._
+- **Why does `ProjectDetail()` connect `Community 4` to `Community 0`?**
+  _High betweenness centrality (0.065) - this node is a cross-community bridge._
 - **Are the 15 inferred relationships involving `useColorContext()` (e.g. with `AmbientOverlay()` and `Navbar()`) actually correct?**
   _`useColorContext()` has 15 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 4 inferred relationships involving `useColorUnlock()` (e.g. with `Navbar()` and `Toast()`) actually correct?**

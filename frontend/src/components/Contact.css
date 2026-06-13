@@ -122,6 +122,17 @@
   background: var(--surface);
 }
 
+.field input:focus-visible,
+.field textarea:focus-visible {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.field input[aria-invalid="true"],
+.field textarea[aria-invalid="true"] {
+  border-color: var(--color-error);
+}
+
 .field-error {
   font-family: var(--font-mono);
   font-size: 0.75rem;

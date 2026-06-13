@@ -39,6 +39,7 @@ export default function useScrollZone() {
   useEffect(() => {
     const ZONES = state.monoMode ? MONO_ZONES : COLOR_ZONES
     let rafId = null
+    let lastZone = -1
 
     function applyZone() {
       const scrollY = window.scrollY
@@ -58,7 +59,13 @@ export default function useScrollZone() {
 
       document.documentElement.style.setProperty('--bg',     bg)
       document.documentElement.style.setProperty('--accent', accent)
-      dispatch({ type: 'SET_ZONE', zone: zoneIdx + 1 })
+
+      // Only push to context when the integer zone actually changes — the bg/accent
+      // CSS vars are already applied imperatively above, so per-frame dispatch is wasteful.
+      if (zoneIdx + 1 !== lastZone) {
+        lastZone = zoneIdx + 1
+        dispatch({ type: 'SET_ZONE', zone: zoneIdx + 1 })
+      }
     }
 
     function handleScroll() {

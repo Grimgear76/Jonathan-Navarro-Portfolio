@@ -53,12 +53,17 @@ export default function ParticleBackground() {
     const ctx    = canvas.getContext('2d')
     let animId
 
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
     const { N, CONNECT_DIST, MAX_STARS, STAR_INTERVAL } = getMobileConfig()
+    const CONNECT_DIST_SQ = CONNECT_DIST * CONNECT_DIST
+    let baseHexCache = null
 
     const mouse = { x: -9999, y: -9999 }
 
     function resize() {
-      const dpr     = window.devicePixelRatio || 1
+      // Cap DPR for this soft, decorative canvas — full Retina fill is imperceptible here but costs ~4x.
+      const dpr     = Math.min(window.devicePixelRatio || 1, 1.5)
       canvas.width  = window.innerWidth  * dpr
       canvas.height = window.innerHeight * dpr
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
@@ -112,10 +117,19 @@ export default function ParticleBackground() {
       frameCount++
       ctx.clearRect(0, 0, W, H)
 
-      const baseHex = getComputedStyle(document.documentElement)
-        .getPropertyValue('--accent').trim() || '#e8a838'
       const unlocked = paletteRef.current
-      const palette  = unlocked.length > 0 ? unlocked : [baseHex]
+      let palette
+      if (unlocked.length > 0) {
+        palette = unlocked
+      } else {
+        // Only read --accent from the DOM occasionally (it changes slowly with scroll zone),
+        // instead of forcing a style recalc every single frame.
+        if (baseHexCache === null || frameCount % 10 === 0) {
+          baseHexCache = getComputedStyle(document.documentElement)
+            .getPropertyValue('--accent').trim() || '#e8a838'
+        }
+        palette = [baseHexCache]
+      }
       const progress = unlockedCountRef.current / projects.length
       const starFraction = progress < 0.25 ? 0 : (progress - 0.25) / 0.75
       const currentMaxStars = Math.floor(starFraction * MAX_STARS)
@@ -180,10 +194,11 @@ export default function ParticleBackground() {
       // ── Draw connections (nodes only) ─────────────────────
       for (let i = 0; i < N; i++) {
         for (let j = i + 1; j < N; j++) {
-          const dx   = particles[i].x - particles[j].x
-          const dy   = particles[i].y - particles[j].y
-          const dist = Math.sqrt(dx * dx + dy * dy)
-          if (dist < CONNECT_DIST) {
+          const dx     = particles[i].x - particles[j].x
+          const dy     = particles[i].y - particles[j].y
+          const distSq = dx * dx + dy * dy
+          if (distSq < CONNECT_DIST_SQ) {
+            const dist  = Math.sqrt(distSq)
             const alpha = (1 - dist / CONNECT_DIST) * 0.38
             const { cr, cg, cb } = particles[i]
             ctx.beginPath()
@@ -212,7 +227,8 @@ export default function ParticleBackground() {
         ctx.fill()
       })
 
-      animId = requestAnimationFrame(frame)
+      // Respect reduced-motion: draw a single static frame, then stop animating.
+      if (!reduceMotion) animId = requestAnimationFrame(frame)
     }
 
     animId = requestAnimationFrame(frame)

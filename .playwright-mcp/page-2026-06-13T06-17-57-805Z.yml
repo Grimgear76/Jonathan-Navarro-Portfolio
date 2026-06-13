@@ -1,0 +1,215 @@
+- generic [ref=e2]:
+  - link "Skip to content" [ref=e3] [cursor=pointer]:
+    - /url: "#main-content"
+  - navigation [ref=e4]:
+    - button "Go to home" [ref=e5] [cursor=pointer]: JN.DEV
+    - generic [ref=e7]:
+      - button "Switch to mono mode" [ref=e8] [cursor=pointer]: MONO
+      - button "Open menu" [ref=e9] [cursor=pointer]
+  - generic:
+    - list:
+      - listitem:
+        - button: About
+      - listitem:
+        - button: Projects
+      - listitem:
+        - button: Contact
+      - listitem:
+        - link:
+          - /url: /resume.pdf
+          - text: Resume ↓
+    - generic:
+      - generic:
+        - generic: EXPLORED 0%
+  - main [ref=e13]:
+    - generic [ref=e14]:
+      - generic [ref=e15]:
+        - paragraph [ref=e16]: // HELLO, I AM
+        - heading "Jonathan Jonathan Jonathan Navarro Navarro Navarro _" [level=1] [ref=e17]:
+          - generic [ref=e18]: Jonathan Jonathan Jonathan
+          - generic [ref=e19]: Navarro Navarro Navarro
+          - text: _
+        - paragraph [ref=e20]: Full-Stack Developer · ML Engineer · 2× Award-Winning Hackathons
+        - generic [ref=e21]:
+          - button "VIEW PROJECTS" [ref=e22] [cursor=pointer]
+          - link "DOWNLOAD RESUME" [ref=e23] [cursor=pointer]:
+            - /url: /resume.pdf
+        - generic [ref=e24]:
+          - link "GitHub" [ref=e25] [cursor=pointer]:
+            - /url: https://github.com/Grimgear76
+            - text: GitHub ↗
+          - generic [ref=e26]: /
+          - link "LinkedIn" [ref=e27] [cursor=pointer]:
+            - /url: https://linkedin.com/in/jonathan-navarro-44923b307
+            - text: LinkedIn ↗
+          - generic [ref=e28]: /
+          - generic [ref=e29]: ● Open to Software & ML Engineer roles
+      - button "Scroll to about" [ref=e30] [cursor=pointer]:
+        - generic [ref=e31]: SCROLL
+    - generic [ref=e33]:
+      - heading "// ABOUT" [level=2] [ref=e34]
+      - generic [ref=e35]:
+        - generic [ref=e36]:
+          - paragraph [ref=e37]: "I'm a Computer Science graduate from UTRGV — Magna Cum Laude — who ships end-to-end across full-stack development, machine learning, and game engineering: reinforcement-learning bots, production web apps, and 2D games."
+          - paragraph [ref=e38]:
+            - text: I also love a good hackathon — grabbed
+            - strong [ref=e39]: 1st place
+            - text: at the Frontera Gemini Hackathon (2024) and
+            - strong [ref=e40]: 2nd place
+            - text: at an AI/ML Hackathon (2026). Outside of that I'm usually deep in a side project or thinking about how AI is changing the way we build things.
+          - generic [ref=e41]:
+            - generic [ref=e42]: Python
+            - generic [ref=e43]: JavaScript
+            - generic [ref=e44]: C++
+            - generic [ref=e45]: C#
+            - generic [ref=e46]: Java
+            - generic [ref=e47]: React
+            - generic [ref=e48]: Node.js
+            - generic [ref=e49]: Express
+            - generic [ref=e50]: Flutter
+            - generic [ref=e51]: Unity
+            - generic [ref=e52]: MongoDB
+            - generic [ref=e53]: Stable-Baselines3
+            - generic [ref=e54]: Figma
+            - generic [ref=e55]: AWS
+            - generic [ref=e56]: Azure
+        - generic [ref=e62]:
+          - paragraph [ref=e63]: $ whoami
+          - paragraph [ref=e64]: Jonathan Navarro
+          - paragraph [ref=e65]: $ cat info.txt
+          - paragraph [ref=e66]: "[loc] Rio Grande Valley, TX"
+          - paragraph [ref=e67]: "[edu] CS @ UTRGV — Magna Cum Laude"
+          - paragraph [ref=e68]: "[ach] Dean's List '23–'24 · President's List '24–'26"
+          - paragraph [ref=e69]: "[win] 2× Award-Winning Hackathons — 1st + 2nd Place"
+          - paragraph [ref=e70]: "[foc] ML · Full-Stack · Game Dev"
+          - paragraph [ref=e71]: _
+    - generic [ref=e73]:
+      - heading "// PROJECTS" [level=2] [ref=e74]
+      - paragraph [ref=e75]: ▸ Click a card to light up its color · open any project for the full story
+      - generic [ref=e76]:
+        - generic [ref=e77] [cursor=pointer]:
+          - heading "Pokémon Battle Bot" [level=3] [ref=e79]
+          - paragraph [ref=e80]: Reinforcement learning agent that learns competitive Pokémon strategy from scratch using MaskablePPO — trained to 18.4M timesteps.
+          - generic [ref=e81]:
+            - generic [ref=e82]: Python
+            - generic [ref=e83]: MaskablePPO
+            - generic [ref=e84]: Stable-Baselines3
+            - generic [ref=e85]: Gymnasium
+            - generic [ref=e86]: poke-env
+            - generic [ref=e87]: TensorBoard
+          - button "View Pokémon Battle Bot project details" [ref=e88]:
+            - text: VIEW PROJECT
+            - generic [ref=e89]: →
+        - generic [ref=e90] [cursor=pointer]:
+          - generic [ref=e91]:
+            - generic [ref=e92]: ★
+            - text: 1ST PLACE — FINANCIAL TRACK
+          - heading "Frontera Gemini Hackathon" [level=3] [ref=e93]
+          - paragraph [ref=e94]: Financable — a small-business financial toolkit with payroll & revenue calculators plus a Gemini-powered finance assistant — 1st Place Financial Track.
+          - generic [ref=e95]:
+            - generic [ref=e96]: HTML
+            - generic [ref=e97]: CSS
+            - generic [ref=e98]: JavaScript
+            - generic [ref=e99]: Google Gemini API
+          - button "View Frontera Gemini Hackathon project details" [ref=e100]:
+            - text: VIEW PROJECT
+            - generic [ref=e101]: →
+        - generic [ref=e102] [cursor=pointer]:
+          - generic [ref=e103]:
+            - generic [ref=e104]: ★
+            - text: 2ND PLACE — AI/ML HACKATHON (2026)
+          - heading "RGV Tutor" [level=3] [ref=e105]
+          - paragraph [ref=e106]: Offline-first AI math tutoring app with local LLM inference, practice problems, a book hub, and a study planner — 2nd Place, AI/ML Hackathon (2026).
+          - generic [ref=e107]:
+            - generic [ref=e108]: Flutter
+            - generic [ref=e109]: Node.js
+            - generic [ref=e110]: Ollama
+            - generic [ref=e111]: Hive
+          - button "View RGV Tutor project details" [ref=e112]:
+            - text: VIEW PROJECT
+            - generic [ref=e113]: →
+        - generic [ref=e114] [cursor=pointer]:
+          - heading "RAPP956 Website" [level=3] [ref=e116]
+          - paragraph [ref=e117]: Single-page marketing website pitching a youth mental health & life skills program to RGV school districts — built and deployed to production.
+          - generic [ref=e118]:
+            - generic [ref=e119]: Vite
+            - generic [ref=e120]: React
+            - generic [ref=e121]: CSS Modules
+            - generic [ref=e122]: Framer Motion
+            - generic [ref=e123]: Cloudflare Pages
+          - button "View RAPP956 Website project details" [ref=e124]:
+            - text: VIEW PROJECT
+            - generic [ref=e125]: →
+        - generic [ref=e126] [cursor=pointer]:
+          - heading "2D Action RPG" [level=3] [ref=e128]
+          - paragraph [ref=e129]: A 2D action RPG built in Unity with melee combat, enemy AI, an inventory & shop economy, a quest system, a skill tree, and EXP-based leveling.
+          - generic [ref=e130]:
+            - generic [ref=e131]: Unity
+            - generic [ref=e132]: C#
+          - button "View 2D Action RPG project details" [ref=e133]:
+            - text: VIEW PROJECT
+            - generic [ref=e134]: →
+        - generic [ref=e135] [cursor=pointer]:
+          - heading "College Social Life App" [level=3] [ref=e137]
+          - paragraph [ref=e138]: MERN social platform where students post, like, and comment in a real-time feed — self-hosted with Socket.io live updates and exposed via Cloudflare Tunnel.
+          - generic [ref=e139]:
+            - generic [ref=e140]: MongoDB
+            - generic [ref=e141]: Express
+            - generic [ref=e142]: React
+            - generic [ref=e143]: Node.js
+            - generic [ref=e144]: Socket.io
+            - generic [ref=e145]: JWT
+          - button "View College Social Life App project details" [ref=e146]:
+            - text: VIEW PROJECT
+            - generic [ref=e147]: →
+        - generic [ref=e148] [cursor=pointer]:
+          - heading "Roblox UX/UI Redesign" [level=3] [ref=e150]
+          - paragraph [ref=e151]: Figma redesign of Roblox's core UI targeting improved discoverability, modern search, and a full design system.
+          - generic [ref=e153]: Figma
+          - button "View Roblox UX/UI Redesign project details" [ref=e154]:
+            - text: VIEW PROJECT
+            - generic [ref=e155]: →
+    - generic [ref=e157]:
+      - heading "// CONTACT" [level=2] [ref=e158]
+      - generic [ref=e159]:
+        - generic [ref=e160]:
+          - generic [ref=e161]:
+            - generic [ref=e162]: NAME
+            - textbox "NAME" [ref=e163]
+          - generic [ref=e164]:
+            - generic [ref=e165]: EMAIL
+            - textbox "EMAIL" [ref=e166]
+          - generic [ref=e167]:
+            - generic [ref=e168]: MESSAGE
+            - textbox "MESSAGE" [ref=e169]
+          - alert
+          - button "SEND MESSAGE" [ref=e170] [cursor=pointer]
+        - generic [ref=e171]:
+          - paragraph [ref=e172]: // REACH ME DIRECTLY
+          - list [ref=e173]:
+            - listitem [ref=e174]:
+              - generic [ref=e175]: EMAIL
+              - link "jonathan63592@gmail.com" [ref=e176] [cursor=pointer]:
+                - /url: mailto:jonathan63592@gmail.com
+            - listitem [ref=e177]:
+              - generic [ref=e178]: LINKEDIN
+              - link "jonathan-navarro-44923b307" [ref=e179] [cursor=pointer]:
+                - /url: https://linkedin.com/in/jonathan-navarro-44923b307
+            - listitem [ref=e180]:
+              - generic [ref=e181]: GITHUB
+              - link "Grimgear76" [ref=e182] [cursor=pointer]:
+                - /url: https://github.com/Grimgear76
+            - listitem [ref=e183]:
+              - generic [ref=e184]: LOCATION
+              - generic [ref=e185]: Rio Grande Valley, TX
+    - generic [ref=e186]:
+      - generic [ref=e187]:
+        - link "GITHUB" [ref=e188] [cursor=pointer]:
+          - /url: https://github.com/Grimgear76
+        - generic [ref=e189]: /
+        - link "LINKEDIN" [ref=e190] [cursor=pointer]:
+          - /url: https://linkedin.com/in/jonathan-navarro-44923b307
+        - generic [ref=e191]: /
+        - link "EMAIL" [ref=e192] [cursor=pointer]:
+          - /url: mailto:jonathan63592@gmail.com
+      - paragraph [ref=e193]: © 2026 Jonathan Navarro

@@ -77,7 +77,7 @@ export default function FronteraDetail() {
 
           <p className="frontera-eyebrow">// PROJECT — HACKATHON · FINANCIAL TRACK</p>
 
-          <div className="frontera-award-badge">⬡ 1ST PLACE — FINANCIAL TRACK</div>
+          <div className="frontera-award-badge">★ 1ST PLACE — FINANCIAL TRACK</div>
 
           <h1 className="frontera-title">
             <span className="frontera-title__line1">Frontera</span>

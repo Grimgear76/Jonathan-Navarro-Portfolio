@@ -85,7 +85,7 @@ export default function ProjectDetail() {
               <span key={t} className="card-tag detail-tag">{t}</span>
             ))}
           </div>
-          {award && <div className="detail-award">⬡ {award}</div>}
+          {award && <div className="detail-award">★ {award}</div>}
           {(project.github || project.demo) && (
             <div className="detail-links">
               {project.github && (

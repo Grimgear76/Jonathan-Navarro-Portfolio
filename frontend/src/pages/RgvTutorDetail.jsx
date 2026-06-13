@@ -75,7 +75,7 @@ export default function RgvTutorDetail() {
             <span className="rgv-title__line2">Tutor</span>
           </h1>
 
-          <div className="rgv-award">⬡ 2ND PLACE — AI/ML HACKATHON</div>
+          <div className="rgv-award">★ 2ND PLACE — AI/ML HACKATHON (2026)</div>
 
           <p className="rgv-hero__sub">
             An offline-first AI tutoring app for students in the Rio Grande Valley —

@@ -19,19 +19,19 @@ function lerpColor(from, to, t) {
 // Color mode: cold near-black → warm charcoal as projects unlock
 const COLOR_FROM = {
   text:       '#d0d0d0',
-  textMuted:  '#848484',
+  textMuted:  '#909090',
   cardBg:     '#0b0b0b',
   cardBorder: '#1c1c1c',
-  cardTitle:  '#9e9e9e',
-  cardDesc:   '#707070',
+  cardTitle:  '#a6a6a6',
+  cardDesc:   '#909090',
 }
 const COLOR_TO = {
   text:       '#d4cfc8',
-  textMuted:  '#9a9590',
+  textMuted:  '#a8a39c',
   cardBg:     '#26241f',
   cardBorder: '#4a4640',
-  cardTitle:  '#b8b3ac',
-  cardDesc:   '#7a7570',
+  cardTitle:  '#bdb8b1',
+  cardDesc:   '#969089',
 }
 
 // Mono mode: soft off-white — dark neutral text on lightly tinted cards

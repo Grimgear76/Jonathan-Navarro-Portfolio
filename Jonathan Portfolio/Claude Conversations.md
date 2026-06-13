@@ -438,3 +438,43 @@ Comprehensive mobile responsiveness pass across the entire portfolio.
 - Projects single-column layout, readable card text and tags
 - Contact form full-width with proper padding
 - No console errors
+
+## 2026-06-13 — Recruiter-Impression Audit & High-Value Polish Pass
+
+Ran a multi-agent audit (6 expert lenses + a recruiter persona + a senior-engineer persona, synthesized into a ranked plan), then implemented the high-value findings. Verdict: the work is strong (custom 240–350-line detail pages, the Pokémon RL page is a standout) — the problem was *packaging*, not substance. All changes draft (not committed/pushed).
+
+**Decisions confirmed with user:** keep single-click = color-unlock and ADD an explicit "VIEW PROJECT →" button (don't revert the deliberate double-click commit); standardize awards as "2× Award-Winning Hackathons"; site is on Cloudflare Pages (meta URLs use a `jonathan-navarro-portfolio.pages.dev` placeholder with TODO — must swap to the real Pages URL).
+
+**SEO / social / branding (`index.html`, `public/`):**
+- Added full `<head>`: meta description, Open Graph, Twitter card, canonical, `theme-color #111111`, JSON-LD Person, apple-touch-icon link. Base `<title>` → "Jonathan Navarro — Software & ML Engineer".
+- Replaced the default **Claude/Anthropic favicon** with a custom JN amber-on-carbon monogram (`favicon.svg` + `apple-touch-icon.png`).
+- Generated a branded 1200×630 `og-image.png` (rendered via Playwright from an HTML template) — name, role, credibility strip, tech tokens, JN badge.
+- Added `robots.txt` + `sitemap.xml` (all 7 routes).
+
+**Content / copy (`Hero.jsx`, `About.jsx`, `projects.js`, `PokemonDetail.jsx`):**
+- Fixed the Hero "Winner" vs About "Finalist" contradiction → both now "2× Award-Winning Hackathons".
+- Hero availability: "Open to opportunities" → "Open to Software & ML Engineer roles".
+- Reordered project grid: Pokémon → Frontera (1st) → RGV Tutor (2nd) → rest (winners lead).
+- Dated the RGV award "(2026)" everywhere; softened About's "deep expertise" overclaim.
+- Pokémon hero: "18.4 million battles" → "18.4 million training timesteps" (timesteps ≠ battles).
+- Aligned Pokémon accent to spec amber `#e8a838`. Swapped the tofu-rendering ⬡ award glyph → ★ across cards + detail pages.
+
+**Typography / visual (`globals.css`, `ProjectCard.*`, `ThemeEvolution.jsx`):**
+- `--font-mono`: Courier New → **JetBrains Mono** (webfont added to the Google Fonts link) — biggest visual upgrade.
+- ProjectCard restructured to flex-column with a reserved award-badge slot (titles now align across rows) and a bottom-aligned "VIEW PROJECT →" CTA. Softened 3D tilt (±8°/6° → ±4°/3°, perspective 1000).
+- Global `:focus-visible` accent rings + a skip-to-content link; `prefers-reduced-motion` block neutralizing glitch/blink/breathe/particles. Lifted muted-text contrast (card-desc/text-dim floors) to clear WCAG AA.
+
+**UX / a11y (`Navbar.*`, `Contact.*`, `Projects.jsx`):**
+- Persistent amber **Resume** link in the navbar (desktop) + mobile drawer. Mobile drawer gets `inert` when closed.
+- Contact form: `aria-invalid` / `aria-describedby` / `role="alert"` on errors, `aria-live` status region. Decorative ↗/⬡ glyphs marked `aria-hidden`.
+
+**Performance (`App.jsx`, `ParticleBackground.jsx`, `useScrollZone.js`, `public/`):**
+- Route-level code-splitting: all 7 detail pages now `React.lazy` + `Suspense` (each is its own chunk; off the homepage's initial bundle). Verified in build output.
+- Particle loop: squared-distance compare (drops ~6000 `sqrt`/frame), DPR capped at 1.5, `getComputedStyle` cached (~10× fewer style reads), reduced-motion static-frame guard.
+- `useScrollZone` only dispatches on actual zone change (was re-rendering the color-context tree every scroll frame). Deleted orphaned 7.36 MB `water-anim.gif`.
+
+**Verified:** `npm run build` passes (exit 0), code-split chunks confirmed; unlock mechanic intact (card lights amber, ambient overlay, EXPLORED% updates); VIEW PROJECT navigates + lazy chunk loads; mono mode, mobile (390px) layout, and mobile drawer (with Resume) all correct; no console errors.
+
+**Not done (left as deliberate non-goals / bigger bets):** per-route `<title>`/og tags (needs react-helmet or prerender); custom detail pages for Frontera/College Social (no screenshots on disk to wire); Pokémon win-rate metric; image WebP pipeline. Skills section left unrendered per CLAUDE.md.
+
+**TODO for user before deploy:** replace the `jonathan-navarro-portfolio.pages.dev` placeholder in `index.html`, `sitemap.xml`, `robots.txt` with the real Cloudflare Pages URL.

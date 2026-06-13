@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- TODO: replace the jonathan-navarro-portfolio.pages.dev host with your real Cloudflare Pages / custom domain. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://jonathan-navarro-portfolio.pages.dev/</loc><priority>1.0</priority></url>
+  <url><loc>https://jonathan-navarro-portfolio.pages.dev/projects/pokemon-battle-bot</loc><priority>0.9</priority></url>
+  <url><loc>https://jonathan-navarro-portfolio.pages.dev/projects/frontera-hackathon</loc><priority>0.8</priority></url>
+  <url><loc>https://jonathan-navarro-portfolio.pages.dev/projects/rgv-tutor</loc><priority>0.8</priority></url>
+  <url><loc>https://jonathan-navarro-portfolio.pages.dev/projects/rapp956</loc><priority>0.7</priority></url>
+  <url><loc>https://jonathan-navarro-portfolio.pages.dev/projects/2d-action-rpg</loc><priority>0.7</priority></url>
+  <url><loc>https://jonathan-navarro-portfolio.pages.dev/projects/college-social-app</loc><priority>0.7</priority></url>
+  <url><loc>https://jonathan-navarro-portfolio.pages.dev/projects/roblox-ux-redesign</loc><priority>0.6</priority></url>
+</urlset>

@@ -4,7 +4,7 @@ export const projects = [
     title: 'Pokémon Battle Bot',
     description: 'Reinforcement learning agent that learns competitive Pokémon strategy from scratch using MaskablePPO — trained to 18.4M timesteps.',
     technologies: ['Python', 'MaskablePPO', 'Stable-Baselines3', 'Gymnasium', 'poke-env', 'TensorBoard'],
-    accentColor: '#ffa60d',
+    accentColor: '#e8a838',
     monoAccentColor: '#ee9700',
     github: 'https://github.com/Grimgear76/Pokemon-Battle-Bot',
     images: [
@@ -23,13 +23,28 @@ export const projects = [
     },
   },
   {
+    id: 'frontera-hackathon',
+    title: 'Frontera Gemini Hackathon',
+    description: 'Financable — a small-business financial toolkit with payroll & revenue calculators plus a Gemini-powered finance assistant — 1st Place Financial Track.',
+    technologies: ['HTML', 'CSS', 'JavaScript', 'Google Gemini API'],
+    accentColor: '#58a6ff',
+    monoAccentColor: '#003ce0',
+    award: '1ST PLACE — FINANCIAL TRACK',
+    github: 'https://github.com/Grimgear76/frontera-hackathon',
+    detail: {
+      problem: 'Small-business owners juggle payroll, revenue, and tax math without accessible tools or guidance — and getting clear answers usually means spreadsheets or an accountant.',
+      built: 'Multi-page web app (vanilla HTML/CSS/JavaScript) called Financable, built in 24 hours: a Salary Cost Calculator computing weekly/monthly/yearly payroll by hourly rate, hours, and employment type; a Revenue Calculator weighing income against salary and purchase expenses; a contact page; and "Financable Assist" — a chatbot powered by the Google Gemini API that answers small-business finance questions, with chat history persisted in localStorage.',
+      outcome: '1st Place in the Financial Track at the UTRGV Frontera Gemini Hackathon 2024. Shipped a working multi-tool product with live Gemini-powered guidance within the 24-hour competition window.',
+    },
+  },
+  {
     id: 'rgv-tutor',
     title: 'RGV Tutor',
-    description: 'Offline-first AI math tutoring app with local LLM inference, practice problems, a book hub, and a study planner — 2nd Place AI/ML Hackathon.',
+    description: 'Offline-first AI math tutoring app with local LLM inference, practice problems, a book hub, and a study planner — 2nd Place, AI/ML Hackathon (2026).',
     technologies: ['Flutter', 'Node.js', 'Ollama', 'Hive'],
     accentColor: '#3dd6c8',
     monoAccentColor: '#007ef3',
-    award: '2ND PLACE — AI/ML HACKATHON',
+    award: '2ND PLACE — AI/ML HACKATHON (2026)',
     github: 'https://github.com/Grimgear76/RGV_Tutor',
     demo: 'https://youtu.be/N7ju-QHTInc?si=ObeCHINYP1qyJAr9',
     images: [
@@ -42,7 +57,7 @@ export const projects = [
     detail: {
       problem: 'Students in the Rio Grande Valley lack affordable, personalized tutoring resources. Low-connectivity environments and cloud AI costs make real-time AI tutoring apps inaccessible for many.',
       built: 'Flutter app that calls a local Ollama LLM (llama3.2:1b) directly over localhost for fully offline inference — zero API keys — with a lightweight Node.js/Express server handling book-download proxying. Features practice problems across multiple subjects, an EPUB/PDF Book Hub for offline reading, a calendar study planner, and QR-based subject sharing, all persisted on-device with Hive.',
-      outcome: '2nd Place at the AI/ML Hackathon: Intelligent Solutions to Real-World Problems. Demonstrated real-time AI tutoring with zero cloud API costs — fully runnable on a standard laptop.',
+      outcome: '2nd Place at the AI/ML Hackathon: Intelligent Solutions to Real-World Problems (2026). Demonstrated real-time AI tutoring with zero cloud API costs — fully runnable on a standard laptop.',
     },
   },
   {
@@ -90,21 +105,6 @@ export const projects = [
     },
   },
   {
-    id: 'frontera-hackathon',
-    title: 'Frontera Gemini Hackathon',
-    description: 'Financable — a small-business financial toolkit with payroll & revenue calculators plus a Gemini-powered finance assistant — 1st Place Financial Track.',
-    technologies: ['HTML', 'CSS', 'JavaScript', 'Google Gemini API'],
-    accentColor: '#58a6ff',
-    monoAccentColor: '#003ce0',
-    award: '1ST PLACE — FINANCIAL TRACK',
-    github: 'https://github.com/Grimgear76/frontera-hackathon',
-    detail: {
-      problem: 'Small-business owners juggle payroll, revenue, and tax math without accessible tools or guidance — and getting clear answers usually means spreadsheets or an accountant.',
-      built: 'Multi-page web app (vanilla HTML/CSS/JavaScript) called Financable, built in 24 hours: a Salary Cost Calculator computing weekly/monthly/yearly payroll by hourly rate, hours, and employment type; a Revenue Calculator weighing income against salary and purchase expenses; a contact page; and "Financable Assist" — a chatbot powered by the Google Gemini API that answers small-business finance questions, with chat history persisted in localStorage.',
-      outcome: '1st Place in the Financial Track at the UTRGV Frontera Gemini Hackathon 2024. Shipped a working multi-tool product with live Gemini-powered guidance within the 24-hour competition window.',
-    },
-  },
-  {
     id: 'roblox-ux-redesign',
     title: 'Roblox UX/UI Redesign',
     description: "Figma redesign of Roblox's core UI targeting improved discoverability, modern search, and a full design system.",
@@ -116,7 +116,7 @@ export const projects = [
     detail: {
       problem: "Roblox's Charts and game lookup flow buries popular titles behind poor hierarchy and hard-to-scan lists — users struggle to discover new games without already knowing what to search for.",
       built: 'High-fidelity Figma prototype across 11 screens covering the full core app flow: login, register, home feed, charts, friends, avatar, settings, and more. The primary redesign focus was the Charts screen — restructured game rankings with clearer visual hierarchy, scannable cards, and an improved browsing flow that surfaces trending and top-rated titles without requiring a search query.',
-      outcome: 'Complete interactive prototype covering all primary navigation flows with a consistent dark design language, delivering a game discovery experience that is meaningfully easier to navigate than the current Roblox UI.',
+      outcome: 'Complete interactive prototype spanning 11 screens and all primary navigation flows, with a consistent dark design language and a reusable component system, centered on a restructured game-discovery (Charts) experience.',
     },
   },
 ]

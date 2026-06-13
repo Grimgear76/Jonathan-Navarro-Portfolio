@@ -8,10 +8,9 @@ export default function About() {
         <div className="about-grid">
           <div className="about-bio">
             <p>
-              I'm a Computer Science graduate from UTRGV — Magna Cum Laude — with deep
-              expertise across full-stack development, machine learning, and game engineering.
-              I build things end-to-end: reinforcement learning bots, production web apps,
-              2D games, and everything in between.
+              I'm a Computer Science graduate from UTRGV — Magna Cum Laude — who ships
+              end-to-end across full-stack development, machine learning, and game engineering:
+              reinforcement-learning bots, production web apps, and 2D games.
             </p>
             <p>
               I also love a good hackathon — grabbed <strong>1st place</strong> at the Frontera
@@ -38,7 +37,7 @@ export default function About() {
               <p className="terminal-output">[loc] Rio Grande Valley, TX</p>
               <p className="terminal-output">[edu] CS @ UTRGV — Magna Cum Laude</p>
               <p className="terminal-output">[ach] Dean's List '23–'24 · President's List '24–'26</p>
-              <p className="terminal-output">[win] 2× Hackathon Finalist (1st + 2nd)</p>
+              <p className="terminal-output">[win] 2× Award-Winning Hackathons — 1st + 2nd Place</p>
               <p className="terminal-output">[foc] ML · Full-Stack · Game Dev</p>
               <p><span className="terminal-cursor">_</span></p>
             </div>
